@@ -18,17 +18,6 @@ HORIZON = 6
 # during the day and stops us hammering an API that owes us nothing.
 CACHE_TTL = 3600
 
-# A player needs this many minutes last season before he counts toward the
-# positional baseline we shrink everyone else toward.
-MIN_MINUTES_FOR_RATE = 900
-
-# Shrinkage strength, in 90-minute appearances. A player's scoring rate is pulled
-# toward his position's baseline as though he had already played this many games
-# at exactly that rate. Small samples get pulled hard; a 34-start season barely
-# moves. Without this the table fills with cameo merchants who scored twice off
-# the bench and finished the season on 10 points per 90.
-SHRINKAGE_APPEARANCES = 8
-
 # A full season is 38 games of 90 minutes.
 SEASON_GAMES = 38
 
