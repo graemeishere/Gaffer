@@ -13,5 +13,10 @@ data/*.sqlite
 data/cache/
 data/latest.json
 data/report.html
+
+# The published copy is written by CI, which force-adds it. Ignoring it here
+# means a local run can never stage a competing version.
+web/latest.json
+web/report.html
 .env
 secrets.toml
