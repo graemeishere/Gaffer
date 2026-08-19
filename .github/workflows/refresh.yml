@@ -41,10 +41,12 @@ jobs:
 
       - name: Publish the run
         run: |
-          cp data/latest.json data/report.html web/ 2>/dev/null || true
+          # web/ is the published copy. data/ is the local run's output and is
+          # gitignored, so the two never collide.
+          cp data/latest.json data/report.html web/
           git config user.name  "gaffer-bot"
           git config user.email "noreply@github.com"
-          git add -f data/latest.json data/report.html web/latest.json web/report.html
+          git add -f web/latest.json web/report.html
           if git diff --staged --quiet; then
             echo "No change in output — nothing to publish."
           else
