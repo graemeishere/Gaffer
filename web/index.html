@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gaffer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --ground:#f4f5f7; --surface:#fff; --surface-2:#eceef2;
+  --ink:#171c26; --ink-2:#3d4657; --ink-3:#6b7688;
+  --rule:#d6dae2; --accent:#b26a1f; --accent-soft:#f6ead8;
+  --stop:#9c3328; --stop-soft:#f7e4e1;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#12151b; --surface:#191d25; --surface-2:#212630;
+  --ink:#e8eaef; --ink-2:#b3bac7; --ink-3:#818b9c;
+  --rule:#2b313d; --accent:#e0a458; --accent-soft:#2e2418;
+  --stop:#e08b7f; --stop-soft:#2c1e1c;
+}}
+:root[data-theme="dark"]{
+  --ground:#12151b; --surface:#191d25; --surface-2:#212630;
+  --ink:#e8eaef; --ink-2:#b3bac7; --ink-3:#818b9c;
+  --rule:#2b313d; --accent:#e0a458; --accent-soft:#2e2418;
+  --stop:#e08b7f; --stop-soft:#2c1e1c;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:Archivo,"Helvetica Neue",Arial,sans-serif;font-size:15px;line-height:1.5;}
+.wrap{max-width:960px;margin:0 auto;padding:2rem 1.1rem 4rem;display:flex;flex-direction:column;gap:1.6rem;}
+h1{font-size:1.7rem;letter-spacing:-.02em;margin:0;font-weight:700;}
+.bar{font-family:"JetBrains Mono",monospace;font-size:.72rem;color:var(--ink-3);
+  display:flex;flex-wrap:wrap;gap:.4rem 1.2rem;padding-top:.8rem;border-top:1px solid var(--rule);}
+.stale{background:var(--stop-soft);color:var(--stop);padding:.75rem 1rem;border-radius:4px;
+  font-size:.85rem;font-weight:600;}
+.banner{background:var(--accent-soft);color:var(--ink-2);padding:.8rem 1rem;border-radius:4px;font-size:.85rem;}
+.controls{display:flex;gap:.4rem;flex-wrap:wrap;}
+button{font:inherit;font-size:.78rem;font-weight:600;padding:.4rem .8rem;border-radius:3px;
+  border:1px solid var(--rule);background:var(--surface);color:var(--ink-2);cursor:pointer;}
+button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--ground);}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+.scroll{overflow-x:auto;border:1px solid var(--rule);border-radius:4px;background:var(--surface);}
+table{border-collapse:collapse;width:100%;font-size:.84rem;min-width:560px;}
+th{text-align:left;font-size:.62rem;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-3);
+  padding:.55rem .7rem;border-bottom:1px solid var(--rule);white-space:nowrap;cursor:pointer;}
+th.num,td.num{text-align:right;font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums;}
+td{padding:.5rem .7rem;border-bottom:1px solid var(--rule);color:var(--ink-2);white-space:nowrap;}
+tr:last-child td{border-bottom:none;}
+td.name{color:var(--ink);font-weight:600;}
+.pill{font-size:.6rem;font-weight:600;text-transform:uppercase;padding:.15em .45em;border-radius:3px;}
+.pill.warn{background:var(--accent-soft);color:var(--accent);}
+.pill.stop{background:var(--stop-soft);color:var(--stop);}
+.pill.low{background:var(--surface-2);color:var(--ink-3);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div>
+    <h1>Gaffer</h1>
+    <div class="bar" id="bar"><span>loading…</span></div>
+  </div>
+  <div id="stale"></div>
+  <div class="banner" id="warning"></div>
+  <div class="controls" id="filters"></div>
+  <div class="scroll"><table>
+    <thead><tr>
+      <th data-k="name">Player</th><th data-k="team">Team</th><th data-k="position">Pos</th>
+      <th class="num" data-k="price">£m</th><th class="num" data-k="projected">Proj</th>
+      <th class="num" data-k="per_million">per £m</th><th class="num" data-k="fixture_score">Fix</th>
+      <th>Flags</th>
+    </tr></thead>
+    <tbody id="rows"></tbody>
+  </table></div>
+</div>
+<script>
+const POSITIONS = ["ALL", "GKP", "DEF", "MID", "FWD"];
+let data = null, position = "ALL", sortKey = "projected", desc = true;
+
+function flags(p) {
+  const out = [];
+  if (p.moved_club) out.push('<span class="pill warn">new club</span>');
+  if (p.availability < 1) out.push(`<span class="pill stop">${Math.round(p.availability * 100)}% fit</span>`);
+  if (p.confidence === "low") out.push('<span class="pill low">thin data</span>');
+  return out.join(" ");
+}
+
+function render() {
+  const rows = data.players
+    .filter(p => position === "ALL" || p.position === position)
+    .sort((a, b) => {
+      const [x, y] = [a[sortKey], b[sortKey]];
+      const cmp = typeof x === "string" ? x.localeCompare(y) : x - y;
+      return desc ? -cmp : cmp;
+    })
+    .slice(0, 60);
+
+  document.getElementById("rows").innerHTML = rows.map(p => `
+    <tr>
+      <td class="name">${p.name}</td><td>${p.team}</td><td>${p.position}</td>
+      <td class="num">${p.price.toFixed(1)}</td>
+      <td class="num">${p.projected.toFixed(1)}</td>
+      <td class="num">${p.per_million.toFixed(2)}</td>
+      <td class="num">${p.fixture_score.toFixed(2)}</td>
+      <td>${flags(p)}</td>
+    </tr>`).join("");
+}
+
+function boot(payload) {
+  data = payload;
+  const m = payload.meta;
+  const generated = new Date(m.generated);
+  const ageHours = (Date.now() - generated) / 3.6e6;
+
+  document.getElementById("bar").innerHTML = [
+    `GAMEWEEK ${m.gameweek}`,
+    `DEADLINE ${new Date(m.deadline).toUTCString().slice(0, 22)}`,
+    `HORIZON ${m.horizon} GW`,
+    `GENERATED ${generated.toUTCString().slice(5, 22)}`,
+    `${payload.counts.players_ranked} PLAYERS`,
+  ].map(s => `<span>${s}</span>`).join("");
+
+  // A stale recommendation shown confidently is worse than no recommendation.
+  if (ageHours > 24) {
+    document.getElementById("stale").className = "stale";
+    document.getElementById("stale").textContent =
+      `This data is ${Math.floor(ageHours / 24)} day(s) old. The engine has not run since ` +
+      `${generated.toUTCString()}. Prices and injuries will have moved — do not act on it.`;
+  }
+  document.getElementById("warning").textContent = m.warning;
+
+  document.getElementById("filters").innerHTML = POSITIONS
+    .map(p => `<button data-pos="${p}" aria-pressed="${p === position}">${p}</button>`).join("");
+  document.querySelectorAll("#filters button").forEach(b =>
+    b.onclick = () => { position = b.dataset.pos; boot(data); });
+
+  document.querySelectorAll("th[data-k]").forEach(th =>
+    th.onclick = () => {
+      const k = th.dataset.k;
+      if (k === sortKey) desc = !desc; else { sortKey = k; desc = true; }
+      render();
+    });
+
+  render();
+}
+
+fetch("latest.json", { cache: "no-store" })
+  .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+  .then(boot)
+  .catch(err => {
+    document.getElementById("bar").innerHTML = "";
+    document.getElementById("stale").className = "stale";
+    document.getElementById("stale").textContent =
+      `Could not load latest.json (${err.message}). The engine may not have run yet.`;
+  });
+</script>
+</body>
+</html>

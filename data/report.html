@@ -1,0 +1,267 @@
+<title>Gaffer Run Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --ground:#f4f5f7; --surface:#ffffff; --surface-2:#eceef2;
+  --ink:#171c26; --ink-2:#3d4657; --ink-3:#6b7688;
+  --rule:#d6dae2; --rule-2:#c2c8d4;
+  --accent:#b26a1f; --accent-soft:#f6ead8;
+  --go:#2f6b46; --go-soft:#e2efe7;
+  --stop:#9c3328; --stop-soft:#f7e4e1;
+  --d1:#2f6b46; --d2:#5d8a52; --d3:#9a8a3f; --d4:#b56a2c; --d5:#9c3328;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#12151b; --surface:#191d25; --surface-2:#212630;
+    --ink:#e8eaef; --ink-2:#b3bac7; --ink-3:#818b9c;
+    --rule:#2b313d; --rule-2:#3a4250;
+    --accent:#e0a458; --accent-soft:#2e2418;
+    --go:#7cc79b; --go-soft:#1b2921;
+    --stop:#e08b7f; --stop-soft:#2c1e1c;
+    --d1:#7cc79b; --d2:#9dbf7f; --d3:#c9b45f; --d4:#e0a458; --d5:#e08b7f;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#12151b; --surface:#191d25; --surface-2:#212630;
+  --ink:#e8eaef; --ink-2:#b3bac7; --ink-3:#818b9c;
+  --rule:#2b313d; --rule-2:#3a4250;
+  --accent:#e0a458; --accent-soft:#2e2418;
+  --go:#7cc79b; --go-soft:#1b2921;
+  --stop:#e08b7f; --stop-soft:#2c1e1c;
+  --d1:#7cc79b; --d2:#9dbf7f; --d3:#c9b45f; --d4:#e0a458; --d5:#e08b7f;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:"Source Serif 4",Georgia,serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+.wrap{max-width:1000px;margin:0 auto;padding:clamp(1.6rem,4vw,3.5rem) clamp(1rem,3vw,2rem) 4rem;
+  display:flex;flex-direction:column;gap:2.5rem;}
+h1,h2,h3,.eyebrow,th,.pill,.stat b,.fx{font-family:Archivo,"Helvetica Neue",Arial,sans-serif;}
+h1{font-size:clamp(1.9rem,4.6vw,2.7rem);line-height:1.05;letter-spacing:-.024em;font-weight:700;margin:0;}
+h2{font-size:1.15rem;line-height:1.2;letter-spacing:-.01em;font-weight:600;margin:0;}
+h3{font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin:0;}
+p{margin:0;max-width:70ch;color:var(--ink-2);font-size:.95rem;}
+.eyebrow{font-size:.68rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);}
+header{display:flex;flex-direction:column;gap:.9rem;}
+.bar{display:flex;flex-wrap:wrap;gap:.4rem 1.3rem;padding-top:.9rem;border-top:1px solid var(--rule);
+  font-family:"JetBrains Mono",monospace;font-size:.72rem;color:var(--ink-3);}
+section{display:flex;flex-direction:column;gap:.9rem;}
+
+.banner{background:var(--accent-soft);border-radius:4px;padding:.95rem 1.15rem;font-size:.9rem;
+  line-height:1.55;color:var(--ink-2);}
+.banner strong{color:var(--ink);}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:1px;
+  background:var(--rule);border:1px solid var(--rule);border-radius:4px;overflow:hidden;}
+.stat{background:var(--surface);padding:.85rem 1rem;display:flex;flex-direction:column;gap:.12rem;}
+.stat b{font-size:1.4rem;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;}
+.stat span{font-size:.72rem;color:var(--ink-3);line-height:1.35;}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:1.4rem;}
+.scroll{overflow-x:auto;border:1px solid var(--rule);border-radius:4px;background:var(--surface);}
+table{border-collapse:collapse;width:100%;font-size:.84rem;min-width:400px;}
+th{text-align:left;font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.09em;
+  color:var(--ink-3);padding:.55rem .7rem;border-bottom:1px solid var(--rule-2);white-space:nowrap;}
+td{padding:.5rem .7rem;border-bottom:1px solid var(--rule);color:var(--ink-2);white-space:nowrap;}
+tr:last-child td{border-bottom:none;}
+td:first-child{color:var(--ink);font-weight:600;font-family:Archivo,sans-serif;font-size:.83rem;}
+.sub{color:var(--ink-3);font-family:"JetBrains Mono",monospace;font-size:.72rem;}
+.num{font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums;text-align:right;font-size:.79rem;}
+th.num{text-align:right;}
+
+.pill{display:inline-block;font-size:.6rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  padding:.16em .45em;border-radius:3px;white-space:nowrap;}
+.pill.warn{background:var(--accent-soft);color:var(--accent);}
+.pill.stop{background:var(--stop-soft);color:var(--stop);}
+.pill.low{background:var(--surface-2);color:var(--ink-3);}
+
+.fx{display:inline-block;font-size:.62rem;font-weight:600;padding:.15em .35em;border-radius:2px;
+  color:#fff;margin-right:.15rem;}
+.fx i{font-style:normal;opacity:.75;font-size:.9em;}
+.fx.d1{background:var(--d1);} .fx.d2{background:var(--d2);} .fx.d3{background:var(--d3);}
+.fx.d4{background:var(--d4);} .fx.d5{background:var(--d5);}
+:root:not([data-theme="light"]) .fx{color:#12151b;}
+@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]) .fx{color:#fff;} }
+:root[data-theme="dark"] .fx{color:#12151b;}
+
+footer{border-top:1px solid var(--rule);padding-top:1.2rem;font-family:"JetBrains Mono",monospace;
+  font-size:.7rem;color:var(--ink-3);line-height:1.7;}
+@media (max-width:560px){ .grid{grid-template-columns:1fr;} }
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Gaffer · Phase 0 · Heuristic Run</div>
+  <h1>Gameweek 1 — pre-season board</h1>
+  <div class="bar">
+    <span>DEADLINE Fri 21 Aug, 17:30 UTC</span>
+    <span>48h REMAINING</span>
+    <span>HORIZON 6 GW</span>
+    <span>GENERATED 19 Aug 2026, 17:04 UTC</span>
+  </div>
+</header>
+
+<div class="banner"><strong>Read this before trusting the table.</strong> Ranking is last season's scoring rate adjusted for fixtures and fitness. It is not an expected-points model. It cannot see this season, because this season has not happened — every rate below was earned last year. Treat it as a shortlist to argue with, not a recommendation.</div>
+
+<section>
+  <div class="stats">
+    <div class="stat"><b>579</b><span>players ranked</span></div>
+    <div class="stat"><b>98</b><span>fitness doubts</span></div>
+    <div class="stat"><b>102</b><span>changed club this summer</span></div>
+    <div class="stat"><b>6</b><span>gameweeks scored</span></div>
+  </div>
+</section>
+
+<section>
+  <h2>Best value for money</h2>
+  <p>Projected points per £1m over the next 6 gameweeks. This is where cheap enablers show up — the players who fund a premium forward elsewhere.</p>
+  <div class="grid">
+    <div>
+      <h3>Goalkeepers</h3>
+      <div class="scroll"><table>
+        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">Proj</th><th class="num">per £m</th><th class="num">Fix</th><th></th></tr></thead>
+        <tbody><tr><td>Verbruggen</td><td class='sub'>BHA</td><td class='num'>£4.5</td><td class='num'>20.6</td><td class='num'>4.58</td><td class='num'>3.00</td><td></td></tr>
+<tr><td>Kelleher</td><td class='sub'>BRE</td><td class='num'>£5.0</td><td class='num'>21.8</td><td class='num'>4.37</td><td class='num'>3.17</td><td></td></tr>
+<tr><td>Roefs</td><td class='sub'>SUN</td><td class='num'>£5.0</td><td class='num'>21.1</td><td class='num'>4.21</td><td class='num'>3.00</td><td></td></tr>
+<tr><td>Leno</td><td class='sub'>FUL</td><td class='num'>£4.5</td><td class='num'>18.9</td><td class='num'>4.20</td><td class='num'>3.33</td><td></td></tr>
+<tr><td>Henderson</td><td class='sub'>CRY</td><td class='num'>£5.0</td><td class='num'>20.6</td><td class='num'>4.13</td><td class='num'>3.00</td><td></td></tr>
+<tr><td>Petrović</td><td class='sub'>BOU</td><td class='num'>£4.5</td><td class='num'>18.5</td><td class='num'>4.11</td><td class='num'>3.67</td><td></td></tr>
+<tr><td>Raya</td><td class='sub'>ARS</td><td class='num'>£6.0</td><td class='num'>24.7</td><td class='num'>4.11</td><td class='num'>3.00</td><td></td></tr>
+<tr><td>Dubravka</td><td class='sub'>TOT</td><td class='num'>£4.0</td><td class='num'>15.9</td><td class='num'>3.98</td><td class='num'>3.00</td><td><span class="pill warn">new club</span></td></tr></tbody></table></div>
+    </div>
+    <div>
+      <h3>Defenders</h3>
+      <div class="scroll"><table>
+        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">Proj</th><th class="num">per £m</th><th class="num">Fix</th><th></th></tr></thead>
+        <tbody><tr><td>Mitchell</td><td class='sub'>CRY</td><td class='num'>£4.5</td><td class='num'>21.4</td><td class='num'>4.76</td><td class='num'>3.00</td><td></td></tr>
+<tr><td>Van Hecke</td><td class='sub'>TOT</td><td class='num'>£5.0</td><td class='num'>23.3</td><td class='num'>4.65</td><td class='num'>3.00</td><td><span class="pill warn">new club</span></td></tr>
+<tr><td>Senesi</td><td class='sub'>TOT</td><td class='num'>£6.0</td><td class='num'>27.0</td><td class='num'>4.50</td><td class='num'>3.00</td><td><span class="pill warn">new club</span></td></tr>
+<tr><td>Guéhi</td><td class='sub'>MCI</td><td class='num'>£6.0</td><td class='num'>26.9</td><td class='num'>4.49</td><td class='num'>3.00</td><td></td></tr>
+<tr><td>Shaw</td><td class='sub'>MUN</td><td class='num'>£4.5</td><td class='num'>20.0</td><td class='num'>4.45</td><td class='num'>2.83</td><td></td></tr>
+<tr><td>Tarkowski</td><td class='sub'>EVE</td><td class='num'>£6.0</td><td class='num'>26.5</td><td class='num'>4.42</td><td class='num'>2.83</td><td></td></tr>
+<tr><td>Truffert</td><td class='sub'>BOU</td><td class='num'>£5.5</td><td class='num'>24.1</td><td class='num'>4.38</td><td class='num'>3.67</td><td></td></tr>
+<tr><td>Cash</td><td class='sub'>AVL</td><td class='num'>£4.5</td><td class='num'>19.1</td><td class='num'>4.25</td><td class='num'>3.00</td><td></td></tr></tbody></table></div>
+    </div>
+    <div>
+      <h3>Midfielders</h3>
+      <div class="scroll"><table>
+        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">Proj</th><th class="num">per £m</th><th class="num">Fix</th><th></th></tr></thead>
+        <tbody><tr><td>Anderson</td><td class='sub'>MCI</td><td class='num'>£6.5</td><td class='num'>27.9</td><td class='num'>4.28</td><td class='num'>3.00</td><td><span class="pill warn">new club</span></td></tr>
+<tr><td>Wilson</td><td class='sub'>LEE</td><td class='num'>£6.5</td><td class='num'>26.7</td><td class='num'>4.10</td><td class='num'>3.17</td><td><span class="pill warn">new club</span></td></tr>
+<tr><td>Zubimendi</td><td class='sub'>ARS</td><td class='num'>£5.5</td><td class='num'>21.8</td><td class='num'>3.96</td><td class='num'>3.00</td><td></td></tr>
+<tr><td>Gravenberch</td><td class='sub'>LIV</td><td class='num'>£6.0</td><td class='num'>23.6</td><td class='num'>3.94</td><td class='num'>2.83</td><td></td></tr>
+<tr><td>Ampadu</td><td class='sub'>LEE</td><td class='num'>£5.5</td><td class='num'>21.5</td><td class='num'>3.90</td><td class='num'>3.17</td><td></td></tr>
+<tr><td>E.Le Fée</td><td class='sub'>SUN</td><td class='num'>£6.0</td><td class='num'>23.3</td><td class='num'>3.89</td><td class='num'>3.00</td><td></td></tr>
+<tr><td>Aaronson</td><td class='sub'>LEE</td><td class='num'>£5.5</td><td class='num'>21.2</td><td class='num'>3.86</td><td class='num'>3.17</td><td></td></tr>
+<tr><td>Rice</td><td class='sub'>ARS</td><td class='num'>£7.5</td><td class='num'>28.5</td><td class='num'>3.80</td><td class='num'>3.00</td><td></td></tr></tbody></table></div>
+    </div>
+    <div>
+      <h3>Forwards</h3>
+      <div class="scroll"><table>
+        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">Proj</th><th class="num">per £m</th><th class="num">Fix</th><th></th></tr></thead>
+        <tbody><tr><td>João Pedro</td><td class='sub'>CHE</td><td class='num'>£7.5</td><td class='num'>28.3</td><td class='num'>3.78</td><td class='num'>3.00</td><td></td></tr>
+<tr><td>Calvert-Lewin</td><td class='sub'>LEE</td><td class='num'>£6.0</td><td class='num'>22.4</td><td class='num'>3.73</td><td class='num'>3.17</td><td></td></tr>
+<tr><td>Thiago</td><td class='sub'>BRE</td><td class='num'>£8.0</td><td class='num'>28.6</td><td class='num'>3.57</td><td class='num'>3.17</td><td></td></tr>
+<tr><td>Welbeck</td><td class='sub'>CHE</td><td class='num'>£6.0</td><td class='num'>20.7</td><td class='num'>3.45</td><td class='num'>3.00</td><td><span class="pill warn">new club</span></td></tr>
+<tr><td>Watkins</td><td class='sub'>AVL</td><td class='num'>£8.0</td><td class='num'>27.4</td><td class='num'>3.42</td><td class='num'>3.00</td><td></td></tr>
+<tr><td>Igor Jesus</td><td class='sub'>NFO</td><td class='num'>£6.0</td><td class='num'>20.4</td><td class='num'>3.40</td><td class='num'>3.00</td><td></td></tr>
+<tr><td>Woltemade</td><td class='sub'>NEW</td><td class='num'>£6.0</td><td class='num'>19.7</td><td class='num'>3.28</td><td class='num'>2.83</td><td></td></tr>
+<tr><td>Evanilson</td><td class='sub'>BOU</td><td class='num'>£6.0</td><td class='num'>19.1</td><td class='num'>3.17</td><td class='num'>3.67</td><td></td></tr></tbody></table></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Highest projected, regardless of price</h2>
+  <p>The premium end. Worth reading next to the value table — the gap between them is the money you have to find elsewhere.</p>
+  <div class="grid">
+    <div>
+      <h3>Defenders</h3>
+      <div class="scroll"><table>
+        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">Proj</th><th class="num">per £m</th><th class="num">Fix</th><th></th></tr></thead>
+        <tbody><tr><td>Gabriel</td><td class='sub'>ARS</td><td class='num'>£8.0</td><td class='num'>30.0</td><td class='num'>3.75</td><td class='num'>3.00</td><td></td></tr>
+<tr><td>Virgil</td><td class='sub'>LIV</td><td class='num'>£6.5</td><td class='num'>27.3</td><td class='num'>4.20</td><td class='num'>2.83</td><td></td></tr>
+<tr><td>Senesi</td><td class='sub'>TOT</td><td class='num'>£6.0</td><td class='num'>27.0</td><td class='num'>4.50</td><td class='num'>3.00</td><td><span class="pill warn">new club</span></td></tr>
+<tr><td>Guéhi</td><td class='sub'>MCI</td><td class='num'>£6.0</td><td class='num'>26.9</td><td class='num'>4.49</td><td class='num'>3.00</td><td></td></tr>
+<tr><td>Tarkowski</td><td class='sub'>EVE</td><td class='num'>£6.0</td><td class='num'>26.5</td><td class='num'>4.42</td><td class='num'>2.83</td><td></td></tr>
+<tr><td>Lacroix</td><td class='sub'>CHE</td><td class='num'>£6.0</td><td class='num'>24.1</td><td class='num'>4.02</td><td class='num'>3.00</td><td><span class="pill warn">new club</span></td></tr>
+<tr><td>Truffert</td><td class='sub'>BOU</td><td class='num'>£5.5</td><td class='num'>24.1</td><td class='num'>4.38</td><td class='num'>3.67</td><td></td></tr>
+<tr><td>O'Reilly</td><td class='sub'>MCI</td><td class='num'>£6.5</td><td class='num'>23.7</td><td class='num'>3.64</td><td class='num'>3.00</td><td></td></tr></tbody></table></div>
+    </div>
+    <div>
+      <h3>Midfielders</h3>
+      <div class="scroll"><table>
+        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">Proj</th><th class="num">per £m</th><th class="num">Fix</th><th></th></tr></thead>
+        <tbody><tr><td>B.Fernandes</td><td class='sub'>MUN</td><td class='num'>£12.0</td><td class='num'>36.0</td><td class='num'>3.00</td><td class='num'>2.83</td><td></td></tr>
+<tr><td>Semenyo</td><td class='sub'>MCI</td><td class='num'>£8.5</td><td class='num'>31.7</td><td class='num'>3.73</td><td class='num'>3.00</td><td></td></tr>
+<tr><td>Gibbs-White</td><td class='sub'>NFO</td><td class='num'>£8.0</td><td class='num'>29.0</td><td class='num'>3.62</td><td class='num'>3.00</td><td></td></tr>
+<tr><td>Rice</td><td class='sub'>ARS</td><td class='num'>£7.5</td><td class='num'>28.5</td><td class='num'>3.80</td><td class='num'>3.00</td><td></td></tr>
+<tr><td>Anderson</td><td class='sub'>MCI</td><td class='num'>£6.5</td><td class='num'>27.9</td><td class='num'>4.28</td><td class='num'>3.00</td><td><span class="pill warn">new club</span></td></tr>
+<tr><td>Rogers</td><td class='sub'>CHE</td><td class='num'>£7.5</td><td class='num'>26.8</td><td class='num'>3.57</td><td class='num'>3.00</td><td><span class="pill warn">new club</span></td></tr>
+<tr><td>Wilson</td><td class='sub'>LEE</td><td class='num'>£6.5</td><td class='num'>26.7</td><td class='num'>4.10</td><td class='num'>3.17</td><td><span class="pill warn">new club</span></td></tr>
+<tr><td>Szoboszlai</td><td class='sub'>LIV</td><td class='num'>£7.0</td><td class='num'>25.6</td><td class='num'>3.66</td><td class='num'>2.83</td><td></td></tr></tbody></table></div>
+    </div>
+    <div>
+      <h3>Forwards</h3>
+      <div class="scroll"><table>
+        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">Proj</th><th class="num">per £m</th><th class="num">Fix</th><th></th></tr></thead>
+        <tbody><tr><td>Haaland</td><td class='sub'>MCI</td><td class='num'>£15.5</td><td class='num'>36.7</td><td class='num'>2.37</td><td class='num'>3.00</td><td></td></tr>
+<tr><td>Thiago</td><td class='sub'>BRE</td><td class='num'>£8.0</td><td class='num'>28.6</td><td class='num'>3.57</td><td class='num'>3.17</td><td></td></tr>
+<tr><td>João Pedro</td><td class='sub'>CHE</td><td class='num'>£7.5</td><td class='num'>28.3</td><td class='num'>3.78</td><td class='num'>3.00</td><td></td></tr>
+<tr><td>Watkins</td><td class='sub'>AVL</td><td class='num'>£8.0</td><td class='num'>27.4</td><td class='num'>3.42</td><td class='num'>3.00</td><td></td></tr>
+<tr><td>Calvert-Lewin</td><td class='sub'>LEE</td><td class='num'>£6.0</td><td class='num'>22.4</td><td class='num'>3.73</td><td class='num'>3.17</td><td></td></tr>
+<tr><td>Gyökeres</td><td class='sub'>ARS</td><td class='num'>£7.5</td><td class='num'>21.2</td><td class='num'>2.82</td><td class='num'>3.00</td><td></td></tr>
+<tr><td>Welbeck</td><td class='sub'>CHE</td><td class='num'>£6.0</td><td class='num'>20.7</td><td class='num'>3.45</td><td class='num'>3.00</td><td><span class="pill warn">new club</span></td></tr>
+<tr><td>Igor Jesus</td><td class='sub'>NFO</td><td class='num'>£6.0</td><td class='num'>20.4</td><td class='num'>3.40</td><td class='num'>3.00</td><td></td></tr></tbody></table></div>
+    </div>
+    <div>
+      <h3>Goalkeepers</h3>
+      <div class="scroll"><table>
+        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">Proj</th><th class="num">per £m</th><th class="num">Fix</th><th></th></tr></thead>
+        <tbody><tr><td>Raya</td><td class='sub'>ARS</td><td class='num'>£6.0</td><td class='num'>24.7</td><td class='num'>4.11</td><td class='num'>3.00</td><td></td></tr>
+<tr><td>Kelleher</td><td class='sub'>BRE</td><td class='num'>£5.0</td><td class='num'>21.8</td><td class='num'>4.37</td><td class='num'>3.17</td><td></td></tr>
+<tr><td>Pickford</td><td class='sub'>EVE</td><td class='num'>£5.5</td><td class='num'>21.6</td><td class='num'>3.93</td><td class='num'>2.83</td><td></td></tr>
+<tr><td>Roefs</td><td class='sub'>SUN</td><td class='num'>£5.0</td><td class='num'>21.1</td><td class='num'>4.21</td><td class='num'>3.00</td><td></td></tr>
+<tr><td>Donnarumma</td><td class='sub'>MCI</td><td class='num'>£5.5</td><td class='num'>20.8</td><td class='num'>3.79</td><td class='num'>3.00</td><td></td></tr>
+<tr><td>Henderson</td><td class='sub'>CRY</td><td class='num'>£5.0</td><td class='num'>20.6</td><td class='num'>4.13</td><td class='num'>3.00</td><td></td></tr>
+<tr><td>Verbruggen</td><td class='sub'>BHA</td><td class='num'>£4.5</td><td class='num'>20.6</td><td class='num'>4.58</td><td class='num'>3.00</td><td></td></tr>
+<tr><td>Martinez</td><td class='sub'>AVL</td><td class='num'>£5.0</td><td class='num'>18.9</td><td class='num'>3.79</td><td class='num'>3.00</td><td></td></tr></tbody></table></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Fixture runs</h2>
+  <p>Next 6 opponents, coloured by difficulty. Lower-case <i>a</i> marks an away trip. Early-season fixture swings are the one thing a pre-season model can genuinely see.</p>
+  <div class="grid">
+    <div>
+      <h3>Kindest opening run</h3>
+      <div class="scroll"><table>
+        <thead><tr><th>Team</th><th class="num">Avg</th><th>Next 6</th></tr></thead>
+        <tbody><tr><td>MUN</td><td class='num'>2.83</td><td><span class='fx d2'>HUL<i>a</i></span> <span class='fx d2'>IPS</span> <span class='fx d3'>EVE<i>a</i></span> <span class='fx d4'>MCI</span> <span class='fx d3'>FUL<i>a</i></span> <span class='fx d3'>TOT</span></td></tr>
+<tr><td>EVE</td><td class='num'>2.83</td><td><span class='fx d3'>CRY</span> <span class='fx d3'>BOU<i>a</i></span> <span class='fx d4'>MUN</span> <span class='fx d3'>TOT<i>a</i></span> <span class='fx d2'>IPS</span> <span class='fx d2'>HUL<i>a</i></span></td></tr>
+<tr><td>NEW</td><td class='num'>2.83</td><td><span class='fx d4'>LIV</span> <span class='fx d3'>TOT<i>a</i></span> <span class='fx d3'>BOU</span> <span class='fx d3'>LEE<i>a</i></span> <span class='fx d2'>HUL</span> <span class='fx d2'>COV<i>a</i></span></td></tr>
+<tr><td>LIV</td><td class='num'>2.83</td><td><span class='fx d3'>NEW<i>a</i></span> <span class='fx d3'>NFO</span> <span class='fx d2'>IPS<i>a</i></span> <span class='fx d2'>FUL</span> <span class='fx d3'>BOU<i>a</i></span> <span class='fx d4'>MCI</span></td></tr>
+<tr><td>ARS</td><td class='num'>3.00</td><td><span class='fx d2'>COV</span> <span class='fx d4'>AVL<i>a</i></span> <span class='fx d4'>CHE</span> <span class='fx d3'>SUN<i>a</i></span> <span class='fx d3'>BHA<i>a</i></span> <span class='fx d2'>LEE</span></td></tr></tbody></table></div>
+    </div>
+    <div>
+      <h3>Hardest opening run</h3>
+      <div class="scroll"><table>
+        <thead><tr><th>Team</th><th class="num">Avg</th><th>Next 6</th></tr></thead>
+        <tbody><tr><td>BOU</td><td class='num'>3.67</td><td><span class='fx d5'>MCI<i>a</i></span> <span class='fx d3'>EVE</span> <span class='fx d3'>NEW<i>a</i></span> <span class='fx d3'>BRE</span> <span class='fx d4'>LIV</span> <span class='fx d4'>CHE<i>a</i></span></td></tr>
+<tr><td>FUL</td><td class='num'>3.33</td><td><span class='fx d4'>CHE</span> <span class='fx d3'>SUN<i>a</i></span> <span class='fx d3'>CRY</span> <span class='fx d4'>LIV<i>a</i></span> <span class='fx d4'>MUN</span> <span class='fx d2'>IPS<i>a</i></span></td></tr>
+<tr><td>COV</td><td class='num'>3.17</td><td><span class='fx d5'>ARS<i>a</i></span> <span class='fx d2'>HUL</span> <span class='fx d5'>MCI<i>a</i></span> <span class='fx d2'>BHA</span> <span class='fx d3'>NFO<i>a</i></span> <span class='fx d2'>NEW</span></td></tr>
+<tr><td>HUL</td><td class='num'>3.17</td><td><span class='fx d4'>MUN</span> <span class='fx d2'>COV<i>a</i></span> <span class='fx d3'>AVL</span> <span class='fx d4'>CHE<i>a</i></span> <span class='fx d3'>NEW<i>a</i></span> <span class='fx d3'>EVE</span></td></tr>
+<tr><td>LEE</td><td class='num'>3.17</td><td><span class='fx d3'>NFO<i>a</i></span> <span class='fx d3'>BRE</span> <span class='fx d3'>BHA<i>a</i></span> <span class='fx d2'>NEW</span> <span class='fx d3'>CRY</span> <span class='fx d5'>ARS<i>a</i></span></td></tr></tbody></table></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Generated by gaffer 19 Aug 2026, 17:04 UTC from the public Fantasy Premier League API.<br>
+  Phase 0 — heuristic ranking. Replaced by an expected-points model in Phase 1.
+</footer>
+
+</div>

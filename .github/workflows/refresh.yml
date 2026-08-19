@@ -1,0 +1,53 @@
+name: refresh
+
+# Phase 0 runs on a fixed schedule. Phase 4 replaces this with an hourly wake-up
+# that reads the next deadline and decides for itself what work is due — FPL
+# deadlines land on four different weekdays, so a fixed weekly cron would miss
+# most of the season.
+on:
+  schedule:
+    - cron: "0 3 * * *"    # after overnight price changes settle
+    - cron: "0 15 * * *"
+  workflow_dispatch:
+  push:
+    branches: [claude/fantasy-football-recommendations-7q0di3]
+    paths: ["gaffer/**", ".github/workflows/refresh.yml"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install
+        run: pip install -e ".[dev]"
+
+      - name: Test
+        run: python -m pytest tests/ -q
+
+      - name: Run the engine
+        run: python -m gaffer.run --refresh --top 20
+
+      - name: Publish the run
+        run: |
+          cp data/latest.json data/report.html web/ 2>/dev/null || true
+          git config user.name  "gaffer-bot"
+          git config user.email "noreply@github.com"
+          git add -f data/latest.json data/report.html web/latest.json web/report.html
+          if git diff --staged --quiet; then
+            echo "No change in output — nothing to publish."
+          else
+            git commit -m "run: gameweek data refresh [skip ci]"
+            git push
+          fi
