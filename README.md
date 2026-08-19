@@ -10,18 +10,32 @@ feeding an integer solver.
 
 ## Status
 
-**Phase 0 — done.** Fetch, cache, store, and a heuristic ranking board.
-The ranking is *not* an expected-points model; it is last season's scoring rate,
-shrunk toward a positional baseline, scaled by expected playing time and nudged
-by fixture difficulty. It exists to prove the pipeline end to end.
+**Phase 1 — done.** Real expected points, built component by component from the
+FPL scoring table rather than fitted to past points totals. That separation
+matters: a defender at a newly solid club is re-rated the moment the team
+ratings move, without waiting for his own points to catch up.
 
 | Phase | What it adds | State |
 |---|---|---|
 | 0 | Ingest, cache, SQLite history, JSON contract, ranking board | done |
-| 1 | Minutes model, team strength ratings, real expected points | next |
-| 2 | MILP optimiser — squad, eleven, captain, transfer path | |
+| 1 | Minutes model, team strength ratings, expected points | done |
+| 2 | MILP optimiser — squad, eleven, captain, transfer path | next |
 | 3 | Backtest harness against last season | |
 | 4 | Chip timing, deadline-aware scheduling, mini-league strategy | |
+
+### How a projection is built
+
+1. **Team strength** — every club gets an attack and a defence multiplier around
+   a league average of 1.0, so a fixture's expected goals is attack x opponent
+   defence x home advantage. This replaces FPL's own 1-to-5 difficulty rating,
+   which is static and hand-set: the crudest number in the dataset and the
+   easiest edge to take.
+2. **Minutes** — the chance he appears, the chance he lasts an hour, and his
+   expected minutes. The largest single source of error in any projection: a
+   perfect talent model with a naive minutes model loses to the reverse.
+3. **Points** — appearance, goals, assists, clean sheet, goals conceded, saves,
+   defensive contribution, bonus and cards, each scaled by expected minutes and
+   by how the fixture looks for his team.
 
 ## Run it
 
@@ -44,7 +58,8 @@ Options: `--horizon N` (gameweeks to look ahead, default 6), `--refresh`
 gaffer/
   ingest/    FPL API client, disk cache, graceful degradation
   store/     SQLite — appends a snapshot per run, for backtesting
-  rank/      Phase 0 heuristic ranking
+  model/     scoring table, team strength, minutes, expected points
+  rank/      assembles projections into the ranked board
   publish/   writes latest.json and report.html
 web/         static page that reads latest.json
 tests/       ranking maths
@@ -79,3 +94,10 @@ current board is always visible without a server.
 - Per-90 rates on small minutes are noise. Rates are shrunk toward a positional
   baseline, and projections are scaled by expected playing time — without both,
   the top of the table fills with substitutes who scored twice in four cameos.
+- Newly promoted clubs have almost no Premier League minutes to aggregate. Left
+  alone their ratings collapse to the clamp floor, which both buries their
+  players and inflates every opponent's clean sheet, so they fall back to a
+  promoted-side prior until results arrive.
+- The scoring table is not in the API and is transcribed by hand in
+  `gaffer/model/scoring.py`. Goalkeeper goals are worth **10**, not the 6 they
+  were historically.

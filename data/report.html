@@ -10,7 +10,13 @@
   --accent:#b26a1f; --accent-soft:#f6ead8;
   --go:#2f6b46; --go-soft:#e2efe7;
   --stop:#9c3328; --stop-soft:#f7e4e1;
-  --d1:#2f6b46; --d2:#5d8a52; --d3:#9a8a3f; --d4:#b56a2c; --d5:#9c3328;
+  /* Fixture difficulty is diverging: easy and hard are opposite poles either
+     side of an average fixture, so it takes two hues and a NEUTRAL midpoint —
+     never a third hue in the middle. Lightness falls evenly from the midpoint
+     toward each pole; verified in OKLab rather than eyeballed. */
+  --d1:#a8d5ba; --d2:#d3e8d8; --d3:#e3e5ea; --d4:#f6d9c4; --d5:#eab3a8;
+  --d1i:#17422a; --d2i:#2f5238; --d3i:#464e5c; --d4i:#7d4416; --d5i:#73241c;
+  --spark:#b26a1f; --spark-track:#e4e7ec;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
@@ -20,7 +26,11 @@
     --accent:#e0a458; --accent-soft:#2e2418;
     --go:#7cc79b; --go-soft:#1b2921;
     --stop:#e08b7f; --stop-soft:#2c1e1c;
-    --d1:#7cc79b; --d2:#9dbf7f; --d3:#c9b45f; --d4:#e0a458; --d5:#e08b7f;
+    /* Dark mode is stepped from the same ramps against the dark surface, not
+       flipped: lightness rises from the midpoint out to each pole. */
+    --d1:#1d4430; --d2:#22352a; --d3:#2a2f38; --d4:#42301f; --d5:#4d2a24;
+    --d1i:#8fd4ab; --d2i:#a9c98f; --d3i:#9aa3b4; --d4i:#e5b076; --d5i:#e89b8f;
+    --spark:#e0a458; --spark-track:#262b35;
   }
 }
 :root[data-theme="dark"]{
@@ -30,7 +40,9 @@
   --accent:#e0a458; --accent-soft:#2e2418;
   --go:#7cc79b; --go-soft:#1b2921;
   --stop:#e08b7f; --stop-soft:#2c1e1c;
-  --d1:#7cc79b; --d2:#9dbf7f; --d3:#c9b45f; --d4:#e0a458; --d5:#e08b7f;
+  --d1:#1d4430; --d2:#22352a; --d3:#2a2f38; --d4:#42301f; --d5:#4d2a24;
+  --d1i:#8fd4ab; --d2i:#a9c98f; --d3i:#9aa3b4; --d4i:#e5b076; --d5i:#e89b8f;
+  --spark:#e0a458; --spark-track:#262b35;
 }
 *{box-sizing:border-box;}
 body{margin:0;background:var(--ground);color:var(--ink);
@@ -76,14 +88,19 @@ th.num{text-align:right;}
 .pill.stop{background:var(--stop-soft);color:var(--stop);}
 .pill.low{background:var(--surface-2);color:var(--ink-3);}
 
-.fx{display:inline-block;font-size:.62rem;font-weight:600;padding:.15em .35em;border-radius:2px;
-  color:#fff;margin-right:.15rem;}
-.fx i{font-style:normal;opacity:.75;font-size:.9em;}
-.fx.d1{background:var(--d1);} .fx.d2{background:var(--d2);} .fx.d3{background:var(--d3);}
-.fx.d4{background:var(--d4);} .fx.d5{background:var(--d5);}
-:root:not([data-theme="light"]) .fx{color:#12151b;}
-@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]) .fx{color:#fff;} }
-:root[data-theme="dark"] .fx{color:#12151b;}
+.fx{display:inline-block;font-size:.62rem;font-weight:600;padding:.15em .4em;border-radius:2px;
+  margin-right:2px;}
+.fx i{font-style:normal;opacity:.7;font-size:.9em;}
+.fx.d1{background:var(--d1);color:var(--d1i);} .fx.d2{background:var(--d2);color:var(--d2i);}
+.fx.d3{background:var(--d3);color:var(--d3i);} .fx.d4{background:var(--d4);color:var(--d4i);}
+.fx.d5{background:var(--d5);color:var(--d5i);}
+
+/* Expected points per gameweek. One series, so no legend — the column head names
+   it. Bars share a fixed scale across every row so players stay comparable;
+   scaling each row to its own max would make everyone look identical. */
+.spark{display:inline-flex;align-items:flex-end;gap:2px;height:20px;}
+.spark span{width:5px;background:var(--spark);border-radius:2px 2px 0 0;min-height:2px;}
+.spark span.z{background:var(--spark-track);}
 
 footer{border-top:1px solid var(--rule);padding-top:1.2rem;font-family:"JetBrains Mono",monospace;
   font-size:.7rem;color:var(--ink-3);line-height:1.7;}
@@ -93,22 +110,22 @@ footer{border-top:1px solid var(--rule);padding-top:1.2rem;font-family:"JetBrain
 <div class="wrap">
 
 <header>
-  <div class="eyebrow">Gaffer · Phase 0 · Heuristic Run</div>
+  <div class="eyebrow">Gaffer · Phase 1 · Expected Points</div>
   <h1>Gameweek 1 — pre-season board</h1>
   <div class="bar">
     <span>DEADLINE Fri 21 Aug, 17:30 UTC</span>
-    <span>48h REMAINING</span>
+    <span>47h REMAINING</span>
     <span>HORIZON 6 GW</span>
-    <span>GENERATED 19 Aug 2026, 17:08 UTC</span>
+    <span>GENERATED 19 Aug 2026, 18:44 UTC</span>
   </div>
 </header>
 
-<div class="banner"><strong>Read this before trusting the table.</strong> Ranking is last season's scoring rate adjusted for fixtures and fitness. It is not an expected-points model. It cannot see this season, because this season has not happened — every rate below was earned last year. Treat it as a shortlist to argue with, not a recommendation.</div>
+<div class="banner"><strong>Read this before trusting the table.</strong> Expected points are built from last season's rates until this season has results to fit to. Team ratings are currently prior (0 matches of results). It cannot see this season, because this season has not happened — every rate below was earned last year. Treat it as a shortlist to argue with, not a recommendation.</div>
 
 <section>
   <div class="stats">
     <div class="stat"><b>579</b><span>players ranked</span></div>
-    <div class="stat"><b>98</b><span>fitness doubts</span></div>
+    <div class="stat"><b>99</b><span>fitness doubts</span></div>
     <div class="stat"><b>102</b><span>changed club this summer</span></div>
     <div class="stat"><b>6</b><span>gameweeks scored</span></div>
   </div>
@@ -116,118 +133,118 @@ footer{border-top:1px solid var(--rule);padding-top:1.2rem;font-family:"JetBrain
 
 <section>
   <h2>Best value for money</h2>
-  <p>Projected points per £1m over the next 6 gameweeks. This is where cheap enablers show up — the players who fund a premium forward elsewhere.</p>
+  <p>Expected points per £1m over the next 6 gameweeks. This is where cheap enablers show up — the players who fund a premium forward elsewhere.</p>
   <div class="grid">
     <div>
       <h3>Goalkeepers</h3>
       <div class="scroll"><table>
-        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">Proj</th><th class="num">per £m</th><th class="num">Fix</th><th></th></tr></thead>
-        <tbody><tr><td>Verbruggen</td><td class='sub'>BHA</td><td class='num'>£4.5</td><td class='num'>20.6</td><td class='num'>4.58</td><td class='num'>3.00</td><td></td></tr>
-<tr><td>Kelleher</td><td class='sub'>BRE</td><td class='num'>£5.0</td><td class='num'>21.8</td><td class='num'>4.37</td><td class='num'>3.17</td><td></td></tr>
-<tr><td>Roefs</td><td class='sub'>SUN</td><td class='num'>£5.0</td><td class='num'>21.1</td><td class='num'>4.21</td><td class='num'>3.00</td><td></td></tr>
-<tr><td>Leno</td><td class='sub'>FUL</td><td class='num'>£4.5</td><td class='num'>18.9</td><td class='num'>4.20</td><td class='num'>3.33</td><td></td></tr>
-<tr><td>Henderson</td><td class='sub'>CRY</td><td class='num'>£5.0</td><td class='num'>20.6</td><td class='num'>4.13</td><td class='num'>3.00</td><td></td></tr>
-<tr><td>Petrović</td><td class='sub'>BOU</td><td class='num'>£4.5</td><td class='num'>18.5</td><td class='num'>4.11</td><td class='num'>3.67</td><td></td></tr>
-<tr><td>Raya</td><td class='sub'>ARS</td><td class='num'>£6.0</td><td class='num'>24.7</td><td class='num'>4.11</td><td class='num'>3.00</td><td></td></tr>
-<tr><td>Dubravka</td><td class='sub'>TOT</td><td class='num'>£4.0</td><td class='num'>15.9</td><td class='num'>3.98</td><td class='num'>3.00</td><td><span class="pill warn">new club</span></td></tr></tbody></table></div>
+        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">xP</th><th class="num">/gw</th><th>By gameweek</th><th class="num">per £m</th><th class="num">Mins</th><th></th></tr></thead>
+        <tbody><tr><td>Dubravka</td><td class='sub'>TOT</td><td class='num'>£4.0</td><td class='num'>18.9</td><td class='num'>3.16</td><td><span class='spark' title='3.0, 3.3, 3.2, 3.2, 3.3, 3.0'><span style='height:7px'></span><span style='height:7px'></span><span style='height:7px'></span><span style='height:7px'></span><span style='height:7px'></span><span style='height:7px'></span></span></td><td class='num'>4.74</td><td class='num'>73</td><td><span class="pill warn">new club</span></td></tr>
+<tr><td>Verbruggen</td><td class='sub'>BHA</td><td class='num'>£4.5</td><td class='num'>18.5</td><td class='num'>3.08</td><td><span class='spark' title='3.3, 2.8, 3.1, 3.2, 3.0, 3.2'><span style='height:7px'></span><span style='height:6px'></span><span style='height:7px'></span><span style='height:7px'></span><span style='height:7px'></span><span style='height:7px'></span></span></td><td class='num'>4.11</td><td class='num'>77</td><td></td></tr>
+<tr><td>Petrović</td><td class='sub'>BOU</td><td class='num'>£4.5</td><td class='num'>17.6</td><td class='num'>2.94</td><td><span class='spark' title='2.7, 3.2, 3.0, 3.0, 3.1, 2.7'><span style='height:6px'></span><span style='height:7px'></span><span style='height:7px'></span><span style='height:7px'></span><span style='height:7px'></span><span style='height:6px'></span></span></td><td class='num'>3.92</td><td class='num'>77</td><td></td></tr>
+<tr><td>Leno</td><td class='sub'>FUL</td><td class='num'>£4.5</td><td class='num'>17.6</td><td class='num'>2.93</td><td><span class='spark' title='2.8, 3.1, 3.0, 2.8, 2.8, 3.1'><span style='height:6px'></span><span style='height:7px'></span><span style='height:7px'></span><span style='height:6px'></span><span style='height:6px'></span><span style='height:7px'></span></span></td><td class='num'>3.90</td><td class='num'>77</td><td></td></tr>
+<tr><td>Kelleher</td><td class='sub'>BRE</td><td class='num'>£5.0</td><td class='num'>18.4</td><td class='num'>3.07</td><td><span class='spark' title='3.1, 2.9, 3.4, 3.0, 2.9, 3.1'><span style='height:7px'></span><span style='height:7px'></span><span style='height:8px'></span><span style='height:7px'></span><span style='height:6px'></span><span style='height:7px'></span></span></td><td class='num'>3.69</td><td class='num'>76</td><td></td></tr>
+<tr><td>Henderson</td><td class='sub'>CRY</td><td class='num'>£5.0</td><td class='num'>18.1</td><td class='num'>3.02</td><td><span class='spark' title='2.9, 2.7, 3.2, 3.3, 2.8, 3.2'><span style='height:7px'></span><span style='height:6px'></span><span style='height:7px'></span><span style='height:7px'></span><span style='height:6px'></span><span style='height:7px'></span></span></td><td class='num'>3.62</td><td class='num'>76</td><td></td></tr>
+<tr><td>Roefs</td><td class='sub'>SUN</td><td class='num'>£5.0</td><td class='num'>17.9</td><td class='num'>2.99</td><td><span class='spark' title='3.1, 3.3, 2.8, 2.9, 2.7, 3.1'><span style='height:7px'></span><span style='height:7px'></span><span style='height:6px'></span><span style='height:6px'></span><span style='height:6px'></span><span style='height:7px'></span></span></td><td class='num'>3.59</td><td class='num'>73</td><td></td></tr>
+<tr><td>Sánchez</td><td class='sub'>CHE</td><td class='num'>£5.0</td><td class='num'>17.3</td><td class='num'>2.88</td><td><span class='spark' title='3.0, 3.0, 2.6, 3.0, 2.7, 3.0'><span style='height:7px'></span><span style='height:7px'></span><span style='height:6px'></span><span style='height:7px'></span><span style='height:6px'></span><span style='height:7px'></span></span></td><td class='num'>3.46</td><td class='num'>73</td><td></td></tr></tbody></table></div>
     </div>
     <div>
       <h3>Defenders</h3>
       <div class="scroll"><table>
-        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">Proj</th><th class="num">per £m</th><th class="num">Fix</th><th></th></tr></thead>
-        <tbody><tr><td>Mitchell</td><td class='sub'>CRY</td><td class='num'>£4.5</td><td class='num'>21.4</td><td class='num'>4.76</td><td class='num'>3.00</td><td></td></tr>
-<tr><td>Van Hecke</td><td class='sub'>TOT</td><td class='num'>£5.0</td><td class='num'>23.3</td><td class='num'>4.65</td><td class='num'>3.00</td><td><span class="pill warn">new club</span></td></tr>
-<tr><td>Senesi</td><td class='sub'>TOT</td><td class='num'>£6.0</td><td class='num'>27.0</td><td class='num'>4.50</td><td class='num'>3.00</td><td><span class="pill warn">new club</span></td></tr>
-<tr><td>Guéhi</td><td class='sub'>MCI</td><td class='num'>£6.0</td><td class='num'>26.9</td><td class='num'>4.49</td><td class='num'>3.00</td><td></td></tr>
-<tr><td>Shaw</td><td class='sub'>MUN</td><td class='num'>£4.5</td><td class='num'>20.0</td><td class='num'>4.45</td><td class='num'>2.83</td><td></td></tr>
-<tr><td>Tarkowski</td><td class='sub'>EVE</td><td class='num'>£6.0</td><td class='num'>26.5</td><td class='num'>4.42</td><td class='num'>2.83</td><td></td></tr>
-<tr><td>Truffert</td><td class='sub'>BOU</td><td class='num'>£5.5</td><td class='num'>24.1</td><td class='num'>4.38</td><td class='num'>3.67</td><td></td></tr>
-<tr><td>Cash</td><td class='sub'>AVL</td><td class='num'>£4.5</td><td class='num'>19.1</td><td class='num'>4.25</td><td class='num'>3.00</td><td></td></tr></tbody></table></div>
+        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">xP</th><th class="num">/gw</th><th>By gameweek</th><th class="num">per £m</th><th class="num">Mins</th><th></th></tr></thead>
+        <tbody><tr><td>Guéhi</td><td class='sub'>MCI</td><td class='num'>£6.0</td><td class='num'>22.7</td><td class='num'>3.78</td><td><span class='spark' title='4.2, 3.3, 4.5, 3.0, 4.4, 3.3'><span style='height:9px'></span><span style='height:7px'></span><span style='height:10px'></span><span style='height:7px'></span><span style='height:10px'></span><span style='height:7px'></span></span></td><td class='num'>3.78</td><td class='num'>73</td><td></td></tr>
+<tr><td>Thiaw</td><td class='sub'>NEW</td><td class='num'>£5.0</td><td class='num'>18.5</td><td class='num'>3.09</td><td><span class='spark' title='3.2, 2.7, 3.3, 2.7, 3.5, 3.1'><span style='height:7px'></span><span style='height:6px'></span><span style='height:7px'></span><span style='height:6px'></span><span style='height:8px'></span><span style='height:7px'></span></span></td><td class='num'>3.71</td><td class='num'>70</td><td></td></tr>
+<tr><td>Senesi</td><td class='sub'>TOT</td><td class='num'>£6.0</td><td class='num'>22.1</td><td class='num'>3.69</td><td><span class='spark' title='3.2, 4.1, 3.7, 4.0, 4.1, 3.0'><span style='height:7px'></span><span style='height:9px'></span><span style='height:8px'></span><span style='height:9px'></span><span style='height:9px'></span><span style='height:7px'></span></span></td><td class='num'>3.69</td><td class='num'>76</td><td><span class="pill warn">new club</span></td></tr>
+<tr><td>Van Hecke</td><td class='sub'>TOT</td><td class='num'>£5.0</td><td class='num'>18.4</td><td class='num'>3.07</td><td><span class='spark' title='2.6, 3.5, 3.1, 3.4, 3.5, 2.4'><span style='height:6px'></span><span style='height:8px'></span><span style='height:7px'></span><span style='height:8px'></span><span style='height:8px'></span><span style='height:5px'></span></span></td><td class='num'>3.69</td><td class='num'>74</td><td><span class="pill warn">new club</span></td></tr>
+<tr><td>Mitchell</td><td class='sub'>CRY</td><td class='num'>£4.5</td><td class='num'>16.3</td><td class='num'>2.72</td><td><span class='spark' title='2.6, 2.1, 3.0, 3.3, 2.3, 3.1'><span style='height:6px'></span><span style='height:5px'></span><span style='height:7px'></span><span style='height:7px'></span><span style='height:5px'></span><span style='height:7px'></span></span></td><td class='num'>3.62</td><td class='num'>74</td><td></td></tr>
+<tr><td>Richards</td><td class='sub'>CRY</td><td class='num'>£5.0</td><td class='num'>18.1</td><td class='num'>3.01</td><td><span class='spark' title='2.9, 2.5, 3.2, 3.5, 2.6, 3.4'><span style='height:6px'></span><span style='height:5px'></span><span style='height:7px'></span><span style='height:8px'></span><span style='height:6px'></span><span style='height:8px'></span></span></td><td class='num'>3.61</td><td class='num'>67</td><td></td></tr>
+<tr><td>Shaw</td><td class='sub'>MUN</td><td class='num'>£4.5</td><td class='num'>16.2</td><td class='num'>2.70</td><td><span class='spark' title='2.6, 3.3, 2.5, 2.0, 3.0, 2.8'><span style='height:6px'></span><span style='height:7px'></span><span style='height:6px'></span><span style='height:5px'></span><span style='height:7px'></span><span style='height:6px'></span></span></td><td class='num'>3.60</td><td class='num'>77</td><td></td></tr>
+<tr><td>O'Reilly</td><td class='sub'>MCI</td><td class='num'>£6.5</td><td class='num'>23.2</td><td class='num'>3.87</td><td><span class='spark' title='4.3, 3.4, 4.6, 3.1, 4.5, 3.4'><span style='height:10px'></span><span style='height:8px'></span><span style='height:10px'></span><span style='height:7px'></span><span style='height:10px'></span><span style='height:7px'></span></span></td><td class='num'>3.57</td><td class='num'>64</td><td></td></tr></tbody></table></div>
     </div>
     <div>
       <h3>Midfielders</h3>
       <div class="scroll"><table>
-        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">Proj</th><th class="num">per £m</th><th class="num">Fix</th><th></th></tr></thead>
-        <tbody><tr><td>Anderson</td><td class='sub'>MCI</td><td class='num'>£6.5</td><td class='num'>27.9</td><td class='num'>4.28</td><td class='num'>3.00</td><td><span class="pill warn">new club</span></td></tr>
-<tr><td>Wilson</td><td class='sub'>LEE</td><td class='num'>£6.5</td><td class='num'>26.7</td><td class='num'>4.10</td><td class='num'>3.17</td><td><span class="pill warn">new club</span></td></tr>
-<tr><td>Zubimendi</td><td class='sub'>ARS</td><td class='num'>£5.5</td><td class='num'>21.8</td><td class='num'>3.96</td><td class='num'>3.00</td><td></td></tr>
-<tr><td>Gravenberch</td><td class='sub'>LIV</td><td class='num'>£6.0</td><td class='num'>23.6</td><td class='num'>3.94</td><td class='num'>2.83</td><td></td></tr>
-<tr><td>Ampadu</td><td class='sub'>LEE</td><td class='num'>£5.5</td><td class='num'>21.5</td><td class='num'>3.90</td><td class='num'>3.17</td><td></td></tr>
-<tr><td>E.Le Fée</td><td class='sub'>SUN</td><td class='num'>£6.0</td><td class='num'>23.3</td><td class='num'>3.89</td><td class='num'>3.00</td><td></td></tr>
-<tr><td>Aaronson</td><td class='sub'>LEE</td><td class='num'>£5.5</td><td class='num'>21.2</td><td class='num'>3.86</td><td class='num'>3.17</td><td></td></tr>
-<tr><td>Rice</td><td class='sub'>ARS</td><td class='num'>£7.5</td><td class='num'>28.5</td><td class='num'>3.80</td><td class='num'>3.00</td><td></td></tr></tbody></table></div>
+        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">xP</th><th class="num">/gw</th><th>By gameweek</th><th class="num">per £m</th><th class="num">Mins</th><th></th></tr></thead>
+        <tbody><tr><td>Enzo</td><td class='sub'>CHE</td><td class='num'>£7.0</td><td class='num'>26.9</td><td class='num'>4.49</td><td><span class='spark' title='4.3, 4.8, 3.3, 5.2, 4.3, 5.0'><span style='height:10px'></span><span style='height:11px'></span><span style='height:7px'></span><span style='height:12px'></span><span style='height:9px'></span><span style='height:11px'></span></span></td><td class='num'>3.84</td><td class='num'>73</td><td></td></tr>
+<tr><td>Anderson</td><td class='sub'>MCI</td><td class='num'>£6.5</td><td class='num'>24.8</td><td class='num'>4.13</td><td><span class='spark' title='4.3, 3.9, 4.4, 3.8, 4.3, 3.9'><span style='height:10px'></span><span style='height:9px'></span><span style='height:10px'></span><span style='height:9px'></span><span style='height:10px'></span><span style='height:9px'></span></span></td><td class='num'>3.81</td><td class='num'>76</td><td><span class="pill warn">new club</span></td></tr>
+<tr><td>Schade</td><td class='sub'>BRE</td><td class='num'>£6.0</td><td class='num'>21.5</td><td class='num'>3.58</td><td><span class='spark' title='3.8, 3.4, 3.9, 3.4, 3.7, 3.4'><span style='height:8px'></span><span style='height:7px'></span><span style='height:9px'></span><span style='height:8px'></span><span style='height:8px'></span><span style='height:7px'></span></span></td><td class='num'>3.58</td><td class='num'>68</td><td></td></tr>
+<tr><td>Mbeumo</td><td class='sub'>MUN</td><td class='num'>£8.0</td><td class='num'>26.1</td><td class='num'>4.35</td><td><span class='spark' title='4.2, 4.8, 4.1, 4.2, 4.1, 4.6'><span style='height:9px'></span><span style='height:11px'></span><span style='height:9px'></span><span style='height:9px'></span><span style='height:9px'></span><span style='height:10px'></span></span></td><td class='num'>3.27</td><td class='num'>67</td><td></td></tr>
+<tr><td>Amad</td><td class='sub'>MUN</td><td class='num'>£6.0</td><td class='num'>19.4</td><td class='num'>3.24</td><td><span class='spark' title='3.2, 3.5, 3.1, 3.1, 3.1, 3.4'><span style='height:7px'></span><span style='height:8px'></span><span style='height:7px'></span><span style='height:7px'></span><span style='height:7px'></span><span style='height:8px'></span></span></td><td class='num'>3.24</td><td class='num'>61</td><td></td></tr>
+<tr><td>Tavernier</td><td class='sub'>BOU</td><td class='num'>£6.0</td><td class='num'>19.1</td><td class='num'>3.19</td><td><span class='spark' title='2.8, 3.5, 3.1, 3.5, 3.3, 3.0'><span style='height:6px'></span><span style='height:8px'></span><span style='height:7px'></span><span style='height:8px'></span><span style='height:7px'></span><span style='height:7px'></span></span></td><td class='num'>3.19</td><td class='num'>67</td><td></td></tr>
+<tr><td>Zubimendi</td><td class='sub'>ARS</td><td class='num'>£5.5</td><td class='num'>17.4</td><td class='num'>2.91</td><td><span class='spark' title='3.1, 2.8, 2.9, 2.9, 2.8, 3.0'><span style='height:7px'></span><span style='height:6px'></span><span style='height:6px'></span><span style='height:6px'></span><span style='height:6px'></span><span style='height:7px'></span></span></td><td class='num'>3.17</td><td class='num'>71</td><td></td></tr>
+<tr><td>Semenyo</td><td class='sub'>MCI</td><td class='num'>£8.5</td><td class='num'>26.7</td><td class='num'>4.44</td><td><span class='spark' title='4.9, 4.1, 5.0, 3.9, 4.8, 3.9'><span style='height:11px'></span><span style='height:9px'></span><span style='height:11px'></span><span style='height:9px'></span><span style='height:11px'></span><span style='height:9px'></span></span></td><td class='num'>3.14</td><td class='num'>76</td><td></td></tr></tbody></table></div>
     </div>
     <div>
       <h3>Forwards</h3>
       <div class="scroll"><table>
-        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">Proj</th><th class="num">per £m</th><th class="num">Fix</th><th></th></tr></thead>
-        <tbody><tr><td>João Pedro</td><td class='sub'>CHE</td><td class='num'>£7.5</td><td class='num'>28.3</td><td class='num'>3.78</td><td class='num'>3.00</td><td></td></tr>
-<tr><td>Calvert-Lewin</td><td class='sub'>LEE</td><td class='num'>£6.0</td><td class='num'>22.4</td><td class='num'>3.73</td><td class='num'>3.17</td><td></td></tr>
-<tr><td>Thiago</td><td class='sub'>BRE</td><td class='num'>£8.0</td><td class='num'>28.6</td><td class='num'>3.57</td><td class='num'>3.17</td><td></td></tr>
-<tr><td>Welbeck</td><td class='sub'>CHE</td><td class='num'>£6.0</td><td class='num'>20.7</td><td class='num'>3.45</td><td class='num'>3.00</td><td><span class="pill warn">new club</span></td></tr>
-<tr><td>Watkins</td><td class='sub'>AVL</td><td class='num'>£8.0</td><td class='num'>27.4</td><td class='num'>3.42</td><td class='num'>3.00</td><td></td></tr>
-<tr><td>Igor Jesus</td><td class='sub'>NFO</td><td class='num'>£6.0</td><td class='num'>20.4</td><td class='num'>3.40</td><td class='num'>3.00</td><td></td></tr>
-<tr><td>Woltemade</td><td class='sub'>NEW</td><td class='num'>£6.0</td><td class='num'>19.7</td><td class='num'>3.28</td><td class='num'>2.83</td><td></td></tr>
-<tr><td>Evanilson</td><td class='sub'>BOU</td><td class='num'>£6.0</td><td class='num'>19.1</td><td class='num'>3.17</td><td class='num'>3.67</td><td></td></tr></tbody></table></div>
+        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">xP</th><th class="num">/gw</th><th>By gameweek</th><th class="num">per £m</th><th class="num">Mins</th><th></th></tr></thead>
+        <tbody><tr><td>Welbeck</td><td class='sub'>CHE</td><td class='num'>£6.0</td><td class='num'>21.1</td><td class='num'>3.52</td><td><span class='spark' title='3.4, 3.7, 2.7, 4.0, 3.4, 3.9'><span style='height:7px'></span><span style='height:8px'></span><span style='height:6px'></span><span style='height:9px'></span><span style='height:8px'></span><span style='height:9px'></span></span></td><td class='num'>3.52</td><td class='num'>59</td><td><span class="pill warn">new club</span></td></tr>
+<tr><td>João Pedro</td><td class='sub'>CHE</td><td class='num'>£7.5</td><td class='num'>24.7</td><td class='num'>4.12</td><td><span class='spark' title='3.9, 4.3, 3.2, 4.7, 4.0, 4.6'><span style='height:9px'></span><span style='height:10px'></span><span style='height:7px'></span><span style='height:10px'></span><span style='height:9px'></span><span style='height:10px'></span></span></td><td class='num'>3.29</td><td class='num'>67</td><td></td></tr>
+<tr><td>Calvert-Lewin</td><td class='sub'>LEE</td><td class='num'>£6.0</td><td class='num'>19.8</td><td class='num'>3.29</td><td><span class='spark' title='3.2, 3.6, 3.1, 3.5, 3.6, 2.6'><span style='height:7px'></span><span style='height:8px'></span><span style='height:7px'></span><span style='height:8px'></span><span style='height:8px'></span><span style='height:6px'></span></span></td><td class='num'>3.29</td><td class='num'>66</td><td></td></tr>
+<tr><td>Mateta</td><td class='sub'>CRY</td><td class='num'>£6.5</td><td class='num'>20.2</td><td class='num'>3.37</td><td><span class='spark' title='3.2, 3.3, 3.2, 3.7, 3.2, 3.6'><span style='height:7px'></span><span style='height:7px'></span><span style='height:7px'></span><span style='height:8px'></span><span style='height:7px'></span><span style='height:8px'></span></span></td><td class='num'>3.11</td><td class='num'>58</td><td></td></tr>
+<tr><td>Thiago</td><td class='sub'>BRE</td><td class='num'>£8.0</td><td class='num'>24.5</td><td class='num'>4.09</td><td><span class='spark' title='4.3, 3.9, 4.3, 3.9, 4.3, 3.8'><span style='height:10px'></span><span style='height:9px'></span><span style='height:10px'></span><span style='height:9px'></span><span style='height:10px'></span><span style='height:8px'></span></span></td><td class='num'>3.07</td><td class='num'>76</td><td></td></tr>
+<tr><td>Evanilson</td><td class='sub'>BOU</td><td class='num'>£6.0</td><td class='num'>16.9</td><td class='num'>2.81</td><td><span class='spark' title='2.6, 3.0, 2.7, 3.0, 2.9, 2.7'><span style='height:6px'></span><span style='height:7px'></span><span style='height:6px'></span><span style='height:7px'></span><span style='height:6px'></span><span style='height:6px'></span></span></td><td class='num'>2.81</td><td class='num'>68</td><td></td></tr>
+<tr><td>Gyökeres</td><td class='sub'>ARS</td><td class='num'>£7.5</td><td class='num'>20.4</td><td class='num'>3.39</td><td><span class='spark' title='3.7, 3.2, 3.6, 3.2, 3.1, 3.6'><span style='height:8px'></span><span style='height:7px'></span><span style='height:8px'></span><span style='height:7px'></span><span style='height:7px'></span><span style='height:8px'></span></span></td><td class='num'>2.71</td><td class='num'>58</td><td></td></tr>
+<tr><td>Richarlison</td><td class='sub'>TOT</td><td class='num'>£6.0</td><td class='num'>15.6</td><td class='num'>2.59</td><td><span class='spark' title='2.5, 2.7, 2.5, 2.8, 2.7, 2.4'><span style='height:6px'></span><span style='height:6px'></span><span style='height:6px'></span><span style='height:6px'></span><span style='height:6px'></span><span style='height:5px'></span></span></td><td class='num'>2.59</td><td class='num'>51</td><td></td></tr></tbody></table></div>
     </div>
   </div>
 </section>
 
 <section>
-  <h2>Highest projected, regardless of price</h2>
+  <h2>Highest expected points, regardless of price</h2>
   <p>The premium end. Worth reading next to the value table — the gap between them is the money you have to find elsewhere.</p>
   <div class="grid">
     <div>
       <h3>Defenders</h3>
       <div class="scroll"><table>
-        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">Proj</th><th class="num">per £m</th><th class="num">Fix</th><th></th></tr></thead>
-        <tbody><tr><td>Gabriel</td><td class='sub'>ARS</td><td class='num'>£8.0</td><td class='num'>30.0</td><td class='num'>3.75</td><td class='num'>3.00</td><td></td></tr>
-<tr><td>Virgil</td><td class='sub'>LIV</td><td class='num'>£6.5</td><td class='num'>27.3</td><td class='num'>4.20</td><td class='num'>2.83</td><td></td></tr>
-<tr><td>Senesi</td><td class='sub'>TOT</td><td class='num'>£6.0</td><td class='num'>27.0</td><td class='num'>4.50</td><td class='num'>3.00</td><td><span class="pill warn">new club</span></td></tr>
-<tr><td>Guéhi</td><td class='sub'>MCI</td><td class='num'>£6.0</td><td class='num'>26.9</td><td class='num'>4.49</td><td class='num'>3.00</td><td></td></tr>
-<tr><td>Tarkowski</td><td class='sub'>EVE</td><td class='num'>£6.0</td><td class='num'>26.5</td><td class='num'>4.42</td><td class='num'>2.83</td><td></td></tr>
-<tr><td>Lacroix</td><td class='sub'>CHE</td><td class='num'>£6.0</td><td class='num'>24.1</td><td class='num'>4.02</td><td class='num'>3.00</td><td><span class="pill warn">new club</span></td></tr>
-<tr><td>Truffert</td><td class='sub'>BOU</td><td class='num'>£5.5</td><td class='num'>24.1</td><td class='num'>4.38</td><td class='num'>3.67</td><td></td></tr>
-<tr><td>O'Reilly</td><td class='sub'>MCI</td><td class='num'>£6.5</td><td class='num'>23.7</td><td class='num'>3.64</td><td class='num'>3.00</td><td></td></tr></tbody></table></div>
+        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">xP</th><th class="num">/gw</th><th>By gameweek</th><th class="num">per £m</th><th class="num">Mins</th><th></th></tr></thead>
+        <tbody><tr><td>O'Reilly</td><td class='sub'>MCI</td><td class='num'>£6.5</td><td class='num'>23.2</td><td class='num'>3.87</td><td><span class='spark' title='4.3, 3.4, 4.6, 3.1, 4.5, 3.4'><span style='height:10px'></span><span style='height:8px'></span><span style='height:10px'></span><span style='height:7px'></span><span style='height:10px'></span><span style='height:7px'></span></span></td><td class='num'>3.57</td><td class='num'>64</td><td></td></tr>
+<tr><td>Guéhi</td><td class='sub'>MCI</td><td class='num'>£6.0</td><td class='num'>22.7</td><td class='num'>3.78</td><td><span class='spark' title='4.2, 3.3, 4.5, 3.0, 4.4, 3.3'><span style='height:9px'></span><span style='height:7px'></span><span style='height:10px'></span><span style='height:7px'></span><span style='height:10px'></span><span style='height:7px'></span></span></td><td class='num'>3.78</td><td class='num'>73</td><td></td></tr>
+<tr><td>Gabriel</td><td class='sub'>ARS</td><td class='num'>£8.0</td><td class='num'>22.5</td><td class='num'>3.75</td><td><span class='spark' title='4.2, 3.6, 3.5, 3.8, 3.6, 3.8'><span style='height:9px'></span><span style='height:8px'></span><span style='height:8px'></span><span style='height:8px'></span><span style='height:8px'></span><span style='height:8px'></span></span></td><td class='num'>2.81</td><td class='num'>66</td><td></td></tr>
+<tr><td>Virgil</td><td class='sub'>LIV</td><td class='num'>£6.5</td><td class='num'>22.2</td><td class='num'>3.69</td><td><span class='spark' title='3.5, 4.1, 3.8, 4.3, 3.4, 3.0'><span style='height:8px'></span><span style='height:9px'></span><span style='height:8px'></span><span style='height:10px'></span><span style='height:8px'></span><span style='height:7px'></span></span></td><td class='num'>3.41</td><td class='num'>77</td><td></td></tr>
+<tr><td>Senesi</td><td class='sub'>TOT</td><td class='num'>£6.0</td><td class='num'>22.1</td><td class='num'>3.69</td><td><span class='spark' title='3.2, 4.1, 3.7, 4.0, 4.1, 3.0'><span style='height:7px'></span><span style='height:9px'></span><span style='height:8px'></span><span style='height:9px'></span><span style='height:9px'></span><span style='height:7px'></span></span></td><td class='num'>3.69</td><td class='num'>76</td><td><span class="pill warn">new club</span></td></tr>
+<tr><td>Lacroix</td><td class='sub'>CHE</td><td class='num'>£6.0</td><td class='num'>20.4</td><td class='num'>3.40</td><td><span class='spark' title='3.7, 3.7, 2.5, 3.8, 3.0, 3.7'><span style='height:8px'></span><span style='height:8px'></span><span style='height:6px'></span><span style='height:9px'></span><span style='height:7px'></span><span style='height:8px'></span></span></td><td class='num'>3.40</td><td class='num'>73</td><td><span class="pill warn">new club</span></td></tr>
+<tr><td>Tarkowski</td><td class='sub'>EVE</td><td class='num'>£6.0</td><td class='num'>19.2</td><td class='num'>3.21</td><td><span class='spark' title='3.2, 3.0, 3.0, 2.9, 3.9, 3.2'><span style='height:7px'></span><span style='height:7px'></span><span style='height:7px'></span><span style='height:6px'></span><span style='height:9px'></span><span style='height:7px'></span></span></td><td class='num'>3.21</td><td class='num'>76</td><td></td></tr>
+<tr><td>Thiaw</td><td class='sub'>NEW</td><td class='num'>£5.0</td><td class='num'>18.5</td><td class='num'>3.09</td><td><span class='spark' title='3.2, 2.7, 3.3, 2.7, 3.5, 3.1'><span style='height:7px'></span><span style='height:6px'></span><span style='height:7px'></span><span style='height:6px'></span><span style='height:8px'></span><span style='height:7px'></span></span></td><td class='num'>3.71</td><td class='num'>70</td><td></td></tr></tbody></table></div>
     </div>
     <div>
       <h3>Midfielders</h3>
       <div class="scroll"><table>
-        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">Proj</th><th class="num">per £m</th><th class="num">Fix</th><th></th></tr></thead>
-        <tbody><tr><td>B.Fernandes</td><td class='sub'>MUN</td><td class='num'>£12.0</td><td class='num'>36.0</td><td class='num'>3.00</td><td class='num'>2.83</td><td></td></tr>
-<tr><td>Semenyo</td><td class='sub'>MCI</td><td class='num'>£8.5</td><td class='num'>31.7</td><td class='num'>3.73</td><td class='num'>3.00</td><td></td></tr>
-<tr><td>Gibbs-White</td><td class='sub'>NFO</td><td class='num'>£8.0</td><td class='num'>29.0</td><td class='num'>3.62</td><td class='num'>3.00</td><td></td></tr>
-<tr><td>Rice</td><td class='sub'>ARS</td><td class='num'>£7.5</td><td class='num'>28.5</td><td class='num'>3.80</td><td class='num'>3.00</td><td></td></tr>
-<tr><td>Anderson</td><td class='sub'>MCI</td><td class='num'>£6.5</td><td class='num'>27.9</td><td class='num'>4.28</td><td class='num'>3.00</td><td><span class="pill warn">new club</span></td></tr>
-<tr><td>Rogers</td><td class='sub'>CHE</td><td class='num'>£7.5</td><td class='num'>26.8</td><td class='num'>3.57</td><td class='num'>3.00</td><td><span class="pill warn">new club</span></td></tr>
-<tr><td>Wilson</td><td class='sub'>LEE</td><td class='num'>£6.5</td><td class='num'>26.7</td><td class='num'>4.10</td><td class='num'>3.17</td><td><span class="pill warn">new club</span></td></tr>
-<tr><td>Szoboszlai</td><td class='sub'>LIV</td><td class='num'>£7.0</td><td class='num'>25.6</td><td class='num'>3.66</td><td class='num'>2.83</td><td></td></tr></tbody></table></div>
+        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">xP</th><th class="num">/gw</th><th>By gameweek</th><th class="num">per £m</th><th class="num">Mins</th><th></th></tr></thead>
+        <tbody><tr><td>B.Fernandes</td><td class='sub'>MUN</td><td class='num'>£12.0</td><td class='num'>31.7</td><td class='num'>5.29</td><td><span class='spark' title='5.2, 5.8, 5.0, 5.1, 5.0, 5.6'><span style='height:11px'></span><span style='height:13px'></span><span style='height:11px'></span><span style='height:11px'></span><span style='height:11px'></span><span style='height:12px'></span></span></td><td class='num'>2.64</td><td class='num'>73</td><td></td></tr>
+<tr><td>Enzo</td><td class='sub'>CHE</td><td class='num'>£7.0</td><td class='num'>26.9</td><td class='num'>4.49</td><td><span class='spark' title='4.3, 4.8, 3.3, 5.2, 4.3, 5.0'><span style='height:10px'></span><span style='height:11px'></span><span style='height:7px'></span><span style='height:12px'></span><span style='height:9px'></span><span style='height:11px'></span></span></td><td class='num'>3.84</td><td class='num'>73</td><td></td></tr>
+<tr><td>Semenyo</td><td class='sub'>MCI</td><td class='num'>£8.5</td><td class='num'>26.7</td><td class='num'>4.44</td><td><span class='spark' title='4.9, 4.1, 5.0, 3.9, 4.8, 3.9'><span style='height:11px'></span><span style='height:9px'></span><span style='height:11px'></span><span style='height:9px'></span><span style='height:11px'></span><span style='height:9px'></span></span></td><td class='num'>3.14</td><td class='num'>76</td><td></td></tr>
+<tr><td>Mbeumo</td><td class='sub'>MUN</td><td class='num'>£8.0</td><td class='num'>26.1</td><td class='num'>4.35</td><td><span class='spark' title='4.2, 4.8, 4.1, 4.2, 4.1, 4.6'><span style='height:9px'></span><span style='height:11px'></span><span style='height:9px'></span><span style='height:9px'></span><span style='height:9px'></span><span style='height:10px'></span></span></td><td class='num'>3.27</td><td class='num'>67</td><td></td></tr>
+<tr><td>Anderson</td><td class='sub'>MCI</td><td class='num'>£6.5</td><td class='num'>24.8</td><td class='num'>4.13</td><td><span class='spark' title='4.3, 3.9, 4.4, 3.8, 4.3, 3.9'><span style='height:10px'></span><span style='height:9px'></span><span style='height:10px'></span><span style='height:9px'></span><span style='height:10px'></span><span style='height:9px'></span></span></td><td class='num'>3.81</td><td class='num'>76</td><td><span class="pill warn">new club</span></td></tr>
+<tr><td>Saka</td><td class='sub'>ARS</td><td class='num'>£9.5</td><td class='num'>24.0</td><td class='num'>4.00</td><td><span class='spark' title='4.4, 3.8, 4.2, 3.8, 3.7, 4.3'><span style='height:10px'></span><span style='height:8px'></span><span style='height:9px'></span><span style='height:8px'></span><span style='height:8px'></span><span style='height:9px'></span></span></td><td class='num'>2.53</td><td class='num'>58</td><td></td></tr>
+<tr><td>Rice</td><td class='sub'>ARS</td><td class='num'>£7.5</td><td class='num'>22.6</td><td class='num'>3.77</td><td><span class='spark' title='4.0, 3.6, 3.8, 3.7, 3.6, 3.9'><span style='height:9px'></span><span style='height:8px'></span><span style='height:8px'></span><span style='height:8px'></span><span style='height:8px'></span><span style='height:9px'></span></span></td><td class='num'>3.02</td><td class='num'>73</td><td></td></tr>
+<tr><td>Cherki</td><td class='sub'>MCI</td><td class='num'>£7.5</td><td class='num'>22.2</td><td class='num'>3.70</td><td><span class='spark' title='4.0, 3.4, 4.1, 3.3, 4.0, 3.3'><span style='height:9px'></span><span style='height:8px'></span><span style='height:9px'></span><span style='height:7px'></span><span style='height:9px'></span><span style='height:7px'></span></span></td><td class='num'>2.96</td><td class='num'>47</td><td></td></tr></tbody></table></div>
     </div>
     <div>
       <h3>Forwards</h3>
       <div class="scroll"><table>
-        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">Proj</th><th class="num">per £m</th><th class="num">Fix</th><th></th></tr></thead>
-        <tbody><tr><td>Haaland</td><td class='sub'>MCI</td><td class='num'>£15.5</td><td class='num'>36.7</td><td class='num'>2.37</td><td class='num'>3.00</td><td></td></tr>
-<tr><td>Thiago</td><td class='sub'>BRE</td><td class='num'>£8.0</td><td class='num'>28.6</td><td class='num'>3.57</td><td class='num'>3.17</td><td></td></tr>
-<tr><td>João Pedro</td><td class='sub'>CHE</td><td class='num'>£7.5</td><td class='num'>28.3</td><td class='num'>3.78</td><td class='num'>3.00</td><td></td></tr>
-<tr><td>Watkins</td><td class='sub'>AVL</td><td class='num'>£8.0</td><td class='num'>27.4</td><td class='num'>3.42</td><td class='num'>3.00</td><td></td></tr>
-<tr><td>Calvert-Lewin</td><td class='sub'>LEE</td><td class='num'>£6.0</td><td class='num'>22.4</td><td class='num'>3.73</td><td class='num'>3.17</td><td></td></tr>
-<tr><td>Gyökeres</td><td class='sub'>ARS</td><td class='num'>£7.5</td><td class='num'>21.2</td><td class='num'>2.82</td><td class='num'>3.00</td><td></td></tr>
-<tr><td>Welbeck</td><td class='sub'>CHE</td><td class='num'>£6.0</td><td class='num'>20.7</td><td class='num'>3.45</td><td class='num'>3.00</td><td><span class="pill warn">new club</span></td></tr>
-<tr><td>Igor Jesus</td><td class='sub'>NFO</td><td class='num'>£6.0</td><td class='num'>20.4</td><td class='num'>3.40</td><td class='num'>3.00</td><td></td></tr></tbody></table></div>
+        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">xP</th><th class="num">/gw</th><th>By gameweek</th><th class="num">per £m</th><th class="num">Mins</th><th></th></tr></thead>
+        <tbody><tr><td>Haaland</td><td class='sub'>MCI</td><td class='num'>£15.5</td><td class='num'>38.0</td><td class='num'>6.34</td><td><span class='spark' title='7.0, 5.9, 7.2, 5.6, 6.8, 5.5'><span style='height:16px'></span><span style='height:13px'></span><span style='height:16px'></span><span style='height:12px'></span><span style='height:15px'></span><span style='height:12px'></span></span></td><td class='num'>2.46</td><td class='num'>71</td><td></td></tr>
+<tr><td>João Pedro</td><td class='sub'>CHE</td><td class='num'>£7.5</td><td class='num'>24.7</td><td class='num'>4.12</td><td><span class='spark' title='3.9, 4.3, 3.2, 4.7, 4.0, 4.6'><span style='height:9px'></span><span style='height:10px'></span><span style='height:7px'></span><span style='height:10px'></span><span style='height:9px'></span><span style='height:10px'></span></span></td><td class='num'>3.29</td><td class='num'>67</td><td></td></tr>
+<tr><td>Thiago</td><td class='sub'>BRE</td><td class='num'>£8.0</td><td class='num'>24.5</td><td class='num'>4.09</td><td><span class='spark' title='4.3, 3.9, 4.3, 3.9, 4.3, 3.8'><span style='height:10px'></span><span style='height:9px'></span><span style='height:10px'></span><span style='height:9px'></span><span style='height:10px'></span><span style='height:8px'></span></span></td><td class='num'>3.07</td><td class='num'>76</td><td></td></tr>
+<tr><td>Welbeck</td><td class='sub'>CHE</td><td class='num'>£6.0</td><td class='num'>21.1</td><td class='num'>3.52</td><td><span class='spark' title='3.4, 3.7, 2.7, 4.0, 3.4, 3.9'><span style='height:7px'></span><span style='height:8px'></span><span style='height:6px'></span><span style='height:9px'></span><span style='height:8px'></span><span style='height:9px'></span></span></td><td class='num'>3.52</td><td class='num'>59</td><td><span class="pill warn">new club</span></td></tr>
+<tr><td>Gyökeres</td><td class='sub'>ARS</td><td class='num'>£7.5</td><td class='num'>20.4</td><td class='num'>3.39</td><td><span class='spark' title='3.7, 3.2, 3.6, 3.2, 3.1, 3.6'><span style='height:8px'></span><span style='height:7px'></span><span style='height:8px'></span><span style='height:7px'></span><span style='height:7px'></span><span style='height:8px'></span></span></td><td class='num'>2.71</td><td class='num'>58</td><td></td></tr>
+<tr><td>Mateta</td><td class='sub'>CRY</td><td class='num'>£6.5</td><td class='num'>20.2</td><td class='num'>3.37</td><td><span class='spark' title='3.2, 3.3, 3.2, 3.7, 3.2, 3.6'><span style='height:7px'></span><span style='height:7px'></span><span style='height:7px'></span><span style='height:8px'></span><span style='height:7px'></span><span style='height:8px'></span></span></td><td class='num'>3.11</td><td class='num'>58</td><td></td></tr>
+<tr><td>Calvert-Lewin</td><td class='sub'>LEE</td><td class='num'>£6.0</td><td class='num'>19.8</td><td class='num'>3.29</td><td><span class='spark' title='3.2, 3.6, 3.1, 3.5, 3.6, 2.6'><span style='height:7px'></span><span style='height:8px'></span><span style='height:7px'></span><span style='height:8px'></span><span style='height:8px'></span><span style='height:6px'></span></span></td><td class='num'>3.29</td><td class='num'>66</td><td></td></tr>
+<tr><td>Watkins</td><td class='sub'>AVL</td><td class='num'>£8.0</td><td class='num'>18.7</td><td class='num'>3.11</td><td><span class='spark' title='3.0, 2.8, 3.1, 3.4, 3.0, 3.4'><span style='height:7px'></span><span style='height:6px'></span><span style='height:7px'></span><span style='height:8px'></span><span style='height:7px'></span><span style='height:8px'></span></span></td><td class='num'>2.33</td><td class='num'>70</td><td></td></tr></tbody></table></div>
     </div>
     <div>
       <h3>Goalkeepers</h3>
       <div class="scroll"><table>
-        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">Proj</th><th class="num">per £m</th><th class="num">Fix</th><th></th></tr></thead>
-        <tbody><tr><td>Raya</td><td class='sub'>ARS</td><td class='num'>£6.0</td><td class='num'>24.7</td><td class='num'>4.11</td><td class='num'>3.00</td><td></td></tr>
-<tr><td>Kelleher</td><td class='sub'>BRE</td><td class='num'>£5.0</td><td class='num'>21.8</td><td class='num'>4.37</td><td class='num'>3.17</td><td></td></tr>
-<tr><td>Pickford</td><td class='sub'>EVE</td><td class='num'>£5.5</td><td class='num'>21.6</td><td class='num'>3.93</td><td class='num'>2.83</td><td></td></tr>
-<tr><td>Roefs</td><td class='sub'>SUN</td><td class='num'>£5.0</td><td class='num'>21.1</td><td class='num'>4.21</td><td class='num'>3.00</td><td></td></tr>
-<tr><td>Donnarumma</td><td class='sub'>MCI</td><td class='num'>£5.5</td><td class='num'>20.8</td><td class='num'>3.79</td><td class='num'>3.00</td><td></td></tr>
-<tr><td>Henderson</td><td class='sub'>CRY</td><td class='num'>£5.0</td><td class='num'>20.6</td><td class='num'>4.13</td><td class='num'>3.00</td><td></td></tr>
-<tr><td>Verbruggen</td><td class='sub'>BHA</td><td class='num'>£4.5</td><td class='num'>20.6</td><td class='num'>4.58</td><td class='num'>3.00</td><td></td></tr>
-<tr><td>Martinez</td><td class='sub'>AVL</td><td class='num'>£5.0</td><td class='num'>18.9</td><td class='num'>3.79</td><td class='num'>3.00</td><td></td></tr></tbody></table></div>
+        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">xP</th><th class="num">/gw</th><th>By gameweek</th><th class="num">per £m</th><th class="num">Mins</th><th></th></tr></thead>
+        <tbody><tr><td>Raya</td><td class='sub'>ARS</td><td class='num'>£6.0</td><td class='num'>19.7</td><td class='num'>3.29</td><td><span class='spark' title='3.6, 3.3, 3.0, 3.4, 3.2, 3.3'><span style='height:8px'></span><span style='height:7px'></span><span style='height:7px'></span><span style='height:8px'></span><span style='height:7px'></span><span style='height:7px'></span></span></td><td class='num'>3.29</td><td class='num'>76</td><td></td></tr>
+<tr><td>Dubravka</td><td class='sub'>TOT</td><td class='num'>£4.0</td><td class='num'>18.9</td><td class='num'>3.16</td><td><span class='spark' title='3.0, 3.3, 3.2, 3.2, 3.3, 3.0'><span style='height:7px'></span><span style='height:7px'></span><span style='height:7px'></span><span style='height:7px'></span><span style='height:7px'></span><span style='height:7px'></span></span></td><td class='num'>4.74</td><td class='num'>73</td><td><span class="pill warn">new club</span></td></tr>
+<tr><td>Verbruggen</td><td class='sub'>BHA</td><td class='num'>£4.5</td><td class='num'>18.5</td><td class='num'>3.08</td><td><span class='spark' title='3.3, 2.8, 3.1, 3.2, 3.0, 3.2'><span style='height:7px'></span><span style='height:6px'></span><span style='height:7px'></span><span style='height:7px'></span><span style='height:7px'></span><span style='height:7px'></span></span></td><td class='num'>4.11</td><td class='num'>77</td><td></td></tr>
+<tr><td>Kelleher</td><td class='sub'>BRE</td><td class='num'>£5.0</td><td class='num'>18.4</td><td class='num'>3.07</td><td><span class='spark' title='3.1, 2.9, 3.4, 3.0, 2.9, 3.1'><span style='height:7px'></span><span style='height:7px'></span><span style='height:8px'></span><span style='height:7px'></span><span style='height:6px'></span><span style='height:7px'></span></span></td><td class='num'>3.69</td><td class='num'>76</td><td></td></tr>
+<tr><td>Henderson</td><td class='sub'>CRY</td><td class='num'>£5.0</td><td class='num'>18.1</td><td class='num'>3.02</td><td><span class='spark' title='2.9, 2.7, 3.2, 3.3, 2.8, 3.2'><span style='height:7px'></span><span style='height:6px'></span><span style='height:7px'></span><span style='height:7px'></span><span style='height:6px'></span><span style='height:7px'></span></span></td><td class='num'>3.62</td><td class='num'>76</td><td></td></tr>
+<tr><td>Roefs</td><td class='sub'>SUN</td><td class='num'>£5.0</td><td class='num'>17.9</td><td class='num'>2.99</td><td><span class='spark' title='3.1, 3.3, 2.8, 2.9, 2.7, 3.1'><span style='height:7px'></span><span style='height:7px'></span><span style='height:6px'></span><span style='height:6px'></span><span style='height:6px'></span><span style='height:7px'></span></span></td><td class='num'>3.59</td><td class='num'>73</td><td></td></tr>
+<tr><td>Petrović</td><td class='sub'>BOU</td><td class='num'>£4.5</td><td class='num'>17.6</td><td class='num'>2.94</td><td><span class='spark' title='2.7, 3.2, 3.0, 3.0, 3.1, 2.7'><span style='height:6px'></span><span style='height:7px'></span><span style='height:7px'></span><span style='height:7px'></span><span style='height:7px'></span><span style='height:6px'></span></span></td><td class='num'>3.92</td><td class='num'>77</td><td></td></tr>
+<tr><td>Pickford</td><td class='sub'>EVE</td><td class='num'>£5.5</td><td class='num'>17.6</td><td class='num'>2.94</td><td><span class='spark' title='2.9, 2.9, 2.8, 2.8, 3.3, 2.9'><span style='height:7px'></span><span style='height:6px'></span><span style='height:6px'></span><span style='height:6px'></span><span style='height:7px'></span><span style='height:7px'></span></span></td><td class='num'>3.21</td><td class='num'>77</td><td></td></tr></tbody></table></div>
     </div>
   </div>
 </section>
@@ -260,8 +277,8 @@ footer{border-top:1px solid var(--rule);padding-top:1.2rem;font-family:"JetBrain
 </section>
 
 <footer>
-  Generated by gaffer 19 Aug 2026, 17:08 UTC from the public Fantasy Premier League API.<br>
-  Phase 0 — heuristic ranking. Replaced by an expected-points model in Phase 1.
+  Generated by gaffer 19 Aug 2026, 18:44 UTC from the public Fantasy Premier League API.<br>
+  Phase 1 — expected points from a team-strength model, a minutes model and the FPL scoring table.
 </footer>
 
 </div>

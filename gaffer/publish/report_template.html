@@ -10,7 +10,13 @@
   --accent:#b26a1f; --accent-soft:#f6ead8;
   --go:#2f6b46; --go-soft:#e2efe7;
   --stop:#9c3328; --stop-soft:#f7e4e1;
-  --d1:#2f6b46; --d2:#5d8a52; --d3:#9a8a3f; --d4:#b56a2c; --d5:#9c3328;
+  /* Fixture difficulty is diverging: easy and hard are opposite poles either
+     side of an average fixture, so it takes two hues and a NEUTRAL midpoint —
+     never a third hue in the middle. Lightness falls evenly from the midpoint
+     toward each pole; verified in OKLab rather than eyeballed. */
+  --d1:#a8d5ba; --d2:#d3e8d8; --d3:#e3e5ea; --d4:#f6d9c4; --d5:#eab3a8;
+  --d1i:#17422a; --d2i:#2f5238; --d3i:#464e5c; --d4i:#7d4416; --d5i:#73241c;
+  --spark:#b26a1f; --spark-track:#e4e7ec;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
@@ -20,7 +26,11 @@
     --accent:#e0a458; --accent-soft:#2e2418;
     --go:#7cc79b; --go-soft:#1b2921;
     --stop:#e08b7f; --stop-soft:#2c1e1c;
-    --d1:#7cc79b; --d2:#9dbf7f; --d3:#c9b45f; --d4:#e0a458; --d5:#e08b7f;
+    /* Dark mode is stepped from the same ramps against the dark surface, not
+       flipped: lightness rises from the midpoint out to each pole. */
+    --d1:#1d4430; --d2:#22352a; --d3:#2a2f38; --d4:#42301f; --d5:#4d2a24;
+    --d1i:#8fd4ab; --d2i:#a9c98f; --d3i:#9aa3b4; --d4i:#e5b076; --d5i:#e89b8f;
+    --spark:#e0a458; --spark-track:#262b35;
   }
 }
 :root[data-theme="dark"]{
@@ -30,7 +40,9 @@
   --accent:#e0a458; --accent-soft:#2e2418;
   --go:#7cc79b; --go-soft:#1b2921;
   --stop:#e08b7f; --stop-soft:#2c1e1c;
-  --d1:#7cc79b; --d2:#9dbf7f; --d3:#c9b45f; --d4:#e0a458; --d5:#e08b7f;
+  --d1:#1d4430; --d2:#22352a; --d3:#2a2f38; --d4:#42301f; --d5:#4d2a24;
+  --d1i:#8fd4ab; --d2i:#a9c98f; --d3i:#9aa3b4; --d4i:#e5b076; --d5i:#e89b8f;
+  --spark:#e0a458; --spark-track:#262b35;
 }
 *{box-sizing:border-box;}
 body{margin:0;background:var(--ground);color:var(--ink);
@@ -76,14 +88,19 @@ th.num{text-align:right;}
 .pill.stop{background:var(--stop-soft);color:var(--stop);}
 .pill.low{background:var(--surface-2);color:var(--ink-3);}
 
-.fx{display:inline-block;font-size:.62rem;font-weight:600;padding:.15em .35em;border-radius:2px;
-  color:#fff;margin-right:.15rem;}
-.fx i{font-style:normal;opacity:.75;font-size:.9em;}
-.fx.d1{background:var(--d1);} .fx.d2{background:var(--d2);} .fx.d3{background:var(--d3);}
-.fx.d4{background:var(--d4);} .fx.d5{background:var(--d5);}
-:root:not([data-theme="light"]) .fx{color:#12151b;}
-@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]) .fx{color:#fff;} }
-:root[data-theme="dark"] .fx{color:#12151b;}
+.fx{display:inline-block;font-size:.62rem;font-weight:600;padding:.15em .4em;border-radius:2px;
+  margin-right:2px;}
+.fx i{font-style:normal;opacity:.7;font-size:.9em;}
+.fx.d1{background:var(--d1);color:var(--d1i);} .fx.d2{background:var(--d2);color:var(--d2i);}
+.fx.d3{background:var(--d3);color:var(--d3i);} .fx.d4{background:var(--d4);color:var(--d4i);}
+.fx.d5{background:var(--d5);color:var(--d5i);}
+
+/* Expected points per gameweek. One series, so no legend — the column head names
+   it. Bars share a fixed scale across every row so players stay comparable;
+   scaling each row to its own max would make everyone look identical. */
+.spark{display:inline-flex;align-items:flex-end;gap:2px;height:20px;}
+.spark span{width:5px;background:var(--spark);border-radius:2px 2px 0 0;min-height:2px;}
+.spark span.z{background:var(--spark-track);}
 
 footer{border-top:1px solid var(--rule);padding-top:1.2rem;font-family:"JetBrains Mono",monospace;
   font-size:.7rem;color:var(--ink-3);line-height:1.7;}
@@ -93,7 +110,7 @@ footer{border-top:1px solid var(--rule);padding-top:1.2rem;font-family:"JetBrain
 <div class="wrap">
 
 <header>
-  <div class="eyebrow">Gaffer · Phase 0 · Heuristic Run</div>
+  <div class="eyebrow">Gaffer · Phase 1 · Expected Points</div>
   <h1>Gameweek {{GAMEWEEK}} — pre-season board</h1>
   <div class="bar">
     <span>DEADLINE {{DEADLINE}}</span>
@@ -116,61 +133,61 @@ footer{border-top:1px solid var(--rule);padding-top:1.2rem;font-family:"JetBrain
 
 <section>
   <h2>Best value for money</h2>
-  <p>Projected points per £1m over the next {{HORIZON}} gameweeks. This is where cheap enablers show up — the players who fund a premium forward elsewhere.</p>
+  <p>Expected points per £1m over the next {{HORIZON}} gameweeks. This is where cheap enablers show up — the players who fund a premium forward elsewhere.</p>
   <div class="grid">
     <div>
       <h3>Goalkeepers</h3>
       <div class="scroll"><table>
-        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">Proj</th><th class="num">per £m</th><th class="num">Fix</th><th></th></tr></thead>
+        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">xP</th><th class="num">/gw</th><th>By gameweek</th><th class="num">per £m</th><th class="num">Mins</th><th></th></tr></thead>
         <tbody>{{GKP_VALUE}}</tbody></table></div>
     </div>
     <div>
       <h3>Defenders</h3>
       <div class="scroll"><table>
-        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">Proj</th><th class="num">per £m</th><th class="num">Fix</th><th></th></tr></thead>
+        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">xP</th><th class="num">/gw</th><th>By gameweek</th><th class="num">per £m</th><th class="num">Mins</th><th></th></tr></thead>
         <tbody>{{DEF_VALUE}}</tbody></table></div>
     </div>
     <div>
       <h3>Midfielders</h3>
       <div class="scroll"><table>
-        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">Proj</th><th class="num">per £m</th><th class="num">Fix</th><th></th></tr></thead>
+        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">xP</th><th class="num">/gw</th><th>By gameweek</th><th class="num">per £m</th><th class="num">Mins</th><th></th></tr></thead>
         <tbody>{{MID_VALUE}}</tbody></table></div>
     </div>
     <div>
       <h3>Forwards</h3>
       <div class="scroll"><table>
-        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">Proj</th><th class="num">per £m</th><th class="num">Fix</th><th></th></tr></thead>
+        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">xP</th><th class="num">/gw</th><th>By gameweek</th><th class="num">per £m</th><th class="num">Mins</th><th></th></tr></thead>
         <tbody>{{FWD_VALUE}}</tbody></table></div>
     </div>
   </div>
 </section>
 
 <section>
-  <h2>Highest projected, regardless of price</h2>
+  <h2>Highest expected points, regardless of price</h2>
   <p>The premium end. Worth reading next to the value table — the gap between them is the money you have to find elsewhere.</p>
   <div class="grid">
     <div>
       <h3>Defenders</h3>
       <div class="scroll"><table>
-        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">Proj</th><th class="num">per £m</th><th class="num">Fix</th><th></th></tr></thead>
+        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">xP</th><th class="num">/gw</th><th>By gameweek</th><th class="num">per £m</th><th class="num">Mins</th><th></th></tr></thead>
         <tbody>{{DEF_TOTAL}}</tbody></table></div>
     </div>
     <div>
       <h3>Midfielders</h3>
       <div class="scroll"><table>
-        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">Proj</th><th class="num">per £m</th><th class="num">Fix</th><th></th></tr></thead>
+        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">xP</th><th class="num">/gw</th><th>By gameweek</th><th class="num">per £m</th><th class="num">Mins</th><th></th></tr></thead>
         <tbody>{{MID_TOTAL}}</tbody></table></div>
     </div>
     <div>
       <h3>Forwards</h3>
       <div class="scroll"><table>
-        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">Proj</th><th class="num">per £m</th><th class="num">Fix</th><th></th></tr></thead>
+        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">xP</th><th class="num">/gw</th><th>By gameweek</th><th class="num">per £m</th><th class="num">Mins</th><th></th></tr></thead>
         <tbody>{{FWD_TOTAL}}</tbody></table></div>
     </div>
     <div>
       <h3>Goalkeepers</h3>
       <div class="scroll"><table>
-        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">Proj</th><th class="num">per £m</th><th class="num">Fix</th><th></th></tr></thead>
+        <thead><tr><th>Player</th><th>Team</th><th class="num">£m</th><th class="num">xP</th><th class="num">/gw</th><th>By gameweek</th><th class="num">per £m</th><th class="num">Mins</th><th></th></tr></thead>
         <tbody>{{GKP_TOTAL}}</tbody></table></div>
     </div>
   </div>
@@ -197,7 +214,7 @@ footer{border-top:1px solid var(--rule);padding-top:1.2rem;font-family:"JetBrain
 
 <footer>
   Generated by gaffer {{GENERATED}} from the public Fantasy Premier League API.<br>
-  Phase 0 — heuristic ranking. Replaced by an expected-points model in Phase 1.
+  Phase 1 — expected points from a team-strength model, a minutes model and the FPL scoring table.
 </footer>
 
 </div>

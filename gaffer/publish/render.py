@@ -11,17 +11,18 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from gaffer import config
-from gaffer.rank import PlayerScore
+from gaffer.rank import PlayerRow
 
 TEMPLATE = Path(__file__).parent / "report_template.html"
 
 
 def build_payload(
     *,
-    scores: list[PlayerScore],
+    scores: list[PlayerRow],
     bootstrap: dict,
     fixture_runs: dict[int, list[dict]],
     horizon: int,
+    strength=None,
 ) -> dict:
     """Assemble the JSON contract. Phase 0 fills `meta`, `players` and `fixtures`;
     `lineup`, `transfers` and `chips` arrive with the optimiser in Phase 2."""
@@ -36,11 +37,15 @@ def build_payload(
             "gameweek": (nxt or cur or events[0])["id"],
             "deadline": (nxt or cur or events[0])["deadline_time"],
             "horizon": horizon,
-            "stage": "phase-0",
-            "method": "heuristic",
+            "stage": "phase-1",
+            "method": "expected-points",
+            "strength_source": getattr(strength, "source", "unknown"),
+            "matches_fitted": getattr(strength, "matches_fitted", 0),
             "warning": (
-                "Ranking is last season's scoring rate adjusted for fixtures and fitness. "
-                "It is not an expected-points model."
+                "Expected points are built from last season's rates until this season has "
+                "results to fit to. Team ratings are currently "
+                f"{getattr(strength, 'source', 'unknown')} "
+                f"({getattr(strength, 'matches_fitted', 0)} matches of results)."
             ),
         },
         "counts": {
@@ -71,7 +76,24 @@ def write_json(payload: dict, path: Path | None = None) -> Path:
     return path
 
 
-def _rows(scores: list[PlayerScore], position: str, limit: int, key) -> str:
+# Bars share one scale across every row, so a weak player's run cannot look like
+# a strong one's. Anything above this is clipped rather than rescaling the board.
+SPARK_CEILING = 9.0
+SPARK_HEIGHT = 20
+
+
+def _spark(xp: list[float]) -> str:
+    """Expected points per gameweek. One series, so the column head is the legend."""
+    bars = []
+    for value in xp:
+        height = max(2, round(min(value, SPARK_CEILING) / SPARK_CEILING * SPARK_HEIGHT))
+        cls = " class='z'" if value <= 0.05 else ""
+        bars.append(f"<span{cls} style='height:{height}px'></span>")
+    label = ", ".join(f"{v:.1f}" for v in xp)
+    return f"<span class='spark' title='{label}'>{''.join(bars)}</span>"
+
+
+def _rows(scores: list[PlayerRow], position: str, limit: int, key) -> str:
     picks = [s for s in scores if s.position == position and s.availability > 0]
     picks.sort(key=key)
     out = []
@@ -87,8 +109,10 @@ def _rows(scores: list[PlayerScore], position: str, limit: int, key) -> str:
             f"<tr><td>{s.name}</td><td class='sub'>{s.team}</td>"
             f"<td class='num'>£{s.price:.1f}</td>"
             f"<td class='num'>{s.projected:.1f}</td>"
+            f"<td class='num'>{s.projected / max(len(s.xp), 1):.2f}</td>"
+            f"<td>{_spark(s.xp)}</td>"
             f"<td class='num'>{s.per_million:.2f}</td>"
-            f"<td class='num'>{s.fixture_score:.2f}</td>"
+            f"<td class='num'>{s.minutes:.0f}</td>"
             f"<td>{flag}</td></tr>"
         )
     return "\n".join(out)
@@ -116,7 +140,7 @@ def _fixture_table(payload: dict, reverse: bool, limit: int = 5) -> str:
 def write_report(payload: dict, path: Path | None = None) -> Path:
     path = path or config.HTML_OUT
     path.parent.mkdir(parents=True, exist_ok=True)
-    scores = [PlayerScore(**p) for p in payload["players"]]
+    scores = [PlayerRow(**p) for p in payload["players"]]
 
     meta, counts = payload["meta"], payload["counts"]
     deadline = datetime.fromisoformat(meta["deadline"].replace("Z", "+00:00"))
