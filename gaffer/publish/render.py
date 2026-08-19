@@ -23,6 +23,9 @@ def build_payload(
     fixture_runs: dict[int, list[dict]],
     horizon: int,
     strength=None,
+    squad=None,
+    lineup=None,
+    transfers=None,
 ) -> dict:
     """Assemble the JSON contract. Phase 0 fills `meta`, `players` and `fixtures`;
     `lineup`, `transfers` and `chips` arrive with the optimiser in Phase 2."""
@@ -37,7 +40,7 @@ def build_payload(
             "gameweek": (nxt or cur or events[0])["id"],
             "deadline": (nxt or cur or events[0])["deadline_time"],
             "horizon": horizon,
-            "stage": "phase-1",
+            "stage": "phase-2",
             "method": "expected-points",
             "strength_source": getattr(strength, "source", "unknown"),
             "matches_fitted": getattr(strength, "matches_fitted", 0),
@@ -61,10 +64,11 @@ def build_payload(
             ]
             for team_id, run in fixture_runs.items()
         },
-        # Reserved for later phases so the contract stays stable.
+        "squad": squad.as_dict() if squad else None,
+        "lineup": lineup.as_dict() if lineup else None,
+        "transfers": [t.as_dict() for t in (transfers or [])],
+        # Reserved for Phase 4 so the contract stays stable.
         "manager": None,
-        "lineup": None,
-        "transfers": [],
         "chips": [],
     }
 
@@ -137,6 +141,65 @@ def _fixture_table(payload: dict, reverse: bool, limit: int = 5) -> str:
     return "\n".join(out)
 
 
+def _pitch(payload: dict) -> str:
+    """The chosen eleven laid out by position, with the bench beneath it."""
+    squad, lineup = payload.get("squad"), payload.get("lineup")
+    if not squad or not lineup:
+        return "<p>No squad selected for this run.</p>"
+
+    by_id = {p["id"]: p for p in payload["players"]}
+    starters, bench = set(lineup["starters"]), lineup["bench"]
+
+    def card(pid: int, muted: bool = False) -> str:
+        row = by_id.get(pid)
+        if not row:
+            return ""
+        badge = ""
+        if pid == lineup["captain"]:
+            badge = "<span class='cap'>C</span>"
+        elif pid == lineup["vice"]:
+            badge = "<span class='cap vice'>V</span>"
+        first = row["xp"][0] if row["xp"] else 0.0
+        return (f"<div class='card{' muted' if muted else ''}'>{badge}"
+                f"<b>{row['name']}</b><i>{row['team']} · £{row['price']:.1f}</i>"
+                f"<u>{first:.1f}</u></div>")
+
+    rows = []
+    for position in ("GKP", "DEF", "MID", "FWD"):
+        line = [pid for pid in lineup["starters"] if by_id.get(pid, {}).get("position") == position]
+        line.sort(key=lambda pid: -(by_id[pid]["xp"][0] if by_id[pid]["xp"] else 0))
+        if line:
+            rows.append("<div class='row'>" + "".join(card(pid) for pid in line) + "</div>")
+
+    bench_html = "".join(card(pid, muted=True) for pid in bench)
+    return (f"<div class='pitch'>{''.join(rows)}</div>"
+            f"<div class='mock-h' style='margin-top:.8rem'>Bench · auto-sub order</div>"
+            f"<div class='bench'>{bench_html}</div>")
+
+
+def _transfer_rows(payload: dict) -> str:
+    by_id = {p["id"]: p for p in payload["players"]}
+    options = payload.get("transfers") or []
+    if not options:
+        return ("<p>No squad linked yet. Pass <code>--entry YOUR_TEAM_ID</code> once the "
+                "season is under way and this becomes transfer advice for your actual team.</p>")
+
+    names = lambda ids: ", ".join(by_id[i]["name"] for i in ids if i in by_id)
+    out = []
+    for i, option in enumerate(options):
+        label = "Roll the transfer" if not option["transfers"] else (
+            f"{names(option['out'])} &rarr; {names(option['in'])}")
+        cls = " best" if i == 0 and option["net_gain"] > 0 else ""
+        sign = "pos" if option["net_gain"] > 0.05 else ("neg" if option["net_gain"] < -0.05 else "neu")
+        band = (f" <span class='band'>± {option['uncertainty']:.1f}</span>"
+                if option["uncertainty"] else "")
+        out.append(
+            f"<div class='opt{cls}'><div class='opt-l'><b>{label}</b>"
+            f"<span>{option['note']}</span></div>"
+            f"<div class='opt-r {sign}'>{option['net_gain']:+.2f}{band}</div></div>")
+    return "".join(out)
+
+
 def write_report(payload: dict, path: Path | None = None) -> Path:
     path = path or config.HTML_OUT
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -160,6 +223,12 @@ def write_report(payload: dict, path: Path | None = None) -> Path:
         "{{WARNING}}": meta["warning"],
         "{{EASY_FIXTURES}}": _fixture_table(payload, reverse=False),
         "{{HARD_FIXTURES}}": _fixture_table(payload, reverse=True),
+        "{{PITCH}}": _pitch(payload),
+        "{{TRANSFERS}}": _transfer_rows(payload),
+        "{{SQUAD_COST}}": f"{payload['squad']['cost']:.1f}" if payload.get("squad") else "—",
+        "{{FORMATION}}": payload["lineup"]["formation"] if payload.get("lineup") else "—",
+        "{{SQUAD_XP}}": (f"{payload['lineup']['expected_points']:.1f}"
+                         if payload.get("lineup") else "—"),
     }
     for position, token in (("GKP", "GKP"), ("DEF", "DEF"), ("MID", "MID"), ("FWD", "FWD")):
         replacements[f"{{{{{token}_VALUE}}}}"] = _rows(scores, position, 8, key=lambda s: -s.per_million)

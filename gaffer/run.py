@@ -8,12 +8,20 @@ import time
 from gaffer import config
 from gaffer.ingest import FplClient
 from gaffer.model import TeamStrength, project, team_fixture_runs
+from gaffer.optimise import best_lineup, evaluate_transfers, pick_squad
 from gaffer.publish import write_json, write_report
 from gaffer.rank import build_board
 from gaffer.store import Store
 
 
-def run(*, horizon: int = config.HORIZON, refresh: bool = False, quiet: bool = False) -> dict:
+def run(
+    *,
+    horizon: int = config.HORIZON,
+    refresh: bool = False,
+    quiet: bool = False,
+    entry_id: int | None = None,
+    optimise: bool = True,
+) -> dict:
     started = time.time()// 1
     log = (lambda *a: None) if quiet else print
 
@@ -48,10 +56,39 @@ def run(*, horizon: int = config.HORIZON, refresh: bool = False, quiet: bool = F
     projections = project(bootstrap, runs, strength)
     scores = build_board(bootstrap, projections, strength)
 
+    squad = lineup = None
+    transfers: list = []
+    positions_by_id = {
+        p["id"]: positions[p["element_type"]] for p in bootstrap["elements"]
+    }
+
+    if optimise:
+        log("  optimising squad …")
+        squad = pick_squad(scores)
+        first_gw_xp = {row.id: (row.xp[0] if row.xp else 0.0) for row in scores}
+        lineup = best_lineup(squad.players, first_gw_xp, positions_by_id)
+        log(f"    £{squad.cost:.1f}m, {lineup.formation}, {squad.status}")
+
+    if entry_id:
+        log(f"  reading entry {entry_id} …")
+        try:
+            picks = client.entry_picks(entry_id, gameweek - 1 if gameweek > 1 else 1)
+            held = [p["element"] for p in picks["picks"]]
+            entry = client.entry(entry_id)
+            bank = (entry.get("last_deadline_bank") or 0) / 10.0
+            transfers = evaluate_transfers(scores, held, bank=bank)
+            lineup = best_lineup(
+                held, {row.id: (row.xp[0] if row.xp else 0.0) for row in scores},
+                positions_by_id)
+            log(f"    {len(transfers)} option(s) priced")
+        except Exception as exc:  # the picks endpoint 404s before the first deadline
+            log(f"    ! could not read entry {entry_id}: {exc}")
+
     from gaffer.publish.render import build_payload
 
     payload = build_payload(scores=scores, bootstrap=bootstrap, fixture_runs=runs,
-                            horizon=horizon, strength=strength)
+                            horizon=horizon, strength=strength, squad=squad,
+                            lineup=lineup, transfers=transfers)
     json_path = write_json(payload)
     html_path = write_report(payload)
 
@@ -75,9 +112,20 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--refresh", action="store_true", help="ignore the cache and refetch")
     parser.add_argument("--quiet", action="store_true", help="suppress progress output")
     parser.add_argument("--top", type=int, default=0, help="also print the top N players to the terminal")
+    parser.add_argument("--entry", type=int, default=None,
+                        help="your FPL team ID — prices transfers against your actual squad")
+    parser.add_argument("--no-optimise", action="store_true",
+                        help="skip squad selection and only build the board")
     args = parser.parse_args(argv)
 
-    payload = run(horizon=args.horizon, refresh=args.refresh, quiet=args.quiet)
+    payload = run(horizon=args.horizon, refresh=args.refresh, quiet=args.quiet,
+                  entry_id=args.entry, optimise=not args.no_optimise)
+
+    if not args.quiet:
+        if payload.get("squad"):
+            _print_squad(payload)
+        for option in payload.get("transfers", []):
+            _print_transfer(option, payload)
 
     if args.top:
         print(f"\n  top {args.top} by projected points ({payload['meta']['horizon']} GW):\n")
@@ -98,6 +146,42 @@ def main(argv: list[str] | None = None) -> int:
                   f"{p['projected'] / payload['meta']['horizon']:>6.2f}"
                   f"{p['per_million']:>8.2f}{p['minutes']:>6.0f}  {', '.join(flags)}")
     return 0
+
+
+def _print_squad(payload: dict) -> None:
+    by_id = {p["id"]: p for p in payload["players"]}
+    squad, lineup = payload["squad"], payload["lineup"]
+    starters = set(lineup["starters"])
+    order = {"GKP": 0, "DEF": 1, "MID": 2, "FWD": 3}
+
+    print(f"\n  optimal squad — £{squad['cost']:.1f}m, {lineup['formation']}, "
+          f"{lineup['expected_points']:.1f} xP in GW{payload['meta']['gameweek']}\n")
+    print(f"  {'player':<16}{'pos':<5}{'team':<6}{'£m':>6}{'xP6':>7}  role")
+    print("  " + "-" * 52)
+    for pid in sorted(squad["players"], key=lambda p: (order[by_id[p]["position"]],
+                                                       -by_id[p]["projected"])):
+        row = by_id[pid]
+        if pid == lineup["captain"]:
+            role = "XI (C)"
+        elif pid == lineup["vice"]:
+            role = "XI (V)"
+        elif pid in starters:
+            role = "XI"
+        else:
+            role = "bench"
+        print(f"  {row['name'][:15]:<16}{row['position']:<5}{row['team']:<6}"
+              f"{row['price']:>6.1f}{row['projected']:>7.1f}  {role}")
+
+
+def _print_transfer(option: dict, payload: dict) -> None:
+    by_id = {p["id"]: p for p in payload["players"]}
+    names = lambda ids: ", ".join(by_id[i]["name"] for i in ids if i in by_id)
+    if not option["transfers"]:
+        print(f"\n  roll the transfer        net  0.00   {option['note']}")
+        return
+    print(f"\n  {names(option['out'])} -> {names(option['in'])}")
+    print(f"    gross {option['gross_gain']:+.2f}  hit -{option['hit']}  "
+          f"net {option['net_gain']:+.2f}  (± {option['uncertainty']:.1f})")
 
 
 if __name__ == "__main__":

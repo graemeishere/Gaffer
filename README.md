@@ -10,17 +10,18 @@ feeding an integer solver.
 
 ## Status
 
-**Phase 1 — done.** Real expected points, built component by component from the
-FPL scoring table rather than fitted to past points totals. That separation
-matters: a defender at a newly solid club is re-rated the moment the team
-ratings move, without waiting for his own points to catch up.
+**Phase 2 — done.** Expected points now feed an integer optimiser that picks the
+squad, the eleven, the armband and the transfer path. It prices options against
+each other rather than issuing orders, and every gain ships with a band, because
+most weeks the choices are within noise of one another and saying so is more
+useful than sounding certain.
 
 | Phase | What it adds | State |
 |---|---|---|
 | 0 | Ingest, cache, SQLite history, JSON contract, ranking board | done |
 | 1 | Minutes model, team strength ratings, expected points | done |
-| 2 | MILP optimiser — squad, eleven, captain, transfer path | next |
-| 3 | Backtest harness against last season | |
+| 2 | MILP optimiser — squad, eleven, captain, transfer path | done |
+| 3 | Backtest harness against last season | next |
 | 4 | Chip timing, deadline-aware scheduling, mini-league strategy | |
 
 ### How a projection is built
@@ -35,7 +36,12 @@ ratings move, without waiting for his own points to catch up.
    perfect talent model with a naive minutes model loses to the reverse.
 3. **Points** — appearance, goals, assists, clean sheet, goals conceded, saves,
    defensive contribution, bonus and cards, each scaled by expected minutes and
-   by how the fixture looks for his team.
+   by how the fixture looks for his team. Each also carries a variance, so a
+   blank-or-haul forward is distinguishable from a steady defender on the same
+   average.
+4. **Optimise** — an integer program picks the best *combination* of fifteen
+   under £100.0m, 2/5/5/3 and three-per-club, choosing the eleven separately for
+   every gameweek in the horizon so the squad is judged on how it can be used.
 
 ## Run it
 
@@ -50,7 +56,9 @@ Writes two files:
 - `data/report.html` — the same run as a standalone page, no server needed.
 
 Options: `--horizon N` (gameweeks to look ahead, default 6), `--refresh`
-(ignore the cache), `--top N` (print a table), `--quiet`.
+(ignore the cache), `--top N` (print a table), `--quiet`, `--no-optimise`
+(board only), and `--entry YOUR_TEAM_ID` to price transfers against your actual
+squad once the season is under way.
 
 ## Layout
 
@@ -60,6 +68,7 @@ gaffer/
   store/     SQLite — appends a snapshot per run, for backtesting
   model/     scoring table, team strength, minutes, expected points
   rank/      assembles projections into the ranked board
+  optimise/  squad selection, lineup and captain, transfer pricing
   publish/   writes latest.json and report.html
 web/         static page that reads latest.json
 tests/       ranking maths

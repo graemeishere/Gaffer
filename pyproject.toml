@@ -3,12 +3,9 @@ name = "gaffer"
 version = "0.1.0"
 description = "A Fantasy Premier League squad engine: expected points, optimisation, and mini-league strategy."
 requires-python = ">=3.11"
-dependencies = ["requests>=2.31"]
+dependencies = ["requests>=2.31", "pulp[cbc]>=3.0"]
 
 [project.optional-dependencies]
-# Added in Phase 1/2 — Phase 0 deliberately runs on the standard library alone.
-model = ["numpy>=1.26", "scipy>=1.11"]
-optimise = ["pulp>=2.8"]
 dev = ["pytest>=8.0"]
 
 [project.scripts]

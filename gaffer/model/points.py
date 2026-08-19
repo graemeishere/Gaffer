@@ -34,7 +34,12 @@ class ExpectedPoints:
     at_home: bool
     total: float
     minutes: float
+    variance: float = 0.0
     components: dict[str, float] = field(default_factory=dict)
+
+    @property
+    def sd(self) -> float:
+        return math.sqrt(max(0.0, self.variance))
 
     def as_dict(self) -> dict:
         return asdict(self)
@@ -137,6 +142,21 @@ def project_fixture(
     )
 
     total = sum(components.values())
+
+    # Spread, not just the average. A striker on 6 expected points is mostly a
+    # blank-or-haul lottery; a defender on 6 is closer to a certainty. Anything
+    # choosing between them for a small league needs to see the difference, so
+    # each random component contributes its own variance: goals and assists are
+    # counts (Poisson, variance equals the mean), clean sheets are a coin flip.
+    goal_value = SCORING.goal_value(position)
+    variance = expected_goals * goal_value ** 2 + expected_assists * SCORING.assist ** 2
+    if clean_sheet_value:
+        p_cs = math.exp(-goals_against) * minutes.p_60
+        variance += p_cs * (1 - p_cs) * clean_sheet_value ** 2
+    if minutes.p_appear < 1.0:
+        variance += minutes.p_appear * (1 - minutes.p_appear) * SCORING.playing_60_plus ** 2
+    variance += components.get("bonus", 0.0)  # bonus is lumpy; treat as count-like
+
     return ExpectedPoints(
         player_id=player["id"],
         gameweek=fixture["gameweek"],
@@ -144,6 +164,7 @@ def project_fixture(
         at_home=at_home,
         total=round(total, 3),
         minutes=minutes.expected_minutes,
+        variance=round(variance, 3),
         components={k: round(v, 3) for k, v in components.items()},
     )
 
