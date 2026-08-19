@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated": "2026-08-19T20:16:59+00:00",
+  "generated": "2026-08-19T21:49:27+00:00",
   "gameweek": 1,
   "deadline": "2026-08-21T17:30:00Z",
   "horizon": 6,
@@ -47,7 +47,7 @@
    "team": "MUN",
    "position": "MID",
    "price": 12.0,
-   "owned": 49.6,
+   "owned": 49.7,
    "xp": [
     5.17,
     5.84,
@@ -119,7 +119,7 @@
    "team": "MUN",
    "position": "MID",
    "price": 8.0,
-   "owned": 32.7,
+   "owned": 32.8,
    "xp": [
     4.25,
     4.85,
@@ -167,7 +167,7 @@
    "team": "CHE",
    "position": "FWD",
    "price": 7.5,
-   "owned": 61.3,
+   "owned": 61.4,
    "xp": [
     3.93,
     4.34,
@@ -311,7 +311,7 @@
    "team": "ARS",
    "position": "DEF",
    "price": 8.0,
-   "owned": 29.2,
+   "owned": 29.3,
    "xp": [
     4.2,
     3.65,
@@ -359,7 +359,7 @@
    "team": "LIV",
    "position": "DEF",
    "price": 6.5,
-   "owned": 18.3,
+   "owned": 18.4,
    "xp": [
     3.55,
     4.12,
@@ -479,7 +479,7 @@
    "team": "CHE",
    "position": "FWD",
    "price": 6.0,
-   "owned": 2.2,
+   "owned": 2.1,
    "xp": [
     3.36,
     3.71,
@@ -575,7 +575,7 @@
    "team": "ARS",
    "position": "MID",
    "price": 7.0,
-   "owned": 8.6,
+   "owned": 8.5,
    "xp": [
     3.69,
     3.23,
@@ -599,7 +599,7 @@
    "team": "ARS",
    "position": "FWD",
    "price": 7.5,
-   "owned": 10.4,
+   "owned": 10.3,
    "xp": [
     3.73,
     3.17,
@@ -719,7 +719,7 @@
    "team": "LEE",
    "position": "FWD",
    "price": 6.0,
-   "owned": 28.3,
+   "owned": 28.4,
    "xp": [
     3.25,
     3.64,
@@ -767,7 +767,7 @@
    "team": "ARS",
    "position": "GKP",
    "price": 6.0,
-   "owned": 35.4,
+   "owned": 35.5,
    "xp": [
     3.61,
     3.28,
@@ -887,7 +887,7 @@
    "team": "LIV",
    "position": "MID",
    "price": 7.5,
-   "owned": 14.3,
+   "owned": 14.2,
    "xp": [
     3.01,
     3.44,
@@ -1031,7 +1031,7 @@
    "team": "EVE",
    "position": "MID",
    "price": 6.0,
-   "owned": 15.7,
+   "owned": 15.8,
    "xp": [
     3.18,
     2.97,
@@ -1247,7 +1247,7 @@
    "team": "EVE",
    "position": "GKP",
    "price": 5.5,
-   "owned": 8.4,
+   "owned": 8.3,
    "xp": [
     2.93,
     2.86,
@@ -1391,7 +1391,7 @@
    "team": "MUN",
    "position": "GKP",
    "price": 5.0,
-   "owned": 18.0,
+   "owned": 17.9,
    "xp": [
     2.78,
     3.1,
@@ -1511,7 +1511,7 @@
    "team": "MCI",
    "position": "GKP",
    "price": 5.5,
-   "owned": 9.2,
+   "owned": 9.1,
    "xp": [
     2.87,
     2.54,
@@ -1823,7 +1823,7 @@
    "team": "BOU",
    "position": "DEF",
    "price": 5.5,
-   "owned": 4.9,
+   "owned": 4.8,
    "xp": [
     1.82,
     3.25,
@@ -2015,7 +2015,7 @@
    "team": "ARS",
    "position": "DEF",
    "price": 5.5,
-   "owned": 30.2,
+   "owned": 30.4,
    "xp": [
     2.92,
     2.44,
@@ -2351,7 +2351,7 @@
    "team": "CHE",
    "position": "DEF",
    "price": 5.5,
-   "owned": 9.1,
+   "owned": 9.2,
    "xp": [
     2.52,
     2.6,
@@ -2399,7 +2399,7 @@
    "team": "AVL",
    "position": "DEF",
    "price": 4.5,
-   "owned": 15.8,
+   "owned": 15.9,
    "xp": [
     2.28,
     2.06,
@@ -2447,7 +2447,7 @@
    "team": "SUN",
    "position": "DEF",
    "price": 4.5,
-   "owned": 6.1,
+   "owned": 6.2,
    "xp": [
     2.56,
     3.05,
@@ -2567,7 +2567,7 @@
    "team": "MCI",
    "position": "MID",
    "price": 7.5,
-   "owned": 4.9,
+   "owned": 4.8,
    "xp": [
     2.43,
     2.11,
@@ -3959,7 +3959,7 @@
    "team": "MUN",
    "position": "DEF",
    "price": 5.0,
-   "owned": 14.1,
+   "owned": 14.2,
    "xp": [
     1.58,
     1.95,
@@ -5063,7 +5063,7 @@
    "team": "MUN",
    "position": "DEF",
    "price": 5.0,
-   "owned": 0.9,
+   "owned": 1.0,
    "xp": [
     1.12,
     1.36,
@@ -5231,7 +5231,7 @@
    "team": "ARS",
    "position": "DEF",
    "price": 5.5,
-   "owned": 10.1,
+   "owned": 9.9,
    "xp": [
     1.22,
     1.08,
@@ -6047,7 +6047,7 @@
    "team": "IPS",
    "position": "DEF",
    "price": 4.0,
-   "owned": 18.1,
+   "owned": 18.0,
    "xp": [
     0.84,
     0.5,
@@ -6407,7 +6407,7 @@
    "team": "TOT",
    "position": "GKP",
    "price": 4.5,
-   "owned": 21.6,
+   "owned": 21.7,
    "xp": [
     0.52,
     0.67,
@@ -6791,7 +6791,7 @@
    "team": "NFO",
    "position": "MID",
    "price": 4.5,
-   "owned": 4.6,
+   "owned": 4.5,
    "xp": [
     0.49,
     0.47,
@@ -8975,7 +8975,7 @@
    "team": "ARS",
    "position": "MID",
    "price": 6.5,
-   "owned": 17.8,
+   "owned": 18.0,
    "xp": [
     0.14,
     0.14,
@@ -10031,7 +10031,7 @@
    "team": "COV",
    "position": "GKP",
    "price": 4.5,
-   "owned": 1.0,
+   "owned": 1.1,
    "xp": [
     0.09,
     0.16,
@@ -11663,7 +11663,7 @@
    "team": "BHA",
    "position": "FWD",
    "price": 6.0,
-   "owned": 0.0,
+   "owned": 0.1,
    "xp": [
     0.11,
     0.11,
@@ -13271,7 +13271,7 @@
    "team": "LEE",
    "position": "FWD",
    "price": 5.0,
-   "owned": 0.5,
+   "owned": 0.4,
    "xp": [
     0.0,
     0.0,
@@ -13775,7 +13775,7 @@
    "team": "TOT",
    "position": "DEF",
    "price": 4.5,
-   "owned": 2.8,
+   "owned": 2.7,
    "xp": [
     0.0,
     0.0,
