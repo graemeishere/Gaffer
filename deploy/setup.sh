@@ -101,8 +101,8 @@ install_web_server() {
   # nginx runs as www-data and has to traverse the service user's home to reach
   # the files. Only the published directory is opened up; the rest of the home,
   # including .env and the ssh key, stays private.
-  chmod o+x "$HOME_DIR"
-  chmod -R o+rX "$HOME_DIR/web"
+  chmod o+rx "$PUBLISH_DIR"
+  chmod -R o+rX "$PUBLISH_DIR"
 
   log "Writing the site"
   cat > /etc/nginx/sites-available/gaffer <<NGINX
@@ -111,7 +111,7 @@ server {
     listen [::]:80 default_server;
     server_name $SERVER_NAME;
 
-    root $HOME_DIR/web;
+    root $PUBLISH_DIR;
     index report.html index.html;
 
     # Rewritten every run, so it must never be cached.
@@ -140,7 +140,7 @@ NGINX
   address="$(hostname -I 2>/dev/null | awk '{print $1}')"
   cat <<DONE
 
-  Serving $HOME_DIR/web
+  Serving $PUBLISH_DIR
 
      http://${address:-your-server-ip}/
 
@@ -185,7 +185,7 @@ if [[ $RESET -eq 1 ]]; then
 fi
 
 if [[ $SERVE -eq 1 ]]; then
-  [[ -d "$HOME_DIR/web" ]] || { echo "Run setup.sh first — $HOME_DIR/web does not exist."; exit 1; }
+  [[ -d "$PUBLISH_DIR" ]] || { echo "Run setup.sh first — $PUBLISH_DIR does not exist."; exit 1; }
   apt-get update -qq
   install_web_server
   exit 0
@@ -194,6 +194,9 @@ fi
 log "Installing dependencies"
 apt-get update -qq
 apt-get install -y -qq python3 python3-venv python3-pip git coinor-cbc >/dev/null
+
+STATE_DIR="${GAFFER_STATE_DIR:-/var/lib/gaffer}"
+PUBLISH_DIR="${GAFFER_PUBLISH_DIR:-/var/www/gaffer}"
 
 log "Creating the service user"
 id -u "$USER_NAME" >/dev/null 2>&1 || useradd --system --create-home --home-dir "$HOME_DIR" --shell /bin/bash "$USER_NAME"
@@ -347,6 +350,10 @@ log "Fetching the code"
 if [[ -d "$HOME_DIR/.git" ]]; then
   as_service_user git -C "$HOME_DIR" remote set-url origin "$REPO"
   as_service_user git -C "$HOME_DIR" fetch --quiet origin "$BRANCH"
+  # Discard anything the engine has written into tracked files before switching.
+  # They are all regenerated on the next run, and leaving them makes the update
+  # fail with "local changes would be overwritten".
+  as_service_user git -C "$HOME_DIR" reset --hard --quiet HEAD
   as_service_user git -C "$HOME_DIR" checkout --quiet -B "$BRANCH" "origin/$BRANCH"
   as_service_user git -C "$HOME_DIR" reset --hard --quiet "origin/$BRANCH"
 else
@@ -360,6 +367,18 @@ else
     || as_service_user git -C "$HOME_DIR" remote set-url origin "$REPO"
   as_service_user git -C "$HOME_DIR" fetch --quiet origin "$BRANCH"
   as_service_user git -C "$HOME_DIR" checkout --quiet -B "$BRANCH" "origin/$BRANCH"
+fi
+
+log "Preparing state and publish directories"
+# Outside the git checkout on purpose: anything the engine writes into a tracked
+# file dirties the working tree and breaks the next update.
+mkdir -p "$STATE_DIR" "$PUBLISH_DIR"
+chown -R "$USER_NAME:$USER_NAME" "$STATE_DIR" "$PUBLISH_DIR"
+# Carry over a record from a previous layout, so history is not lost.
+if [[ -f "$HOME_DIR/record/predictions.csv" && ! -f "$STATE_DIR/predictions.csv" ]]; then
+  cp "$HOME_DIR/record/predictions.csv" "$STATE_DIR/" 2>/dev/null || true
+  cp "$HOME_DIR/record/actuals.csv" "$STATE_DIR/" 2>/dev/null || true
+  chown -R "$USER_NAME:$USER_NAME" "$STATE_DIR"
 fi
 
 log "Building the virtualenv"
@@ -383,8 +402,10 @@ User=$USER_NAME
 WorkingDirectory=$HOME_DIR
 # Optional, hence the leading dash: the unit starts fine before the file exists.
 EnvironmentFile=-$HOME_DIR/.env
+Environment=GAFFER_STATE_DIR=$STATE_DIR
+Environment=GAFFER_PUBLISH_DIR=$PUBLISH_DIR
 ExecStart=$HOME_DIR/.venv/bin/python -m gaffer.run --quiet
-ExecStartPost=/bin/sh -c 'cp $HOME_DIR/data/latest.json $HOME_DIR/data/report.html $HOME_DIR/web/ 2>/dev/null || true'
+ExecStartPost=/bin/sh -c 'cp $HOME_DIR/data/latest.json $HOME_DIR/data/report.html $PUBLISH_DIR/ 2>/dev/null || true'
 TimeoutStartSec=600
 Nice=10
 
@@ -393,7 +414,7 @@ PrivateTmp=true
 ProtectSystem=strict
 ProtectHome=true
 NoNewPrivileges=true
-ReadWritePaths=$HOME_DIR
+ReadWritePaths=$HOME_DIR $STATE_DIR $PUBLISH_DIR
 
 [Install]
 WantedBy=multi-user.target
@@ -417,7 +438,9 @@ systemctl daemon-reload
 systemctl enable --now gaffer.timer >/dev/null
 
 log "First run (this may take a minute)"
-( cd "$HOME_DIR" && sudo -u "$USER_NAME" env HOME="$HOME_DIR" "$HOME_DIR/.venv/bin/python" -m gaffer.run --quiet ) || {
+( cd "$HOME_DIR" && sudo -u "$USER_NAME" env HOME="$HOME_DIR" \
+    GAFFER_STATE_DIR="$STATE_DIR" GAFFER_PUBLISH_DIR="$PUBLISH_DIR" \
+    "$HOME_DIR/.venv/bin/python" -m gaffer.run --quiet ) || {
   echo "First run failed — check: sudo journalctl -u gaffer.service -n 50"; exit 1; }
 sudo -u "$USER_NAME" cp "$HOME_DIR/data/latest.json" "$HOME_DIR/data/report.html" "$HOME_DIR/web/" 2>/dev/null || true
 

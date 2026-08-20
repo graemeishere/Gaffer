@@ -42,10 +42,21 @@ DATA = ROOT / "data"
 CACHE = DATA / "cache"
 DB_PATH = DATA / "gaffer.sqlite"
 JSON_OUT = DATA / "latest.json"
-# The prediction log is committed, unlike the SQLite file, because the
-# machines this runs on are all disposable.
-PREDICTIONS_CSV = ROOT / "record" / "predictions.csv"
-ACTUALS_CSV = ROOT / "record" / "actuals.csv"
+# The prediction log is committed, unlike the SQLite file, because the machines
+# this runs on are all disposable.
+#
+# On a deployed box it has to live OUTSIDE the checkout. Writing into a tracked
+# file means every run leaves the working tree dirty, and the next update fails
+# with "local changes would be overwritten" — hourly. GAFFER_STATE_DIR moves it
+# somewhere git does not care about; unset, it stays in the repo, which is what
+# CI wants.
+STATE_DIR = Path(os.environ.get("GAFFER_STATE_DIR") or (ROOT / "record"))
+PREDICTIONS_CSV = STATE_DIR / "predictions.csv"
+ACTUALS_CSV = STATE_DIR / "actuals.csv"
+
+# Where the published copy is written. Same reasoning: on a deployed box it must
+# not be inside the checkout.
+PUBLISH_DIR = Path(os.environ.get("GAFFER_PUBLISH_DIR") or (ROOT / "web"))
 HTML_OUT = DATA / "report.html"
 
 API = "https://fantasy.premierleague.com/api"

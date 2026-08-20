@@ -169,6 +169,32 @@ Check it took:
 sudo -u gaffer /srv/gaffer/.venv/bin/python -m gaffer.run
 ```
 
+## "local changes would be overwritten"
+
+The engine writes a prediction log and a published board on every run. If those
+land inside the git checkout they leave the working tree dirty, and the next
+update fails — hourly, once the timer is running.
+
+`setup.sh` now keeps both outside the checkout:
+
+| | |
+|---|---|
+| `/var/lib/gaffer` | the prediction log and results |
+| `/var/www/gaffer` | the board nginx serves |
+
+Both are configurable with `GAFFER_STATE_DIR` and `GAFFER_PUBLISH_DIR`. Left
+unset they stay in the repository, which is what CI wants — there the checkout
+is thrown away after every run and committing the log is the whole point.
+
+An existing `record/` inside the checkout is copied across on the next install,
+so no history is lost. If an update still complains, discard the generated files
+and re-run:
+
+```bash
+sudo -u gaffer git -C /srv/gaffer reset --hard
+sudo bash deploy/setup.sh
+```
+
 ## Starting over
 
 ```bash
