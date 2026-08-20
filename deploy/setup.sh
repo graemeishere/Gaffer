@@ -23,6 +23,55 @@ USER_NAME="${GAFFER_USER:-gaffer}"
 
 log() { printf '\033[1;33m==>\033[0m %s\n' "$*"; }
 
+# The key types GitHub will accept in a deploy key field.
+KEY_TYPES="ssh-rsa ssh-ed25519 ecdsa-sha2-nistp256 ecdsa-sha2-nistp384 ecdsa-sha2-nistp521 sk-ecdsa-sha2-nistp256@openssh.com sk-ssh-ed25519@openssh.com"
+
+show_deploy_key() {
+  # Generate the key if it is missing, then print the PUBLIC half and nothing
+  # else. GitHub validates the first word of what you paste, so the usual
+  # failure is pasting the private key — same directory, one character
+  # shorter, and completely wrong. Printing only the checked value removes
+  # the chance of picking the wrong file.
+  local key="$HOME_DIR/.ssh/id_ed25519"
+  if [[ ! -f "$key.pub" ]]; then
+    log "Generating a deploy key"
+    sudo -u "$USER_NAME" ssh-keygen -t ed25519 -f "$key" -N "" -C "gaffer@$(hostname)" -q
+  fi
+
+  local first
+  first="$(awk '{print $1; exit}' "$key.pub")"
+  if [[ " $KEY_TYPES " != *" $first "* ]]; then
+    echo "  $key.pub does not look like a public key (starts with '$first')." >&2
+    echo "  Delete $key and $key.pub and re-run to regenerate." >&2
+    return 1
+  fi
+
+  cat <<BANNER
+
+  ---------------------------------------------------------------------------
+  Copy the single line between the markers — all of it, nothing either side.
+
+  It is the PUBLIC key. The private one lives beside it in $key
+  and must never leave this machine.
+  ---------------------------------------------------------------------------
+
+BANNER
+  echo "----- copy from here -----"
+  cat "$key.pub"
+  echo "----- to here -----"
+  cat <<BANNER
+
+  Paste it into GitHub:
+     the repository -> Settings -> Deploy keys -> Add deploy key
+     Title: anything.  Allow write access: leave unticked.
+
+  Then run this script again.
+
+BANNER
+}
+
+[[ ${1:-} == "--deploy-key" ]] && DEPLOY_KEY_ONLY=1 || DEPLOY_KEY_ONLY=0
+
 [[ $EUID -eq 0 ]] || { echo "Run with sudo."; exit 1; }
 
 log "Installing dependencies"
@@ -39,26 +88,23 @@ sudo -u "$USER_NAME" ssh-keyscan -t ed25519 github.com >> "$HOME_DIR/.ssh/known_
 sort -u "$HOME_DIR/.ssh/known_hosts" -o "$HOME_DIR/.ssh/known_hosts" 2>/dev/null || true
 chown -R "$USER_NAME:$USER_NAME" "$HOME_DIR"
 
+if [[ $DEPLOY_KEY_ONLY -eq 1 ]]; then
+  show_deploy_key
+  exit $?
+fi
+
 log "Checking access to $REPO"
 if ! sudo -u "$USER_NAME" GIT_TERMINAL_PROMPT=0 git ls-remote --heads "$REPO" >/dev/null 2>&1; then
+  echo
+  echo "  Cannot reach $REPO."
+  echo
+  echo "  If it is private over https, that is the cause: GitHub removed password"
+  echo "  authentication for git in 2021, so no password is accepted."
+  show_deploy_key || true
   cat <<'HELP'
-
-  Cannot reach the repository.
-
-  If it is private and you are using an https:// URL, that is the cause: GitHub
-  removed password authentication for git in 2021, so it fails whatever you type.
-
-  Fix it with a deploy key — read-only and scoped to this one repository:
-
-      sudo -u gaffer ssh-keygen -t ed25519 -f /srv/gaffer/.ssh/id_ed25519 -N "" -C "gaffer vps"
-      sudo cat /srv/gaffer/.ssh/id_ed25519.pub
-
-  Paste that into GitHub: the repository -> Settings -> Deploy keys -> Add,
-  leaving "Allow write access" unticked. Then re-run this script.
-
   Alternatives: a fine-grained personal access token with Contents:Read, used as
-  the password over https; or simply make the repository public — nothing in it
-  is secret, it holds no credentials, and that removes the problem entirely.
+  the password over https; or make the repository public — nothing in it is
+  secret, it holds no credentials, and that removes the problem entirely.
 
 HELP
   exit 1

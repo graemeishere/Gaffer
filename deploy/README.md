@@ -16,16 +16,33 @@ remote: Invalid username or token. Password authentication is not supported
 No password works, because none is accepted. Pick one of these instead.
 
 **A deploy key (recommended).** Read-only, scoped to this one repository, never
-expires, and grants nothing else on your account:
+expires, and grants nothing else on your account. Let the script produce it:
 
 ```bash
-sudo -u gaffer ssh-keygen -t ed25519 -f /srv/gaffer/.ssh/id_ed25519 -N "" -C "gaffer vps"
-sudo cat /srv/gaffer/.ssh/id_ed25519.pub
+sudo bash deploy/setup.sh --deploy-key
 ```
 
-Paste that into the repository's **Settings → Deploy keys → Add deploy key**,
-leaving *Allow write access* unticked. `setup.sh` already clones over SSH, so
-nothing else changes.
+That generates the key if it does not exist, checks it is the public half, and
+prints just that line between two markers. Copy everything between them into the
+repository's **Settings → Deploy keys → Add deploy key**, leaving *Allow write
+access* unticked, then re-run `sudo bash deploy/setup.sh`.
+
+### "Begins with 'ssh-rsa', 'ssh-ed25519', …"
+
+GitHub checks the **first word** of what you paste. That message means the first
+word was not a key type, and it is nearly always one of two things:
+
+- **You pasted the private key.** The two files sit side by side and differ by
+  four characters: `id_ed25519` is private, `id_ed25519.pub` is public. The
+  private one begins `-----BEGIN OPENSSH PRIVATE KEY-----`, spans many lines,
+  and must never leave the machine. The public one is a single line beginning
+  `ssh-ed25519`.
+- **The copy picked up something extra** — a shell prompt, the command itself,
+  or a line break inserted by the terminal. The public key is one unbroken line;
+  if what you pasted wraps, it is wrong.
+
+Running with `--deploy-key` avoids both, because it prints only the value it has
+already checked.
 
 **A personal access token.** Fine-grained, `Contents: Read` on this repository
 only, used as the password over HTTPS. Rotate it when it expires.
