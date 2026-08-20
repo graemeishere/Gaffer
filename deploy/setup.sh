@@ -10,8 +10,14 @@
 
 set -euo pipefail
 
-REPO="${GAFFER_REPO:-https://github.com/graemeishere/Timesplitters.git}"
-BRANCH="${GAFFER_BRANCH:-main}"
+# Default to SSH. GitHub removed password authentication for git over HTTPS in
+# 2021, so cloning a private repo that way fails with "Password authentication is
+# not supported" no matter what you type. A deploy key is read-only, scoped to
+# this one repository, and never expires — see deploy/README.md.
+REPO="${GAFFER_REPO:-git@github.com:graemeishere/Gaffer.git}"
+# Empty means "whatever the remote's default branch is". Hardcoding a branch
+# name is how you end up cloning one that does not exist.
+BRANCH="${GAFFER_BRANCH:-}"
 HOME_DIR="${GAFFER_HOME:-/srv/gaffer}"
 USER_NAME="${GAFFER_USER:-gaffer}"
 
@@ -24,13 +30,54 @@ apt-get update -qq
 apt-get install -y -qq python3 python3-venv python3-pip git coinor-cbc >/dev/null
 
 log "Creating the service user"
-id -u "$USER_NAME" >/dev/null 2>&1 || useradd --system --create-home --home-dir "$HOME_DIR" --shell /usr/sbin/nologin "$USER_NAME"
-mkdir -p "$HOME_DIR"
+id -u "$USER_NAME" >/dev/null 2>&1 || useradd --system --create-home --home-dir "$HOME_DIR" --shell /bin/bash "$USER_NAME"
+mkdir -p "$HOME_DIR/.ssh"
+chmod 700 "$HOME_DIR/.ssh"
+# Trust GitHub's host key up front so the first clone is not blocked by a prompt
+# the service user can never answer.
+sudo -u "$USER_NAME" ssh-keyscan -t ed25519 github.com >> "$HOME_DIR/.ssh/known_hosts" 2>/dev/null || true
+sort -u "$HOME_DIR/.ssh/known_hosts" -o "$HOME_DIR/.ssh/known_hosts" 2>/dev/null || true
 chown -R "$USER_NAME:$USER_NAME" "$HOME_DIR"
+
+log "Checking access to $REPO"
+if ! sudo -u "$USER_NAME" GIT_TERMINAL_PROMPT=0 git ls-remote --heads "$REPO" >/dev/null 2>&1; then
+  cat <<'HELP'
+
+  Cannot reach the repository.
+
+  If it is private and you are using an https:// URL, that is the cause: GitHub
+  removed password authentication for git in 2021, so it fails whatever you type.
+
+  Fix it with a deploy key — read-only and scoped to this one repository:
+
+      sudo -u gaffer ssh-keygen -t ed25519 -f /srv/gaffer/.ssh/id_ed25519 -N "" -C "gaffer vps"
+      sudo cat /srv/gaffer/.ssh/id_ed25519.pub
+
+  Paste that into GitHub: the repository -> Settings -> Deploy keys -> Add,
+  leaving "Allow write access" unticked. Then re-run this script.
+
+  Alternatives: a fine-grained personal access token with Contents:Read, used as
+  the password over https; or simply make the repository public — nothing in it
+  is secret, it holds no credentials, and that removes the problem entirely.
+
+HELP
+  exit 1
+fi
+
+# Ask the remote what its default branch is rather than assuming.
+if [[ -z "$BRANCH" ]]; then
+  BRANCH="$(sudo -u "$USER_NAME" git ls-remote --symref "$REPO" HEAD 2>/dev/null \
+            | sed -n 's|^ref: refs/heads/\([^\t]*\).*|\1|p' | head -1)"
+  [[ -n "$BRANCH" ]] || BRANCH="$(sudo -u "$USER_NAME" git ls-remote --heads "$REPO" \
+            | sed -n 's|.*refs/heads/||p' | head -1)"
+fi
+log "Using branch $BRANCH"
 
 log "Fetching the code"
 if [[ -d "$HOME_DIR/.git" ]]; then
+  sudo -u "$USER_NAME" git -C "$HOME_DIR" remote set-url origin "$REPO"
   sudo -u "$USER_NAME" git -C "$HOME_DIR" fetch --quiet origin "$BRANCH"
+  sudo -u "$USER_NAME" git -C "$HOME_DIR" checkout --quiet -B "$BRANCH" "origin/$BRANCH"
   sudo -u "$USER_NAME" git -C "$HOME_DIR" reset --hard --quiet "origin/$BRANCH"
 else
   sudo -u "$USER_NAME" git clone --quiet --branch "$BRANCH" "$REPO" "$HOME_DIR"

@@ -8,6 +8,7 @@ name: deploy
 on:
   push:
     branches: [claude/fantasy-football-recommendations-7q0di3, main]
+  # Both listed so this keeps working if the branch is later merged to main.
   workflow_dispatch:
 
 concurrency:
