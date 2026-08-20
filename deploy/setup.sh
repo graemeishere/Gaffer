@@ -10,11 +10,13 @@
 
 set -euo pipefail
 
-# Default to SSH. GitHub removed password authentication for git over HTTPS in
-# 2021, so cloning a private repo that way fails with "Password authentication is
-# not supported" no matter what you type. A deploy key is read-only, scoped to
-# this one repository, and never expires — see deploy/README.md.
-REPO="${GAFFER_REPO:-git@github.com:graemeishere/Gaffer.git}"
+# Default to HTTPS: a public repository needs no credentials at all, and many
+# hosts block outbound port 22 so SSH can fail for reasons no key will fix. If
+# HTTPS cannot reach it — a private repo, since GitHub stopped accepting
+# passwords for git in 2021 — the script falls back to SSH and helps set up a
+# deploy key.
+REPO="${GAFFER_REPO:-https://github.com/graemeishere/Gaffer.git}"
+REPO_SSH="${GAFFER_REPO_SSH:-git@github.com:graemeishere/Gaffer.git}"
 # Empty means "whatever the remote's default branch is". Hardcoding a branch
 # name is how you end up cloning one that does not exist.
 BRANCH="${GAFFER_BRANCH:-}"
@@ -93,40 +95,109 @@ if [[ $DEPLOY_KEY_ONLY -eq 1 ]]; then
   exit $?
 fi
 
-log "Checking access to $REPO"
-if ! sudo -u "$USER_NAME" GIT_TERMINAL_PROMPT=0 git ls-remote --heads "$REPO" >/dev/null 2>&1; then
+as_service_user() {
+  # Set HOME explicitly. Whether sudo does this for you depends on the sudoers
+  # configuration, and ssh looks for its keys under $HOME — so leaving it to
+  # chance means the key is found on one machine and not the next.
+  sudo -u "$USER_NAME" env HOME="$HOME_DIR" GIT_TERMINAL_PROMPT=0 "$@"
+}
+
+reachable() { as_service_user git ls-remote --heads "$1" >/dev/null 2>&1; }
+
+diagnose() {
+  # Say what is actually broken instead of guessing. Each layer is checked
+  # separately, because "cannot reach the repository" has several very different
+  # causes and the fix for one is useless for the others.
   echo
-  echo "  Cannot reach $REPO."
+  echo "  Diagnosing:"
+  if getent hosts github.com >/dev/null 2>&1; then
+    echo "    DNS for github.com          ok"
+  else
+    echo "    DNS for github.com          FAILED — this box cannot resolve names"
+    echo "    Nothing else will work until that is fixed."
+    return
+  fi
+
+  if timeout 8 bash -c ':> /dev/tcp/github.com/443' 2>/dev/null; then
+    echo "    outbound 443 (https)        ok"
+    local https_ok=1
+  else
+    echo "    outbound 443 (https)        BLOCKED — check the firewall"
+    local https_ok=0
+  fi
+
+  if timeout 8 bash -c ':> /dev/tcp/github.com/22' 2>/dev/null; then
+    echo "    outbound 22 (ssh)           ok"
+  else
+    echo "    outbound 22 (ssh)           BLOCKED"
+    echo "                                No deploy key can work over a blocked port."
+    if [[ $https_ok -eq 1 ]]; then
+      echo "                                Use https instead — see below."
+    fi
+  fi
+
+  if [[ -f "$HOME_DIR/.ssh/id_ed25519" ]]; then
+    echo "    deploy key present          yes ($HOME_DIR/.ssh/id_ed25519)"
+    local probe
+    probe="$(as_service_user ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new \
+             -T git@github.com 2>&1 | head -1)"
+    echo "    github ssh says             ${probe:-(no response)}"
+  else
+    echo "    deploy key present          no"
+  fi
   echo
-  echo "  If it is private over https, that is the cause: GitHub removed password"
-  echo "  authentication for git in 2021, so no password is accepted."
-  show_deploy_key || true
+}
+
+log "Checking access to the repository"
+if reachable "$REPO"; then
+  log "Reachable over https — no credentials needed"
+elif reachable "$REPO_SSH"; then
+  log "https failed but ssh works — using $REPO_SSH"
+  REPO="$REPO_SSH"
+else
+  echo
+  echo "  Cannot reach the repository by either route:"
+  echo "    $REPO"
+  echo "    $REPO_SSH"
+  diagnose
   cat <<'HELP'
-  Alternatives: a fine-grained personal access token with Contents:Read, used as
-  the password over https; or make the repository public — nothing in it is
-  secret, it holds no credentials, and that removes the problem entirely.
+  Most likely one of:
+
+    * The repository is private and this box has no credentials. Add a deploy
+      key (below), or make the repository public — nothing in it is secret.
+    * Outbound 22 is blocked, so ssh cannot work whatever key you add. If 443 is
+      open and the repo is public, https will work: re-run with
+          sudo GAFFER_REPO=https://github.com/OWNER/REPO.git bash deploy/setup.sh
+    * The URL is wrong. Check the owner and repository name, including its case.
 
 HELP
+  if [[ -f "$HOME_DIR/.ssh/id_ed25519.pub" ]]; then
+    echo "  A deploy key already exists here. If you have added it to GitHub and"
+    echo "  this still fails, the problem is not the key — see the diagnosis above."
+    echo
+  else
+    show_deploy_key || true
+  fi
   exit 1
 fi
 
 # Ask the remote what its default branch is rather than assuming.
 if [[ -z "$BRANCH" ]]; then
-  BRANCH="$(sudo -u "$USER_NAME" git ls-remote --symref "$REPO" HEAD 2>/dev/null \
+  BRANCH="$(as_service_user git ls-remote --symref "$REPO" HEAD 2>/dev/null \
             | sed -n 's|^ref: refs/heads/\([^\t]*\).*|\1|p' | head -1)"
-  [[ -n "$BRANCH" ]] || BRANCH="$(sudo -u "$USER_NAME" git ls-remote --heads "$REPO" \
+  [[ -n "$BRANCH" ]] || BRANCH="$(as_service_user git ls-remote --heads "$REPO" \
             | sed -n 's|.*refs/heads/||p' | head -1)"
 fi
 log "Using branch $BRANCH"
 
 log "Fetching the code"
 if [[ -d "$HOME_DIR/.git" ]]; then
-  sudo -u "$USER_NAME" git -C "$HOME_DIR" remote set-url origin "$REPO"
-  sudo -u "$USER_NAME" git -C "$HOME_DIR" fetch --quiet origin "$BRANCH"
-  sudo -u "$USER_NAME" git -C "$HOME_DIR" checkout --quiet -B "$BRANCH" "origin/$BRANCH"
-  sudo -u "$USER_NAME" git -C "$HOME_DIR" reset --hard --quiet "origin/$BRANCH"
+  as_service_user git -C "$HOME_DIR" remote set-url origin "$REPO"
+  as_service_user git -C "$HOME_DIR" fetch --quiet origin "$BRANCH"
+  as_service_user git -C "$HOME_DIR" checkout --quiet -B "$BRANCH" "origin/$BRANCH"
+  as_service_user git -C "$HOME_DIR" reset --hard --quiet "origin/$BRANCH"
 else
-  sudo -u "$USER_NAME" git clone --quiet --branch "$BRANCH" "$REPO" "$HOME_DIR"
+  as_service_user git clone --quiet --branch "$BRANCH" "$REPO" "$HOME_DIR"
 fi
 
 log "Building the virtualenv"

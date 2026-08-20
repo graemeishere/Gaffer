@@ -177,9 +177,10 @@ cd Gaffer
 sudo bash deploy/setup.sh
 ```
 
-If the repository is private, set up a deploy key first — GitHub does not accept
-passwords for git, so an HTTPS clone cannot work. `deploy/README.md` has the
-three one-minute options.
+The clone is over https and needs no credentials while the repository is public.
+If it is private, `deploy/README.md` covers the options — and note that a host
+blocking outbound port 22 will defeat any deploy key, so check that before
+blaming the key.
 
 That installs Python and the CBC solver, creates a service user, and enables a
 systemd timer that fires hourly — hourly because the engine reads the next

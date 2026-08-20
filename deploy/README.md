@@ -4,6 +4,30 @@ The engine runs to completion and exits — it is not a server, so there is
 nothing to keep alive, nothing to restart and no socket to manage. Deployment is
 a timer, a virtualenv, and a directory of static files.
 
+## If the repository is public, there is nothing to set up
+
+`setup.sh` clones over https, which needs no credentials at all. No key, no
+token, no account. Skip to the next section.
+
+If you hit this while the repo was private and the script keeps printing a
+deploy key even after you have added it, the key is almost certainly not the
+problem. **Many hosts block outbound port 22**, and no key can work over a
+blocked port. Check:
+
+```bash
+timeout 5 bash -c ':> /dev/tcp/github.com/22'  && echo "22 open" || echo "22 blocked"
+timeout 5 bash -c ':> /dev/tcp/github.com/443' && echo "443 open" || echo "443 blocked"
+```
+
+If 443 is open and 22 is not, use https and forget the key:
+
+```bash
+sudo GAFFER_REPO=https://github.com/graemeishere/Gaffer.git bash deploy/setup.sh
+```
+
+Current versions of the script try https first, fall back to ssh, and print a
+layer-by-layer diagnosis rather than assuming the cause.
+
 ## If the repository is private, do this first
 
 GitHub removed password authentication for git over HTTPS in 2021. Cloning a
