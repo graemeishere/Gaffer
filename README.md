@@ -94,7 +94,31 @@ to write the JSON; the page's only job is to read it. That keeps hosting
 swappable and lets the model be developed against the same file the server
 produces.
 
-## Does it work?
+## Is it working *this* season?
+
+```bash
+python -m gaffer.score           # what it predicted vs what happened
+python -m gaffer.score --json
+```
+
+Every run writes its projections to `record/predictions.csv` before the
+gameweek, and results are pulled from the live endpoint after it. Scoring uses
+the last projection made *before* the deadline — the one you could actually have
+acted on; marking a later one would be showing the model the answers first.
+
+`record/` is committed on purpose. The SQLite store is local and disposable, CI
+runs in a fresh container each time, and a prediction that only exists on a
+machine about to disappear is the same as no prediction. Finished gameweeks are
+pruned to the single projection that gets scored, which keeps the log at a few
+thousand rows a season rather than a million.
+
+This is the measurement that matters. The historical backtest below could only
+reach half the model, because past team assignments are not exposed and fixtures
+never entered it. This half is scored on real fixtures, real injuries and real
+rotation, and it is the only thing that can settle whether the engine beats
+intuition.
+
+## Does it work historically?
 
 ```bash
 python -m gaffer.backtest            # score the model against naive strategies

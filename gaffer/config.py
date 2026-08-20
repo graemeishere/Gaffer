@@ -6,6 +6,10 @@ DATA = ROOT / "data"
 CACHE = DATA / "cache"
 DB_PATH = DATA / "gaffer.sqlite"
 JSON_OUT = DATA / "latest.json"
+# The prediction log is committed, unlike the SQLite file, because the
+# machines this runs on are all disposable.
+PREDICTIONS_CSV = ROOT / "record" / "predictions.csv"
+ACTUALS_CSV = ROOT / "record" / "actuals.csv"
 HTML_OUT = DATA / "report.html"
 
 API = "https://fantasy.premierleague.com/api"

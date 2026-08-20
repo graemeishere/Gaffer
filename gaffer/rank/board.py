@@ -22,6 +22,7 @@ class PlayerRow:
     price: float
     owned: float
     xp: list[float]        # one entry per gameweek in the horizon
+    var: list[float]       # spread on each, so a band travels with every number
     projected: float       # their sum
     per_million: float
     minutes: float         # expected minutes per match
@@ -73,6 +74,7 @@ def build_board(
         moved = (player.get("team_join_date") or "") >= config.TRANSFER_WINDOW_START
         price = player["now_cost"] / 10.0
         xp = [round(r.total, 2) for r in runs]
+        var = [round(r.variance, 3) for r in runs]
         projected = sum(xp)
 
         difficulty = [
@@ -96,6 +98,7 @@ def build_board(
             price=price,
             owned=float(player.get("selected_by_percent") or 0),
             xp=xp,
+            var=var,
             projected=round(projected, 2),
             per_million=round(projected / price, 3) if price else 0.0,
             minutes=minutes.expected_minutes,

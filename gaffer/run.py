@@ -45,9 +45,27 @@ def run(
 
     log("  storing snapshot …")
     with Store() as store:
+        # Restore the durable log first — this container has no memory of
+        # previous runs, and the record is the whole point.
+        restored = store.import_predictions(config.PREDICTIONS_CSV)
+        restored_actuals = store.import_actuals(config.ACTUALS_CSV)
+        if restored or restored_actuals:
+            log(f"    restored {restored} predictions, {restored_actuals} results from the record")
         store.upsert_reference(bootstrap["teams"], bootstrap["elements"], positions)
         store.upsert_fixtures(fixtures)
         store.append_snapshot(bootstrap["elements"], gameweek)
+
+        # Pull results for any finished gameweek we have not scored yet. One call
+        # per gameweek, and only ever for gameweeks that are already over.
+        for event in events:
+            if event.get("finished") and event["id"] not in set(store.scored_gameweeks()):
+                try:
+                    added = store.record_actuals(event["id"], client.event_live(event["id"]))
+                    if added:
+                        log(f"    recorded {added} results for GW{event['id']}")
+                except Exception as exc:
+                    log(f"    ! could not read results for GW{event['id']}: {exc}")
+
         counts = store.row_counts()
         snapshots = store.snapshot_count()
 
@@ -59,6 +77,16 @@ def run(
     runs = team_fixture_runs(fixtures, horizon)
     projections = project(bootstrap, runs, strength)
     scores = build_board(bootstrap, projections, strength)
+
+    with Store() as store:
+        made_at = store.record_predictions(scores, gameweek, stage="phase-4")
+        deadlines = {e["id"]: e["deadline_time"] for e in events if e.get("deadline_time")}
+        pruned = store.prune_predictions(deadlines)
+        if pruned:
+            log(f"    pruned {pruned} superseded or post-deadline predictions")
+        store.export_predictions(config.PREDICTIONS_CSV)
+        store.export_actuals(config.ACTUALS_CSV)
+    log(f"  logged {sum(len(r.xp) for r in scores)} predictions at {made_at}")
 
     squad = lineup = None
     transfers: list = []

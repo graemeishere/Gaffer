@@ -73,6 +73,15 @@ class FplClient:
         """One player's prior seasons, past gameweeks, and upcoming fixtures."""
         return self.get(f"element-summary/{player_id}")
 
+    def event_live(self, gameweek: int) -> dict:
+        """Every player's actual stats for one gameweek, in a single call.
+
+        Empty until the gameweek starts, then filled as matches finish. This is
+        what predictions get scored against, so it is never served from a stale
+        cache once a gameweek is in progress.
+        """
+        return self.get(f"event/{gameweek}/live", ttl=600)
+
     def entry(self, entry_id: int) -> dict:
         """A manager's profile: bank, squad value, transfers made."""
         return self.get(f"entry/{entry_id}")

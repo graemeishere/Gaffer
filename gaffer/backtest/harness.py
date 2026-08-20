@@ -125,7 +125,7 @@ def _rows_for_optimiser(
         price = actual.cost_start or prior.cost_end or 4.0
         rows.append(PlayerRow(
             id=prior.code, name=prior.name, team=prior.code, position=prior.position,
-            price=price, owned=0.0, xp=[projected], projected=projected,
+            price=price, owned=0.0, xp=[projected], var=[0.0], projected=projected,
             per_million=projected / price if price else 0.0, minutes=80.0,
             fixture_score=3.0, availability=1.0, confidence="high",
             moved_club=False, note="",

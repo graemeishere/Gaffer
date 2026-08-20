@@ -86,7 +86,9 @@ def free_hit(squad: list[int], rows: list[PlayerRow], rows_by_id: dict[int, Play
     values = []
     for gw in range(horizon):
         single = [
-            PlayerRow(**{**row.__dict__, "xp": [row.xp[gw]] if gw < len(row.xp) else [0.0],
+            PlayerRow(**{**row.__dict__,
+                         "xp": [row.xp[gw]] if gw < len(row.xp) else [0.0],
+                         "var": [row.var[gw]] if gw < len(row.var) else [0.0],
                          "projected": row.xp[gw] if gw < len(row.xp) else 0.0})
             for row in rows
         ]

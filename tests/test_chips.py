@@ -15,7 +15,7 @@ def row(pid, position, per_gw, horizon=6):
     xp = per_gw if isinstance(per_gw, list) else [per_gw] * horizon
     return PlayerRow(
         id=pid, name=f"P{pid}", team=1, position=position, price=5.0, owned=1.0,
-        xp=xp, projected=sum(xp), per_million=sum(xp) / 5.0, minutes=80.0,
+        xp=xp, var=[0.0] * len(xp), projected=sum(xp), per_million=sum(xp) / 5.0, minutes=80.0,
         fixture_score=3.0, availability=1.0, confidence="high", moved_club=False, note="",
     )
 

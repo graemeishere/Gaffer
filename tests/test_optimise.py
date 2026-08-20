@@ -15,7 +15,8 @@ from gaffer.rank import PlayerRow
 def row(pid, position, team, price, per_gw, horizon=3, **kw):
     return PlayerRow(
         id=pid, name=f"P{pid}", team=team, position=position, price=price,
-        owned=1.0, xp=[per_gw] * horizon, projected=per_gw * horizon,
+        owned=1.0, xp=[per_gw] * horizon, var=[0.0] * horizon,
+        projected=per_gw * horizon,
         per_million=per_gw * horizon / price, minutes=80.0,
         fixture_score=3.0, availability=kw.get("availability", 1.0),
         confidence="high", moved_club=False, note="",

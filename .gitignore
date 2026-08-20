@@ -18,5 +18,8 @@ data/report.html
 # means a local run can never stage a competing version.
 web/latest.json
 web/report.html
+
+# record/ is deliberately NOT ignored. It is the durable prediction log, and the
+# only copy that survives — every machine this runs on is disposable.
 .env
 secrets.toml
