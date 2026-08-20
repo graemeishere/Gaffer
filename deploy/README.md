@@ -140,17 +140,30 @@ sudo ss -tlnp | grep -E ':80|:443'
 docker ps
 ```
 
-Do not fight it. Serve on a spare port and route to it from the proxy that is
-already there:
+Do not fight it — route through the proxy that is already there.
+
+**If it is Traefik** (an n8n stack ships one), skip host nginx entirely:
+
+```bash
+sudo bash deploy/traefik.sh fpl.yourdomain.com
+```
+
+Traefik routes by Docker labels, so the board is served from a small
+`nginx:alpine` container carrying the right ones, mounting `/var/www/gaffer`
+read-only. The script reads Traefik's network, certificate resolver and HTTPS
+entrypoint off the running container rather than assuming them — those names
+differ between stacks, and a guess produces a router Traefik silently ignores.
+TLS stays with Traefik, which is already doing it.
+
+**For any other proxy**, serve on a spare port and point it there:
 
 ```bash
 sudo GAFFER_PORT=8080 bash deploy/setup.sh --serve fpl.yourdomain.com
 ```
 
-Then add a proxy host in that container pointing at `http://172.17.0.1:8080`
-(the host as seen from inside Docker) for your domain. Let it handle the
-certificate too — it already terminates TLS on 443, so certbot on the host is
-neither needed nor able to bind.
+then add a host in the proxy pointing at `http://172.17.0.1:8080` — the host as
+seen from inside Docker. Let it handle the certificate; it already terminates
+TLS on 443, so certbot on the host is neither needed nor able to bind.
 
 `setup.sh --serve` now checks the port first and names whatever holds it,
 instead of installing nginx and failing afterwards.
