@@ -128,6 +128,17 @@ ssh-copy-id -i gaffer-deploy.pub youruser@your-vps
 
 Put the key in GitHub's secret store, never in a chat window or a commit.
 
+## When it will not clone
+
+```bash
+sudo bash deploy/diagnose.sh
+```
+
+Separates the three faults that look identical from the outside: whether the
+repository is public at all, whether root can see it, and whether the service
+user can. Root succeeding while the service user fails is the common one — root
+holds a token cached from when you cloned, and the service user has nothing.
+
 ## Checking it
 
 ```bash
