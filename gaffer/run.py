@@ -103,7 +103,9 @@ def run(
         lineup = best_lineup(squad.players, first_gw_xp, positions_by_id)
         log(f"    £{squad.cost:.1f}m, {lineup.formation}, {squad.status}")
 
+    manager: dict | None = None
     if entry_id:
+        manager = {"entry_id": entry_id, "squad_readable": False, "reason": ""}
         log(f"  reading entry {entry_id} …")
         try:
             picks = client.entry_picks(entry_id, gameweek - 1 if gameweek > 1 else 1)
@@ -114,9 +116,18 @@ def run(
             lineup = best_lineup(
                 held, {row.id: (row.xp[0] if row.xp else 0.0) for row in scores},
                 positions_by_id)
+            manager.update({"squad_readable": True, "name": entry.get("name")})
             log(f"    {len(transfers)} option(s) priced")
-        except Exception as exc:  # the picks endpoint 404s before the first deadline
-            log(f"    ! could not read entry {entry_id}: {exc}")
+        except Exception as exc:
+            # Before the first deadline of a gameweek nobody's picks are public,
+            # including your own. That is timing, not a configuration mistake,
+            # and the page has to say which — otherwise it reads as "you set this
+            # up wrong" when the only thing to do is wait.
+            manager["reason"] = (
+                "Squads are private until the deadline passes. Yours appears here "
+                "once it does, along with transfer pricing and your head-to-head "
+                "opponent.")
+            log(f"    squad not readable yet: {exc.__class__.__name__}")
 
     due = work_due(events)
     log(f"  schedule: {due.phase} — {due.reason}")
@@ -189,7 +200,7 @@ def run(
     payload = build_payload(scores=scores, bootstrap=bootstrap, fixture_runs=runs,
                             horizon=horizon, strength=strength, squad=squad,
                             lineup=lineup, transfers=transfers, chips=chips,
-                            league=league, due=due)
+                            league=league, due=due, manager=manager)
     json_path = write_json(payload)
     html_path = write_report(payload)
 

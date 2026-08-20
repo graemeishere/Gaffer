@@ -29,6 +29,7 @@ def build_payload(
     chips=None,
     league=None,
     due=None,
+    manager=None,
 ) -> dict:
     """Assemble the JSON contract. Phase 0 fills `meta`, `players` and `fixtures`;
     `lineup`, `transfers` and `chips` arrive with the optimiser in Phase 2."""
@@ -77,7 +78,7 @@ def build_payload(
             "reason": due.reason,
             "hours_remaining": round(due.hours_remaining, 1),
         } if due else None,
-        "manager": None,
+        "manager": manager,
     }
 
 
@@ -155,6 +156,16 @@ def _pitch(payload: dict) -> str:
     if not squad or not lineup:
         return "<p>No squad selected for this run.</p>"
 
+    manager = payload.get("manager") or {}
+    if manager.get("squad_readable"):
+        caption = (f"<p style='margin-bottom:.6rem'><strong>Your squad</strong>"
+                   f"{' — ' + manager['name'] if manager.get('name') else ''}, "
+                   f"with the eleven and captain the model would field.</p>")
+    else:
+        caption = ("<p style='margin-bottom:.6rem'><strong>Suggested squad.</strong> "
+                   "This is what the optimiser would buy, not your team — squads are "
+                   "private until the deadline passes, after which yours replaces it.</p>")
+
     by_id = {p["id"]: p for p in payload["players"]}
     starters, bench = set(lineup["starters"]), lineup["bench"]
 
@@ -180,7 +191,8 @@ def _pitch(payload: dict) -> str:
             rows.append("<div class='row'>" + "".join(card(pid) for pid in line) + "</div>")
 
     bench_html = "".join(card(pid, muted=True) for pid in bench)
-    return (f"<div class='pitch'>{''.join(rows)}</div>"
+    return (caption
+            + f"<div class='pitch'>{''.join(rows)}</div>"
             f"<div class='mock-h' style='margin-top:.8rem'>Bench · auto-sub order</div>"
             f"<div class='bench'>{bench_html}</div>")
 
@@ -189,8 +201,14 @@ def _transfer_rows(payload: dict) -> str:
     by_id = {p["id"]: p for p in payload["players"]}
     options = payload.get("transfers") or []
     if not options:
-        return ("<p>No squad linked yet. Pass <code>--entry YOUR_TEAM_ID</code> once the "
-                "season is under way and this becomes transfer advice for your actual team.</p>")
+        manager = payload.get("manager") or {}
+        if manager.get("reason"):
+            deadline = payload["meta"]["deadline"].replace("T", " ").replace(":00Z", " UTC")
+            return (f"<div class='banner'><strong>Waiting on the deadline.</strong> "
+                    f"{manager['reason']} Next one: {deadline}.</div>")
+        return ("<p>No squad linked. Set <code>GAFFER_ENTRY</code> or pass "
+                "<code>--entry YOUR_TEAM_ID</code> and this becomes transfer advice "
+                "for your actual team.</p>")
 
     names = lambda ids: ", ".join(by_id[i]["name"] for i in ids if i in by_id)
     out = []
@@ -226,10 +244,13 @@ def _h2h_block(league: dict) -> str:
     """A head-to-head league turns on one opponent, not the whole field."""
     match = league.get("match")
     if not match:
-        return (f"<p><strong>{league['name']}</strong> is a head-to-head league. "
-                "Fixtures are published once the league starts, and this fills in "
-                "with your opponent for the week, your chance of beating them, and "
-                "whether to be taking risk on or squeezing it out.</p>")
+        return (f"<div class='banner'><strong>{league['name']}</strong> is a "
+                "head-to-head league, so one opponent decides each week rather than "
+                "the whole table. Fixtures are published when the league starts. Once "
+                "they are, this shows who you are drawn against, your chance of "
+                "beating them, and whether to take risk on or squeeze it out — which "
+                "in head-to-head depends on whether you are favourite, not on where "
+                "you sit in the table.</div>")
 
     tone = {"protect": "go", "gamble": "stop"}.get(match["stance"], "neu")
     return (
