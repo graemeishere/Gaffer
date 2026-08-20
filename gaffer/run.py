@@ -200,10 +200,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--refresh", action="store_true", help="ignore the cache and refetch")
     parser.add_argument("--quiet", action="store_true", help="suppress progress output")
     parser.add_argument("--top", type=int, default=0, help="also print the top N players to the terminal")
-    parser.add_argument("--entry", type=int, default=None,
-                        help="your FPL team ID — prices transfers against your actual squad")
-    parser.add_argument("--league", type=int, default=None,
-                        help="your mini-league ID — simulates you against its actual squads")
+    parser.add_argument("--entry", type=int, default=config.ENTRY_ID,
+                        help="your FPL team ID — prices transfers against your actual squad "
+                             "(defaults to GAFFER_ENTRY, which .env can set)")
+    parser.add_argument("--league", type=int, default=config.LEAGUE_ID,
+                        help="your mini-league ID — simulates you against its actual squads "
+                             "(defaults to GAFFER_LEAGUE, which .env can set)")
     parser.add_argument("--trials", type=int, default=2000,
                         help="simulation trials for the league (default 2000)")
     parser.add_argument("--no-optimise", action="store_true",

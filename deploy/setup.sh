@@ -307,6 +307,8 @@ Wants=network-online.target
 Type=oneshot
 User=$USER_NAME
 WorkingDirectory=$HOME_DIR
+# Optional, hence the leading dash: the unit starts fine before the file exists.
+EnvironmentFile=-$HOME_DIR/.env
 ExecStart=$HOME_DIR/.venv/bin/python -m gaffer.run --quiet
 ExecStartPost=/bin/sh -c 'cp $HOME_DIR/data/latest.json $HOME_DIR/data/report.html $HOME_DIR/web/ 2>/dev/null || true'
 TimeoutStartSec=600
@@ -355,8 +357,16 @@ cat <<DONE
   Run it now        sudo -u $USER_NAME $HOME_DIR/.venv/bin/python -m gaffer.run
   Score the model   sudo -u $USER_NAME $HOME_DIR/.venv/bin/python -m gaffer.score
 
-  Add your IDs to $HOME_DIR/.env once you have them:
+  Add your IDs once you have them — no editor needed:
+
+      sudo tee $HOME_DIR/.env >/dev/null <<'EOF'
       GAFFER_ENTRY=your_team_id
       GAFFER_LEAGUE=your_league_id
+      EOF
+      sudo chown $USER_NAME:$USER_NAME $HOME_DIR/.env && sudo chmod 600 $HOME_DIR/.env
+
+  Then check they were picked up:
+
+      sudo -u $USER_NAME $HOME_DIR/.venv/bin/python -m gaffer.run --quiet && echo ok
 
 DONE

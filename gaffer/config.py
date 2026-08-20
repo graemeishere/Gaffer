@@ -1,7 +1,43 @@
 """Central settings. Everything tunable lives here rather than scattered through the code."""
+import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+
+
+def _load_env_file(path: Path) -> None:
+    """Read KEY=value lines into the environment, without adding a dependency.
+
+    Real environment variables win, so anything set on the command line or by
+    systemd overrides the file rather than being silently replaced by it.
+    """
+    if not path.exists():
+        return
+    for line in path.read_text().splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        key, value = key.strip(), value.strip().strip("'\"")
+        if key and key not in os.environ:
+            os.environ[key] = value
+
+
+# Settings live beside the checkout so a run picks them up however it was
+# started — by systemd, by cron, or by hand.
+_load_env_file(ROOT / ".env")
+
+
+def env_int(name: str) -> int | None:
+    """An integer setting, or None when unset or not a number."""
+    try:
+        return int(os.environ[name])
+    except (KeyError, ValueError):
+        return None
+
+
+ENTRY_ID = env_int("GAFFER_ENTRY")
+LEAGUE_ID = env_int("GAFFER_LEAGUE")
 DATA = ROOT / "data"
 CACHE = DATA / "cache"
 DB_PATH = DATA / "gaffer.sqlite"

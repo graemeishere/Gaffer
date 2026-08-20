@@ -114,6 +114,35 @@ board is a static file, so there is no application server in the path.
 sudo bash deploy/setup.sh      # idempotent: fetches, reinstalls, restarts the timer
 ```
 
+## Your team and league IDs
+
+The engine only gives personalised advice once it knows which team is yours.
+Write them into `/srv/gaffer/.env` — no editor required:
+
+```bash
+sudo tee /srv/gaffer/.env >/dev/null <<'EOF'
+GAFFER_ENTRY=1234567
+GAFFER_LEAGUE=987654
+EOF
+sudo chown gaffer:gaffer /srv/gaffer/.env
+sudo chmod 600 /srv/gaffer/.env
+```
+
+Both are visible in the Fantasy Premier League site's own URLs: your team ID is
+the number in `/entry/1234567/event/1`, and the league ID is the number in
+`/leagues/987654/standings/c`.
+
+The file is read by the package itself, not only by systemd, so a run started by
+hand, by cron or by the timer all behave the same. Real environment variables
+take precedence, so `--entry` on the command line still overrides it. `.env` is
+gitignored and never committed.
+
+Check it took:
+
+```bash
+sudo -u gaffer /srv/gaffer/.venv/bin/python -m gaffer.run
+```
+
 ## Starting over
 
 ```bash

@@ -152,6 +152,14 @@ scored on a player everybody owns move the whole table together.
 python -m gaffer.run --entry YOUR_TEAM_ID --league YOUR_LEAGUE_ID
 ```
 
+On a deployed box put them in `.env` beside the checkout instead, and every run
+picks them up however it was started:
+
+```
+GAFFER_ENTRY=1234567
+GAFFER_LEAGUE=987654
+```
+
 Rival squads are public once a deadline has passed, so the engine reads all
 fourteen, simulates the coming gameweeks by drawing outcomes rather than
 averaging them, and reports how often you finish top. Then it takes a stance:
