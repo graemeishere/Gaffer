@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated": "2026-08-20T10:13:58+00:00",
+  "generated": "2026-08-20T10:37:41+00:00",
   "gameweek": 1,
   "deadline": "2026-08-21T17:30:00Z",
   "horizon": 6,
@@ -151,7 +151,7 @@
    "team": "MUN",
    "position": "MID",
    "price": 8.0,
-   "owned": 33.5,
+   "owned": 33.6,
    "xp": [
     4.25,
     4.85,
@@ -247,7 +247,7 @@
    "team": "BRE",
    "position": "FWD",
    "price": 8.0,
-   "owned": 17.9,
+   "owned": 17.8,
    "xp": [
     4.32,
     3.87,
@@ -343,7 +343,7 @@
    "team": "MCI",
    "position": "DEF",
    "price": 6.0,
-   "owned": 19.1,
+   "owned": 19.0,
    "xp": [
     4.17,
     3.3,
@@ -407,7 +407,7 @@
    "team": "ARS",
    "position": "DEF",
    "price": 8.0,
-   "owned": 29.4,
+   "owned": 29.5,
    "xp": [
     4.2,
     3.65,
@@ -2519,7 +2519,7 @@
    "team": "NFO",
    "position": "DEF",
    "price": 5.0,
-   "owned": 10.7,
+   "owned": 10.6,
    "xp": [
     2.66,
     2.27,
@@ -2679,7 +2679,7 @@
    "team": "ARS",
    "position": "DEF",
    "price": 5.5,
-   "owned": 31.3,
+   "owned": 31.4,
    "xp": [
     2.92,
     2.44,
@@ -3095,7 +3095,7 @@
    "team": "SUN",
    "position": "MID",
    "price": 5.5,
-   "owned": 4.6,
+   "owned": 4.5,
    "xp": [
     2.45,
     2.58,
@@ -3415,7 +3415,7 @@
    "team": "MCI",
    "position": "MID",
    "price": 7.5,
-   "owned": 4.5,
+   "owned": 4.4,
    "xp": [
     2.43,
     2.11,
@@ -4087,7 +4087,7 @@
    "team": "MCI",
    "position": "DEF",
    "price": 6.0,
-   "owned": 2.2,
+   "owned": 2.1,
    "xp": [
     2.16,
     1.72,
@@ -4759,7 +4759,7 @@
    "team": "SUN",
    "position": "DEF",
    "price": 5.5,
-   "owned": 2.1,
+   "owned": 2.0,
    "xp": [
     1.97,
     2.32,
@@ -5271,7 +5271,7 @@
    "team": "MUN",
    "position": "DEF",
    "price": 5.0,
-   "owned": 14.6,
+   "owned": 14.7,
    "xp": [
     1.58,
     1.95,
@@ -8535,7 +8535,7 @@
    "team": "TOT",
    "position": "GKP",
    "price": 4.5,
-   "owned": 21.9,
+   "owned": 22.0,
    "xp": [
     0.52,
     0.67,
@@ -9047,7 +9047,7 @@
    "team": "NFO",
    "position": "MID",
    "price": 4.5,
-   "owned": 4.3,
+   "owned": 4.2,
    "xp": [
     0.49,
     0.47,
@@ -18359,7 +18359,7 @@
    "team": "TOT",
    "position": "DEF",
    "price": 4.5,
-   "owned": 2.5,
+   "owned": 2.4,
    "xp": [
     0.0,
     0.0,
@@ -19480,7 +19480,7 @@
  "schedule": {
   "phase": "full-solve",
   "reason": "31h to the GW1 deadline \u2014 full solve",
-  "hours_remaining": 31.3
+  "hours_remaining": 30.9
  },
  "manager": null
 }
