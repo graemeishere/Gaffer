@@ -1,0 +1,24 @@
+# Serve the board. The engine writes files and exits; nothing here talks to it,
+# so there is no application server to keep alive, no socket, and no restart.
+server {
+    listen 80;
+    server_name fpl.example.com;          # your domain
+
+    root /srv/gaffer/web;
+    index report.html index.html;
+
+    # The board is rewritten every run, so it must never be cached.
+    location ~* \.(json|html)$ {
+        add_header Cache-Control "no-store, must-revalidate";
+        try_files $uri =404;
+    }
+
+    location / {
+        try_files $uri $uri/ /report.html;
+    }
+
+    # Nothing here is secret, but there is also no reason to advertise it.
+    location ~ /\. { deny all; }
+}
+
+# Then: sudo certbot --nginx -d fpl.example.com

@@ -168,16 +168,23 @@ squad *shapes* under a shared assumption, never as a forecast of the table.
 ## Deploying
 
 The engine runs to completion and exits — it is not a server, so there is
-nothing to keep alive. On a VPS:
+nothing to keep alive, no socket, and no restart. Deployment is a timer, a
+virtualenv, and a directory of static files.
 
 ```bash
-# hourly; the engine decides whether work is due
-0 * * * * cd /srv/gaffer && .venv/bin/python -m gaffer.run --quiet
+git clone https://github.com/graemeishere/Timesplitters.git
+cd Timesplitters
+sudo bash deploy/setup.sh
 ```
 
-Point nginx at `web/` and copy `data/latest.json` beside `index.html`.
-GitHub Actions runs the same thing twice a day and commits the output, so the
-current board is always visible without a server.
+That installs Python and the CBC solver, creates a service user, and enables a
+systemd timer that fires hourly — hourly because the engine reads the next
+deadline and decides what is due, and FPL deadlines land on four weekdays at six
+clock times. See `deploy/README.md`, including how to have GitHub Actions deploy
+over SSH instead of doing it by hand.
+
+GitHub Actions also runs the engine twice a day and commits the board and the
+prediction log, so the current picture stays visible with or without a VPS.
 
 ## Notes on the data
 
