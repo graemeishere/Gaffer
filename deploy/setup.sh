@@ -2,13 +2,25 @@
 #
 # One-time setup on a Hostinger VPS (or any Debian/Ubuntu box).
 #
-#   curl -fsSL https://raw.githubusercontent.com/graemeishere/Timesplitters/main/deploy/setup.sh | less   # read it first
+#   curl -fsSL https://raw.githubusercontent.com/graemeishere/Gaffer/HEAD/deploy/setup.sh | less   # read it first
 #   sudo bash deploy/setup.sh
 #
 # Idempotent: safe to re-run after a change. Read it before you run it — it
 # installs packages, creates a user, and writes a systemd timer.
 
 set -euo pipefail
+# Move somewhere every user can enter, before anything drops privileges.
+#
+# git stats its working directory before doing anything at all, so a command run
+# as the service user from a directory that user cannot enter fails immediately —
+# and cloning this repo into /root, which is mode 700, is a completely natural
+# thing to do. The failure reads "failed to stat '/root/...': Permission denied",
+# names a local path, and looks nothing like an access problem, which sends you
+# hunting through repository visibility, deploy keys and firewall rules for a
+# fault that is none of them.
+#
+# Every path below is absolute, so there is nothing to lose by leaving.
+cd /
 
 # Default to HTTPS: a public repository needs no credentials at all, and many
 # hosts block outbound port 22 so SSH can fail for reasons no key will fix. If
@@ -76,6 +88,7 @@ BANNER
 
 [[ $EUID -eq 0 ]] || { echo "Run with sudo."; exit 1; }
 
+
 log "Installing dependencies"
 apt-get update -qq
 apt-get install -y -qq python3 python3-venv python3-pip git coinor-cbc >/dev/null
@@ -99,7 +112,7 @@ as_service_user() {
   # Set HOME explicitly. Whether sudo does this for you depends on the sudoers
   # configuration, and ssh looks for its keys under $HOME — so leaving it to
   # chance means the key is found on one machine and not the next.
-  sudo -u "$USER_NAME" env HOME="$HOME_DIR" GIT_TERMINAL_PROMPT=0 "$@"
+  ( cd / && sudo -u "$USER_NAME" env HOME="$HOME_DIR" GIT_TERMINAL_PROMPT=0 "$@" )
 }
 
 LAST_GIT_ERROR=""
@@ -241,7 +254,7 @@ fi
 log "Building the virtualenv"
 sudo -u "$USER_NAME" python3 -m venv "$HOME_DIR/.venv"
 sudo -u "$USER_NAME" "$HOME_DIR/.venv/bin/pip" install --quiet --upgrade pip
-sudo -u "$USER_NAME" "$HOME_DIR/.venv/bin/pip" install --quiet -e "$HOME_DIR"
+( cd "$HOME_DIR" && sudo -u "$USER_NAME" "$HOME_DIR/.venv/bin/pip" install --quiet -e "$HOME_DIR" )
 
 log "Installing the hourly timer"
 # Hourly on purpose. The engine reads the next deadline and decides what is due
@@ -291,7 +304,7 @@ systemctl daemon-reload
 systemctl enable --now gaffer.timer >/dev/null
 
 log "First run (this may take a minute)"
-sudo -u "$USER_NAME" "$HOME_DIR/.venv/bin/python" -m gaffer.run --quiet || {
+( cd "$HOME_DIR" && sudo -u "$USER_NAME" env HOME="$HOME_DIR" "$HOME_DIR/.venv/bin/python" -m gaffer.run --quiet ) || {
   echo "First run failed — check: sudo journalctl -u gaffer.service -n 50"; exit 1; }
 sudo -u "$USER_NAME" cp "$HOME_DIR/data/latest.json" "$HOME_DIR/data/report.html" "$HOME_DIR/web/" 2>/dev/null || true
 

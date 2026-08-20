@@ -128,6 +128,25 @@ ssh-copy-id -i gaffer-deploy.pub youruser@your-vps
 
 Put the key in GitHub's secret store, never in a chat window or a commit.
 
+## "failed to stat '/root/...': Permission denied"
+
+Not an access problem, despite appearances. `git` stats its working directory
+before it does anything, so any command run as the service user from a directory
+that user cannot enter fails immediately — and `/root` is mode 700, so cloning
+this repository into `/root/Gaffer` produces exactly that.
+
+The error names a local path and looks nothing like a permissions or network
+fault, which is why it sends people hunting through repository visibility,
+deploy keys and firewall rules for a cause that is none of them.
+
+`setup.sh` now moves to `/` before dropping privileges, so where you launch it
+from no longer matters. With an older copy, either pull, or run it from anywhere
+readable:
+
+```bash
+cd / && sudo bash /root/Gaffer/Gaffer/deploy/setup.sh
+```
+
 ## When it will not clone
 
 ```bash
