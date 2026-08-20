@@ -103,10 +103,36 @@ deadlines land on four different weekdays at six different clock times, so
 anything on a fixed weekly schedule misses most of the season, including every
 midweek round.
 
-## Serving it
+## Seeing it in a browser
 
-Copy `nginx.conf.example`, point it at `/srv/gaffer/web`, and run certbot. The
-board is a static file, so there is no application server in the path.
+```bash
+sudo bash deploy/setup.sh --serve
+```
+
+Installs nginx, points it at `/srv/gaffer/web`, and prints the address. The
+board is a static file — the engine writes it and exits — so there is no
+application server in the path and nothing to keep running.
+
+With a domain pointing at the box:
+
+```bash
+sudo bash deploy/setup.sh --serve fpl.yourdomain.com
+sudo apt install -y certbot python3-certbot-nginx
+sudo certbot --nginx -d fpl.yourdomain.com
+```
+
+If the page will not load, the firewall is the usual reason: `sudo ufw allow
+80/tcp`, and 443 once certbot has run.
+
+**For a quick look without installing anything**, serve the directory
+temporarily and stop it with ctrl-c:
+
+```bash
+cd /srv/gaffer/web && sudo python3 -m http.server 8080
+# then open http://your-server-ip:8080/report.html
+```
+
+`nginx.conf.example` is still there if you would ratherconfigure it yourself.
 
 ## Updating
 

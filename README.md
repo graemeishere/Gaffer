@@ -190,8 +190,10 @@ If it is private, `deploy/README.md` covers the options — and note that a host
 blocking outbound port 22 will defeat any deploy key, so check that before
 blaming the key.
 
-That installs Python and the CBC solver, creates a service user, and enables a
-systemd timer that fires hourly — hourly because the engine reads the next
+Then `sudo bash deploy/setup.sh --serve` to publish the board over http.
+
+The first command installs Python and the CBC solver, creates a service user,
+and enables a systemd timer that fires hourly — hourly because the engine reads the next
 deadline and decides what is due, and FPL deadlines land on four weekdays at six
 clock times. See `deploy/README.md`, including how to have GitHub Actions deploy
 over SSH instead of doing it by hand.

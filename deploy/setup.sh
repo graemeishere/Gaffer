@@ -4,6 +4,7 @@
 #
 #   curl -fsSL https://raw.githubusercontent.com/graemeishere/Gaffer/HEAD/deploy/setup.sh | less   # read it first
 #   sudo bash deploy/setup.sh                 install or update
+#   sudo bash deploy/setup.sh --serve [host]  install nginx and publish the board
 #   sudo bash deploy/setup.sh --reset         remove everything and start again
 #   sudo bash deploy/setup.sh --deploy-key    print the key to add to GitHub
 #
@@ -88,6 +89,72 @@ BANNER
 
 [[ ${1:-} == "--deploy-key" ]] && DEPLOY_KEY_ONLY=1 || DEPLOY_KEY_ONLY=0
 [[ ${1:-} == "--reset" ]] && RESET=1 || RESET=0
+[[ ${1:-} == "--serve" ]] && SERVE=1 || SERVE=0
+SERVER_NAME="${2:-_}"
+
+install_web_server() {
+  # Serve the board over http. There is no application server involved — the
+  # engine writes files and exits — so this is nginx pointed at a directory.
+  log "Installing nginx"
+  apt-get install -y -qq nginx >/dev/null
+
+  # nginx runs as www-data and has to traverse the service user's home to reach
+  # the files. Only the published directory is opened up; the rest of the home,
+  # including .env and the ssh key, stays private.
+  chmod o+x "$HOME_DIR"
+  chmod -R o+rX "$HOME_DIR/web"
+
+  log "Writing the site"
+  cat > /etc/nginx/sites-available/gaffer <<NGINX
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name $SERVER_NAME;
+
+    root $HOME_DIR/web;
+    index report.html index.html;
+
+    # Rewritten every run, so it must never be cached.
+    location ~* \.(json|html)\$ {
+        add_header Cache-Control "no-store, must-revalidate";
+        try_files \$uri =404;
+    }
+
+    location / {
+        try_files \$uri \$uri/ /report.html;
+    }
+
+    location ~ /\. { deny all; }
+}
+NGINX
+
+  rm -f /etc/nginx/sites-enabled/default
+  ln -sf /etc/nginx/sites-available/gaffer /etc/nginx/sites-enabled/gaffer
+
+  log "Checking the configuration"
+  nginx -t >/dev/null 2>&1 || { nginx -t; echo "nginx rejected the config."; exit 1; }
+  systemctl enable --now nginx >/dev/null 2>&1 || true
+  systemctl reload nginx
+
+  local address
+  address="$(hostname -I 2>/dev/null | awk '{print $1}')"
+  cat <<DONE
+
+  Serving $HOME_DIR/web
+
+     http://${address:-your-server-ip}/
+
+  If a domain points here, re-run as
+     sudo bash deploy/setup.sh --serve fpl.yourdomain.com
+  and then add a certificate:
+     sudo apt install -y certbot python3-certbot-nginx
+     sudo certbot --nginx -d fpl.yourdomain.com
+
+  If the page does not load, the firewall is the usual reason:
+     sudo ufw allow 80/tcp    # and 443/tcp once certbot has run
+
+DONE
+}
 
 reset_everything() {
   # Remove the timer, the unit files, the service user and its directory.
@@ -114,6 +181,13 @@ reset_everything() {
 
 if [[ $RESET -eq 1 ]]; then
   reset_everything
+  exit 0
+fi
+
+if [[ $SERVE -eq 1 ]]; then
+  [[ -d "$HOME_DIR/web" ]] || { echo "Run setup.sh first — $HOME_DIR/web does not exist."; exit 1; }
+  apt-get update -qq
+  install_web_server
   exit 0
 fi
 
@@ -351,7 +425,7 @@ cat <<DONE
 
   Done.
 
-  Serve it          point nginx at $HOME_DIR/web  (see deploy/nginx.conf.example)
+  See it in a browser   sudo bash deploy/setup.sh --serve
   Next runs         systemctl list-timers gaffer.timer
   Logs              journalctl -u gaffer.service -n 50
   Run it now        sudo -u $USER_NAME $HOME_DIR/.venv/bin/python -m gaffer.run
