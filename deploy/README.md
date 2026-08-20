@@ -111,8 +111,23 @@ board is a static file, so there is no application server in the path.
 ## Updating
 
 ```bash
-sudo bash deploy/setup.sh      # idempotent: pulls, reinstalls, restarts the timer
+sudo bash deploy/setup.sh      # idempotent: fetches, reinstalls, restarts the timer
 ```
+
+## Starting over
+
+```bash
+sudo bash deploy/setup.sh --reset
+```
+
+Removes the timer, the unit files, the service user and `/srv/gaffer`. Safe: the
+prediction log lives in the repository, not on the box, so a wipe loses nothing
+a fetch will not bring straight back.
+
+You should not normally need this. The install initialises the checkout in place
+rather than cloning, because the directory usually already exists by the time it
+runs — creating the service user makes its home — and `git clone` refuses any
+target that is not empty.
 
 ## Deploying automatically instead
 

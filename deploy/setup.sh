@@ -3,7 +3,9 @@
 # One-time setup on a Hostinger VPS (or any Debian/Ubuntu box).
 #
 #   curl -fsSL https://raw.githubusercontent.com/graemeishere/Gaffer/HEAD/deploy/setup.sh | less   # read it first
-#   sudo bash deploy/setup.sh
+#   sudo bash deploy/setup.sh                 install or update
+#   sudo bash deploy/setup.sh --reset         remove everything and start again
+#   sudo bash deploy/setup.sh --deploy-key    print the key to add to GitHub
 #
 # Idempotent: safe to re-run after a change. Read it before you run it — it
 # installs packages, creates a user, and writes a systemd timer.
@@ -85,9 +87,35 @@ BANNER
 }
 
 [[ ${1:-} == "--deploy-key" ]] && DEPLOY_KEY_ONLY=1 || DEPLOY_KEY_ONLY=0
+[[ ${1:-} == "--reset" ]] && RESET=1 || RESET=0
+
+reset_everything() {
+  # Remove the timer, the unit files, the service user and its directory.
+  # Safe to run: the prediction log lives in the repository, not here, so a wipe
+  # loses nothing that a fetch will not bring straight back.
+  echo "Removing the timer and unit files"
+  systemctl disable --now gaffer.timer >/dev/null 2>&1 || true
+  systemctl stop gaffer.service >/dev/null 2>&1 || true
+  rm -f /etc/systemd/system/gaffer.service /etc/systemd/system/gaffer.timer
+  systemctl daemon-reload >/dev/null 2>&1 || true
+
+  echo "Removing $HOME_DIR"
+  rm -rf "$HOME_DIR"
+
+  echo "Removing the $USER_NAME user"
+  userdel "$USER_NAME" >/dev/null 2>&1 || true
+
+  echo
+  echo "  Clean. Run 'sudo bash deploy/setup.sh' to start again."
+}
 
 [[ $EUID -eq 0 ]] || { echo "Run with sudo."; exit 1; }
 
+
+if [[ $RESET -eq 1 ]]; then
+  reset_everything
+  exit 0
+fi
 
 log "Installing dependencies"
 apt-get update -qq
@@ -248,7 +276,16 @@ if [[ -d "$HOME_DIR/.git" ]]; then
   as_service_user git -C "$HOME_DIR" checkout --quiet -B "$BRANCH" "origin/$BRANCH"
   as_service_user git -C "$HOME_DIR" reset --hard --quiet "origin/$BRANCH"
 else
-  as_service_user git clone --quiet --branch "$BRANCH" "$REPO" "$HOME_DIR"
+  # Initialise in place rather than cloning. The directory usually already
+  # exists by now — creating the service user makes its home, and a deploy key
+  # may have been written into it — and `git clone` refuses any target that is
+  # not empty. Fetching into an initialised directory has the same result and
+  # leaves whatever was already there untouched.
+  as_service_user git init --quiet "$HOME_DIR"
+  as_service_user git -C "$HOME_DIR" remote add origin "$REPO" 2>/dev/null \
+    || as_service_user git -C "$HOME_DIR" remote set-url origin "$REPO"
+  as_service_user git -C "$HOME_DIR" fetch --quiet origin "$BRANCH"
+  as_service_user git -C "$HOME_DIR" checkout --quiet -B "$BRANCH" "origin/$BRANCH"
 fi
 
 log "Building the virtualenv"
