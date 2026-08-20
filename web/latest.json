@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated": "2026-08-20T09:39:38+00:00",
+  "generated": "2026-08-20T10:13:58+00:00",
   "gameweek": 1,
   "deadline": "2026-08-21T17:30:00Z",
   "horizon": 6,
@@ -215,7 +215,7 @@
    "team": "CHE",
    "position": "FWD",
    "price": 7.5,
-   "owned": 61.7,
+   "owned": 61.8,
    "xp": [
     3.93,
     4.34,
@@ -1271,7 +1271,7 @@
    "team": "AVL",
    "position": "FWD",
    "price": 8.0,
-   "owned": 11.7,
+   "owned": 11.6,
    "xp": [
     2.97,
     2.78,
@@ -1719,7 +1719,7 @@
    "team": "ARS",
    "position": "MID",
    "price": 5.5,
-   "owned": 1.3,
+   "owned": 1.2,
    "xp": [
     3.1,
     2.82,
@@ -1751,7 +1751,7 @@
    "team": "CHE",
    "position": "GKP",
    "price": 5.0,
-   "owned": 2.2,
+   "owned": 2.3,
    "xp": [
     3.03,
     3.0,
@@ -4791,7 +4791,7 @@
    "team": "BHA",
    "position": "MID",
    "price": 5.5,
-   "owned": 13.1,
+   "owned": 13.2,
    "xp": [
     1.87,
     1.67,
@@ -5047,7 +5047,7 @@
    "team": "SUN",
    "position": "FWD",
    "price": 6.0,
-   "owned": 14.9,
+   "owned": 14.8,
    "xp": [
     1.7,
     1.79,
@@ -6967,7 +6967,7 @@
    "team": "ARS",
    "position": "DEF",
    "price": 5.5,
-   "owned": 9.4,
+   "owned": 9.3,
    "xp": [
     1.22,
     1.08,
@@ -7543,7 +7543,7 @@
    "team": "BOU",
    "position": "MID",
    "price": 5.0,
-   "owned": 0.4,
+   "owned": 0.3,
    "xp": [
     0.87,
     0.98,
@@ -11959,7 +11959,7 @@
    "team": "ARS",
    "position": "MID",
    "price": 6.5,
-   "owned": 18.7,
+   "owned": 18.8,
    "xp": [
     0.14,
     0.14,
@@ -15927,7 +15927,7 @@
    "team": "SUN",
    "position": "DEF",
    "price": 4.5,
-   "owned": 0.3,
+   "owned": 0.2,
    "xp": [
     0.12,
     0.14,
@@ -18071,7 +18071,7 @@
    "team": "MUN",
    "position": "GKP",
    "price": 4.0,
-   "owned": 0.2,
+   "owned": 0.1,
    "xp": [
     0.0,
     0.0,
@@ -18135,7 +18135,7 @@
    "team": "MUN",
    "position": "DEF",
    "price": 4.0,
-   "owned": 0.1,
+   "owned": 0.0,
    "xp": [
     0.0,
     0.0,
@@ -19479,8 +19479,8 @@
  "league": null,
  "schedule": {
   "phase": "full-solve",
-  "reason": "32h to the GW1 deadline \u2014 full solve",
-  "hours_remaining": 31.8
+  "reason": "31h to the GW1 deadline \u2014 full solve",
+  "hours_remaining": 31.3
  },
  "manager": null
 }
