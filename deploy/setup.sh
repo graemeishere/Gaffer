@@ -228,14 +228,29 @@ reset_everything() {
   rm -f /etc/systemd/system/gaffer.service /etc/systemd/system/gaffer.timer
   systemctl daemon-reload >/dev/null 2>&1 || true
 
-  echo "Removing $HOME_DIR"
-  rm -rf "$HOME_DIR"
+  echo "Removing the published container, if any"
+  docker rm -f "${GAFFER_CONTAINER:-gaffer-web}" >/dev/null 2>&1 || true
+
+  echo "Removing the nginx site"
+  rm -f /etc/nginx/sites-enabled/gaffer /etc/nginx/sites-available/gaffer
+  # Only reload if nginx is running and still has a valid config; on a box where
+  # nginx never started, leave it alone rather than reporting a failure that is
+  # not one.
+  if systemctl is-active --quiet nginx && nginx -t >/dev/null 2>&1; then
+    systemctl reload nginx >/dev/null 2>&1 || true
+  fi
+
+  echo "Removing $HOME_DIR, $STATE_DIR and $PUBLISH_DIR"
+  rm -rf "$HOME_DIR" "$STATE_DIR" "$PUBLISH_DIR"
 
   echo "Removing the $USER_NAME user"
   userdel "$USER_NAME" >/dev/null 2>&1 || true
 
   echo
-  echo "  Clean. Run 'sudo bash deploy/setup.sh' to start again."
+  echo "  Clean. Nothing else on the box was touched — any Docker stack,"
+  echo "  nginx itself and its other sites are all untouched."
+  echo
+  echo "  Run 'sudo bash deploy/setup.sh' to start again."
 }
 
 [[ $EUID -eq 0 ]] || { echo "Run with sudo."; exit 1; }

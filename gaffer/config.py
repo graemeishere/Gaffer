@@ -25,7 +25,12 @@ def _load_env_file(path: Path) -> None:
 
 # Settings live beside the checkout so a run picks them up however it was
 # started — by systemd, by cron, or by hand.
+#
+# Order matters: .env first, then the committed defaults. Since neither
+# overwrites a value already present, this makes the per-machine file win over
+# the shared one, and a real environment variable win over both.
 _load_env_file(ROOT / ".env")
+_load_env_file(ROOT / "gaffer.env")
 
 
 def env_int(name: str) -> int | None:
