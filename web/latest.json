@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated": "2026-08-20T06:31:49+00:00",
+  "generated": "2026-08-20T09:39:38+00:00",
   "gameweek": 1,
   "deadline": "2026-08-21T17:30:00Z",
   "horizon": 6,
@@ -23,7 +23,7 @@
    "team": "MCI",
    "position": "FWD",
    "price": 15.5,
-   "owned": 69.6,
+   "owned": 69.5,
    "xp": [
     7.03,
     5.86,
@@ -55,7 +55,7 @@
    "team": "MUN",
    "position": "MID",
    "price": 12.0,
-   "owned": 49.8,
+   "owned": 49.9,
    "xp": [
     5.17,
     5.84,
@@ -151,7 +151,7 @@
    "team": "MUN",
    "position": "MID",
    "price": 8.0,
-   "owned": 33.2,
+   "owned": 33.5,
    "xp": [
     4.25,
     4.85,
@@ -183,7 +183,7 @@
    "team": "MCI",
    "position": "MID",
    "price": 6.5,
-   "owned": 9.0,
+   "owned": 8.9,
    "xp": [
     4.33,
     3.94,
@@ -215,7 +215,7 @@
    "team": "CHE",
    "position": "FWD",
    "price": 7.5,
-   "owned": 61.6,
+   "owned": 61.7,
    "xp": [
     3.93,
     4.34,
@@ -343,7 +343,7 @@
    "team": "MCI",
    "position": "DEF",
    "price": 6.0,
-   "owned": 19.2,
+   "owned": 19.1,
    "xp": [
     4.17,
     3.3,
@@ -375,7 +375,7 @@
    "team": "ARS",
    "position": "MID",
    "price": 7.5,
-   "owned": 19.3,
+   "owned": 19.2,
    "xp": [
     4.05,
     3.64,
@@ -599,7 +599,7 @@
    "team": "CHE",
    "position": "MID",
    "price": 9.5,
-   "owned": 10.6,
+   "owned": 10.5,
    "xp": [
     3.42,
     3.81,
@@ -663,7 +663,7 @@
    "team": "CHE",
    "position": "MID",
    "price": 7.5,
-   "owned": 26.1,
+   "owned": 26.0,
    "xp": [
     3.43,
     3.69,
@@ -695,7 +695,7 @@
    "team": "MUN",
    "position": "MID",
    "price": 8.0,
-   "owned": 10.9,
+   "owned": 10.8,
    "xp": [
     3.34,
     3.73,
@@ -727,7 +727,7 @@
    "team": "CHE",
    "position": "DEF",
    "price": 6.0,
-   "owned": 10.2,
+   "owned": 10.1,
    "xp": [
     3.67,
     3.71,
@@ -759,7 +759,7 @@
    "team": "ARS",
    "position": "MID",
    "price": 7.0,
-   "owned": 8.5,
+   "owned": 8.4,
    "xp": [
     3.69,
     3.23,
@@ -791,7 +791,7 @@
    "team": "ARS",
    "position": "FWD",
    "price": 7.5,
-   "owned": 10.3,
+   "owned": 10.2,
    "xp": [
     3.73,
     3.17,
@@ -855,7 +855,7 @@
    "team": "CRY",
    "position": "MID",
    "price": 6.5,
-   "owned": 5.8,
+   "owned": 5.7,
    "xp": [
     3.22,
     3.24,
@@ -951,7 +951,7 @@
    "team": "LEE",
    "position": "FWD",
    "price": 6.0,
-   "owned": 28.5,
+   "owned": 28.7,
    "xp": [
     3.25,
     3.64,
@@ -1015,7 +1015,7 @@
    "team": "ARS",
    "position": "GKP",
    "price": 6.0,
-   "owned": 35.7,
+   "owned": 35.9,
    "xp": [
     3.61,
     3.28,
@@ -1175,7 +1175,7 @@
    "team": "LIV",
    "position": "MID",
    "price": 7.5,
-   "owned": 14.2,
+   "owned": 14.1,
    "xp": [
     3.01,
     3.44,
@@ -1207,7 +1207,7 @@
    "team": "TOT",
    "position": "GKP",
    "price": 4.0,
-   "owned": 21.2,
+   "owned": 21.1,
    "xp": [
     3.01,
     3.29,
@@ -1239,7 +1239,7 @@
    "team": "BRE",
    "position": "MID",
    "price": 6.5,
-   "owned": 1.4,
+   "owned": 1.3,
    "xp": [
     3.3,
     2.96,
@@ -1399,7 +1399,7 @@
    "team": "BHA",
    "position": "GKP",
    "price": 4.5,
-   "owned": 19.6,
+   "owned": 19.7,
    "xp": [
     3.31,
     2.75,
@@ -1463,7 +1463,7 @@
    "team": "TOT",
    "position": "DEF",
    "price": 5.0,
-   "owned": 9.1,
+   "owned": 9.2,
    "xp": [
     2.61,
     3.48,
@@ -1783,7 +1783,7 @@
    "team": "AVL",
    "position": "GKP",
    "price": 5.0,
-   "owned": 4.7,
+   "owned": 4.6,
    "xp": [
     2.83,
     2.75,
@@ -1847,7 +1847,7 @@
    "team": "MUN",
    "position": "GKP",
    "price": 5.0,
-   "owned": 17.9,
+   "owned": 17.8,
    "xp": [
     2.78,
     3.1,
@@ -2007,7 +2007,7 @@
    "team": "MCI",
    "position": "GKP",
    "price": 5.5,
-   "owned": 9.1,
+   "owned": 9.0,
    "xp": [
     2.87,
     2.54,
@@ -2103,7 +2103,7 @@
    "team": "CRY",
    "position": "DEF",
    "price": 5.5,
-   "owned": 10.6,
+   "owned": 10.5,
    "xp": [
     2.59,
     2.21,
@@ -2359,7 +2359,7 @@
    "team": "MUN",
    "position": "DEF",
    "price": 4.5,
-   "owned": 21.8,
+   "owned": 21.7,
    "xp": [
     2.62,
     3.27,
@@ -2679,7 +2679,7 @@
    "team": "ARS",
    "position": "DEF",
    "price": 5.5,
-   "owned": 30.9,
+   "owned": 31.3,
    "xp": [
     2.92,
     2.44,
@@ -2839,7 +2839,7 @@
    "team": "NFO",
    "position": "DEF",
    "price": 5.5,
-   "owned": 2.2,
+   "owned": 2.1,
    "xp": [
     2.53,
     2.25,
@@ -3191,7 +3191,7 @@
    "team": "AVL",
    "position": "DEF",
    "price": 4.5,
-   "owned": 16.1,
+   "owned": 16.0,
    "xp": [
     2.28,
     2.06,
@@ -3351,7 +3351,7 @@
    "team": "SUN",
    "position": "DEF",
    "price": 5.0,
-   "owned": 4.7,
+   "owned": 4.8,
    "xp": [
     2.46,
     2.83,
@@ -3415,7 +3415,7 @@
    "team": "MCI",
    "position": "MID",
    "price": 7.5,
-   "owned": 4.6,
+   "owned": 4.5,
    "xp": [
     2.43,
     2.11,
@@ -3543,7 +3543,7 @@
    "team": "BHA",
    "position": "MID",
    "price": 5.0,
-   "owned": 2.9,
+   "owned": 3.0,
    "xp": [
     2.41,
     2.07,
@@ -3767,7 +3767,7 @@
    "team": "NFO",
    "position": "FWD",
    "price": 6.0,
-   "owned": 4.9,
+   "owned": 4.8,
    "xp": [
     2.25,
     2.03,
@@ -4087,7 +4087,7 @@
    "team": "MCI",
    "position": "DEF",
    "price": 6.0,
-   "owned": 2.3,
+   "owned": 2.2,
    "xp": [
     2.16,
     1.72,
@@ -4631,7 +4631,7 @@
    "team": "MCI",
    "position": "DEF",
    "price": 5.5,
-   "owned": 11.5,
+   "owned": 11.4,
    "xp": [
     2.06,
     1.6,
@@ -4791,7 +4791,7 @@
    "team": "BHA",
    "position": "MID",
    "price": 5.5,
-   "owned": 13.0,
+   "owned": 13.1,
    "xp": [
     1.87,
     1.67,
@@ -5079,7 +5079,7 @@
    "team": "ARS",
    "position": "MID",
    "price": 6.5,
-   "owned": 6.3,
+   "owned": 6.4,
    "xp": [
     1.82,
     1.62,
@@ -5271,7 +5271,7 @@
    "team": "MUN",
    "position": "DEF",
    "price": 5.0,
-   "owned": 14.4,
+   "owned": 14.6,
    "xp": [
     1.58,
     1.95,
@@ -5367,7 +5367,7 @@
    "team": "BHA",
    "position": "DEF",
    "price": 4.5,
-   "owned": 1.6,
+   "owned": 1.7,
    "xp": [
     1.92,
     1.22,
@@ -5399,7 +5399,7 @@
    "team": "BRE",
    "position": "DEF",
    "price": 4.5,
-   "owned": 2.4,
+   "owned": 2.5,
    "xp": [
     1.7,
     1.41,
@@ -5591,7 +5591,7 @@
    "team": "CHE",
    "position": "MID",
    "price": 6.5,
-   "owned": 1.4,
+   "owned": 1.3,
    "xp": [
     1.51,
     1.68,
@@ -6967,7 +6967,7 @@
    "team": "ARS",
    "position": "DEF",
    "price": 5.5,
-   "owned": 9.6,
+   "owned": 9.4,
    "xp": [
     1.22,
     1.08,
@@ -7863,7 +7863,7 @@
    "team": "LIV",
    "position": "FWD",
    "price": 9.0,
-   "owned": 16.0,
+   "owned": 16.1,
    "xp": [
     0.77,
     0.86,
@@ -8535,7 +8535,7 @@
    "team": "TOT",
    "position": "GKP",
    "price": 4.5,
-   "owned": 21.8,
+   "owned": 21.9,
    "xp": [
     0.52,
     0.67,
@@ -9047,7 +9047,7 @@
    "team": "NFO",
    "position": "MID",
    "price": 4.5,
-   "owned": 4.4,
+   "owned": 4.3,
    "xp": [
     0.49,
     0.47,
@@ -11959,7 +11959,7 @@
    "team": "ARS",
    "position": "MID",
    "price": 6.5,
-   "owned": 18.4,
+   "owned": 18.7,
    "xp": [
     0.14,
     0.14,
@@ -12215,7 +12215,7 @@
    "team": "IPS",
    "position": "GKP",
    "price": 4.0,
-   "owned": 0.5,
+   "owned": 0.4,
    "xp": [
     0.17,
     0.09,
@@ -12343,7 +12343,7 @@
    "team": "IPS",
    "position": "DEF",
    "price": 4.0,
-   "owned": 1.1,
+   "owned": 1.2,
    "xp": [
     0.17,
     0.09,
@@ -15191,7 +15191,7 @@
    "team": "BRE",
    "position": "MID",
    "price": 5.5,
-   "owned": 2.6,
+   "owned": 2.7,
    "xp": [
     0.13,
     0.12,
@@ -16855,7 +16855,7 @@
    "team": "BHA",
    "position": "MID",
    "price": 4.5,
-   "owned": 0.2,
+   "owned": 0.1,
    "xp": [
     0.0,
     0.0,
@@ -18327,7 +18327,7 @@
    "team": "TOT",
    "position": "DEF",
    "price": 5.0,
-   "owned": 0.6,
+   "owned": 0.5,
    "xp": [
     0.0,
     0.0,
@@ -18359,7 +18359,7 @@
    "team": "TOT",
    "position": "DEF",
    "price": 4.5,
-   "owned": 2.6,
+   "owned": 2.5,
    "xp": [
     0.0,
     0.0,
@@ -19479,8 +19479,8 @@
  "league": null,
  "schedule": {
   "phase": "full-solve",
-  "reason": "35h to the GW1 deadline \u2014 full solve",
-  "hours_remaining": 35.0
+  "reason": "32h to the GW1 deadline \u2014 full solve",
+  "hours_remaining": 31.8
  },
  "manager": null
 }
