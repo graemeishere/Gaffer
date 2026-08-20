@@ -124,6 +124,37 @@ sudo certbot --nginx -d fpl.yourdomain.com
 If the page will not load, the firewall is the usual reason: `sudo ufw allow
 80/tcp`, and 443 once certbot has run.
 
+### Something already owns port 80
+
+Common on a VPS that came with Docker — a reverse proxy container binds 80 and
+443, and nginx refuses to start rather than sharing them:
+
+```
+nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)
+```
+
+Check what has it:
+
+```bash
+sudo ss -tlnp | grep -E ':80|:443'
+docker ps
+```
+
+Do not fight it. Serve on a spare port and route to it from the proxy that is
+already there:
+
+```bash
+sudo GAFFER_PORT=8080 bash deploy/setup.sh --serve fpl.yourdomain.com
+```
+
+Then add a proxy host in that container pointing at `http://172.17.0.1:8080`
+(the host as seen from inside Docker) for your domain. Let it handle the
+certificate too — it already terminates TLS on 443, so certbot on the host is
+neither needed nor able to bind.
+
+`setup.sh --serve` now checks the port first and names whatever holds it,
+instead of installing nginx and failing afterwards.
+
 **For a quick look without installing anything**, serve the directory
 temporarily and stop it with ctrl-c:
 

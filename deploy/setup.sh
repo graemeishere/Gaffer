@@ -5,6 +5,7 @@
 #   curl -fsSL https://raw.githubusercontent.com/graemeishere/Gaffer/HEAD/deploy/setup.sh | less   # read it first
 #   sudo bash deploy/setup.sh                 install or update
 #   sudo bash deploy/setup.sh --serve [host]  install nginx and publish the board
+#                                             GAFFER_PORT=8080 if 80 is taken
 #   sudo bash deploy/setup.sh --reset         remove everything and start again
 #   sudo bash deploy/setup.sh --deploy-key    print the key to add to GitHub
 #
@@ -44,6 +45,12 @@ USER_NAME="${GAFFER_USER:-gaffer}"
 # before assignment a fatal error, and --serve reads them early.
 STATE_DIR="${GAFFER_STATE_DIR:-/var/lib/gaffer}"
 PUBLISH_DIR="${GAFFER_PUBLISH_DIR:-/var/www/gaffer}"
+
+# Which port nginx listens on. Default 80, but plenty of boxes already have
+# something there — a Docker reverse proxy is the common one — and nginx simply
+# refuses to start rather than sharing. Set GAFFER_PORT to a free port and put
+# the existing proxy in front.
+PORT="${GAFFER_PORT:-80}"
 
 log() { printf '\033[1;33m==>\033[0m %s\n' "$*"; }
 
@@ -102,6 +109,33 @@ SERVER_NAME="${2:-_}"
 install_web_server() {
   # Serve the board over http. There is no application server involved — the
   # engine writes files and exits — so this is nginx pointed at a directory.
+  # Check the port before installing anything. nginx will not share a port, and
+  # finding that out after an install and a config write is a worse experience
+  # than being told up front.
+  local holder
+  holder="$(ss -tlnp 2>/dev/null | awk -v p=":$PORT" '$4 ~ p"$" {print $NF; exit}')"
+  if [[ -n "$holder" && "$holder" != *nginx* ]]; then
+    cat <<CONFLICT
+
+  Port $PORT is already taken by:
+      $holder
+
+  nginx will not share a port. Two options:
+
+  1. Serve on a spare port and route to it from whatever already owns $PORT.
+     If that is a Docker reverse proxy, this is what you want:
+
+         sudo GAFFER_PORT=8080 bash deploy/setup.sh --serve $SERVER_NAME
+
+     then add a proxy host in it pointing at http://172.17.0.1:8080
+     (or the host's LAN address) for $SERVER_NAME.
+
+  2. Stop whatever is holding $PORT, if it is not doing anything you need.
+
+CONFLICT
+    exit 1
+  fi
+
   log "Installing nginx"
   apt-get install -y -qq nginx >/dev/null
 
@@ -114,8 +148,8 @@ install_web_server() {
   log "Writing the site"
   cat > /etc/nginx/sites-available/gaffer <<NGINX
 server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
+    listen $PORT;
+    listen [::]:$PORT;
     server_name $SERVER_NAME;
 
     root $PUBLISH_DIR;
@@ -168,9 +202,9 @@ NGINX
   address="$(hostname -I 2>/dev/null | awk '{print $1}')"
   cat <<DONE
 
-  Serving $PUBLISH_DIR
+  Serving $PUBLISH_DIR on port $PORT
 
-     http://${address:-your-server-ip}/
+     http://${address:-your-server-ip}:$PORT/
 
   If a domain points here, re-run as
      sudo bash deploy/setup.sh --serve fpl.yourdomain.com
