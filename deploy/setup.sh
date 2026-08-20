@@ -139,9 +139,30 @@ NGINX
   ln -sf /etc/nginx/sites-available/gaffer /etc/nginx/sites-enabled/gaffer
 
   log "Checking the configuration"
-  nginx -t >/dev/null 2>&1 || { nginx -t; echo "nginx rejected the config."; exit 1; }
-  systemctl enable --now nginx >/dev/null 2>&1 || true
-  systemctl reload nginx
+  if ! nginx -t >/dev/null 2>&1; then
+    nginx -t
+    echo
+    echo "  nginx rejected the configuration. Nothing has been started."
+    exit 1
+  fi
+
+  log "Starting nginx"
+  systemctl enable nginx >/dev/null 2>&1 || true
+  # restart, not reload: reload fails outright on a service that is not already
+  # running, and a fresh install often is not. restart is correct either way.
+  if ! systemctl restart nginx; then
+    echo
+    echo "  nginx would not start. The usual cause is something else already"
+    echo "  holding port 80:"
+    echo
+    ss -tlnp 2>/dev/null | grep -E ':80\s|:443\s' || echo "    (nothing else listening on 80/443)"
+    echo
+    echo "  Recent log:"
+    journalctl -u nginx -n 15 --no-pager 2>/dev/null | sed 's/^/    /'
+    exit 1
+  fi
+
+  systemctl is-active --quiet nginx || { echo "  nginx did not stay running."; exit 1; }
 
   local address
   address="$(hostname -I 2>/dev/null | awk '{print $1}')"
