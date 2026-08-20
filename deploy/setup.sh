@@ -38,6 +38,13 @@ BRANCH="${GAFFER_BRANCH:-}"
 HOME_DIR="${GAFFER_HOME:-/srv/gaffer}"
 USER_NAME="${GAFFER_USER:-gaffer}"
 
+# Both live outside the checkout: anything the engine writes into a tracked file
+# leaves the working tree dirty and breaks the next update. Declared here with
+# the rest of the configuration because `set -u` makes a variable referenced
+# before assignment a fatal error, and --serve reads them early.
+STATE_DIR="${GAFFER_STATE_DIR:-/var/lib/gaffer}"
+PUBLISH_DIR="${GAFFER_PUBLISH_DIR:-/var/www/gaffer}"
+
 log() { printf '\033[1;33m==>\033[0m %s\n' "$*"; }
 
 # The key types GitHub will accept in a deploy key field.
@@ -194,9 +201,6 @@ fi
 log "Installing dependencies"
 apt-get update -qq
 apt-get install -y -qq python3 python3-venv python3-pip git coinor-cbc >/dev/null
-
-STATE_DIR="${GAFFER_STATE_DIR:-/var/lib/gaffer}"
-PUBLISH_DIR="${GAFFER_PUBLISH_DIR:-/var/www/gaffer}"
 
 log "Creating the service user"
 id -u "$USER_NAME" >/dev/null 2>&1 || useradd --system --create-home --home-dir "$HOME_DIR" --shell /bin/bash "$USER_NAME"
