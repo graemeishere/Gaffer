@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated": "2026-08-20T10:37:41+00:00",
+  "generated": "2026-08-20T10:49:39+00:00",
   "gameweek": 1,
   "deadline": "2026-08-21T17:30:00Z",
   "horizon": 6,
@@ -19476,11 +19476,16 @@
    "reason": "GW6 is the best of 6 weeks in view at 2.4; 32 weeks still unseen"
   }
  ],
- "league": null,
+ "league": {
+  "league_id": 1376747,
+  "kind": "h2h",
+  "name": "Cutting Edge Services",
+  "waiting": true
+ },
  "schedule": {
   "phase": "full-solve",
   "reason": "31h to the GW1 deadline \u2014 full solve",
-  "hours_remaining": 30.9
+  "hours_remaining": 30.7
  },
  "manager": null
 }
