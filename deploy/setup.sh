@@ -479,7 +479,7 @@ EnvironmentFile=-$HOME_DIR/.env
 Environment=GAFFER_STATE_DIR=$STATE_DIR
 Environment=GAFFER_PUBLISH_DIR=$PUBLISH_DIR
 ExecStart=$HOME_DIR/.venv/bin/python -m gaffer.run --quiet
-ExecStartPost=/bin/sh -c 'cp $HOME_DIR/data/latest.json $HOME_DIR/data/report.html $PUBLISH_DIR/ 2>/dev/null || true'
+ExecStartPost=/bin/sh -c 'cp -f $HOME_DIR/web/*.html $PUBLISH_DIR/ 2>/dev/null; cp -f $HOME_DIR/data/latest.json $HOME_DIR/data/report.html $PUBLISH_DIR/ 2>/dev/null || true'
 TimeoutStartSec=600
 Nice=10
 
@@ -516,7 +516,13 @@ log "First run (this may take a minute)"
     GAFFER_STATE_DIR="$STATE_DIR" GAFFER_PUBLISH_DIR="$PUBLISH_DIR" \
     "$HOME_DIR/.venv/bin/python" -m gaffer.run --quiet ) || {
   echo "First run failed — check: sudo journalctl -u gaffer.service -n 50"; exit 1; }
-sudo -u "$USER_NAME" cp "$HOME_DIR/data/latest.json" "$HOME_DIR/data/report.html" "$HOME_DIR/web/" 2>/dev/null || true
+# Publish the whole static site, into the publish directory rather than the
+# checkout. index.html ships in the repo and is what a bare nginx looks for; a
+# directory holding only report.html gives every request for / a 403 Forbidden,
+# which reads like a permissions fault and is really a missing default document.
+( cd / && sudo -u "$USER_NAME" sh -c \
+  "cp -f '$HOME_DIR'/web/*.html '$PUBLISH_DIR'/ 2>/dev/null; \
+   cp -f '$HOME_DIR'/data/latest.json '$HOME_DIR'/data/report.html '$PUBLISH_DIR'/ 2>/dev/null" ) || true
 
 cat <<DONE
 

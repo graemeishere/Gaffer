@@ -239,6 +239,25 @@ sudo -u gaffer git -C /srv/gaffer reset --hard
 sudo bash deploy/setup.sh
 ```
 
+## 403 Forbidden from the published site
+
+Not a permissions problem, despite what the status code suggests. nginx answers
+403 when a request for `/` finds no default document and directory listing is
+off — so a publish directory holding `report.html` but no `index.html` produces
+it, and looks exactly like a file-mode fault that it is not.
+
+Two things now prevent it: the whole static site is published rather than only
+the two generated files, and the container is given an nginx config naming
+`report.html` as the index instead of relying on the image's default of
+`index.html`.
+
+If an older install is still doing it:
+
+```bash
+sudo cp /srv/gaffer/web/index.html /var/www/gaffer/
+ls -la /var/www/gaffer          # expect index.html, report.html, latest.json
+```
+
 ## Starting over
 
 ```bash
