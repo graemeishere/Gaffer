@@ -8,7 +8,9 @@ import time
 from gaffer import config
 from gaffer.ingest import FplClient
 from gaffer.model import TeamStrength, project, team_fixture_runs
-from gaffer.league import advise, effective_ownership, read_league, simulate_league
+from gaffer.league import (advise, advise_match, compare_squads, effective_ownership,
+                           fixture_for, is_head_to_head, read_league, read_league_any,
+                           read_matches, simulate_league, simulate_match)
 from gaffer.optimise import best_lineup, evaluate_chips, evaluate_transfers, pick_squad
 from gaffer.schedule import work_due
 from gaffer.publish import write_json, write_report
@@ -137,6 +139,15 @@ def run(
     if league_id and reference_squad:
         log(f"  reading league {league_id} …")
         try:
+            standings, kind = read_league_any(league_id, client)
+            log(f"    {standings['league']['name']} ({kind})")
+
+            if kind == "h2h":
+                league = _head_to_head(
+                    client, league_id, standings, entry_id, gameweek, horizon,
+                    reference_squad, lineup, scores, projections, trials, log)
+                raise _Handled
+
             rivals = read_league(league_id, max(1, gameweek - 1), client,
                                  exclude_entry=entry_id)
             with_squads = {r.entry_id: (r.squad, r.captain) for r in rivals if r.has_squad}
@@ -168,6 +179,8 @@ def run(
                     f"· stance {strategy.stance}")
             else:
                 log("    no rival squads readable yet — picks are public only after a deadline")
+        except _Handled:
+            pass
         except Exception as exc:
             log(f"    ! could not read league {league_id}: {exc}")
 
@@ -245,6 +258,77 @@ def main(argv: list[str] | None = None) -> int:
     return 0
 
 
+class _Handled(Exception):
+    """Signals the head-to-head path already produced the league block."""
+
+
+def _head_to_head(client, league_id, standings, entry_id, gameweek, horizon,
+                  squad, lineup, scores, projections, trials, log):
+    """Advice for a head-to-head league, where one opponent decides the week."""
+    if not entry_id:
+        log("    need --entry to work out who you are playing")
+        return None
+
+    matches = read_matches(league_id, client)
+    if not matches:
+        log("    no fixtures published yet — they appear once the league starts")
+        return {"league_id": league_id, "kind": "h2h",
+                "name": standings["league"]["name"], "waiting": True}
+
+    match = fixture_for(matches, entry_id, gameweek)
+    if not match:
+        log(f"    no fixture found for GW{gameweek}")
+        return {"league_id": league_id, "kind": "h2h",
+                "name": standings["league"]["name"], "waiting": True}
+
+    opponent_id, opponent_name = match.opponent_of(entry_id)
+    picks = client.entry_picks(opponent_id, max(1, gameweek - 1))
+    their_squad = [p["element"] for p in picks.get("picks", [])]
+    if not their_squad:
+        log("    opponent's squad is not public yet")
+        return {"league_id": league_id, "kind": "h2h",
+                "name": standings["league"]["name"], "waiting": True}
+
+    positions = {row.id: row.position for row in scores}
+    first_gw_xp = {row.id: (row.xp[0] if row.xp else 0.0) for row in scores}
+    their_lineup = best_lineup(their_squad, first_gw_xp, positions)
+
+    draws = {
+        (row.id, gw): projections[row.id][gw].draws
+        for row in scores if row.id in projections
+        for gw in range(min(horizon, len(projections[row.id])))
+    }
+    p_win, p_draw, p_loss, my_mean, their_mean = simulate_match(
+        squad, lineup.captain if lineup else 0,
+        their_squad, their_lineup.captain, draws, trials=trials)
+
+    shared, mine_only, theirs_only = compare_squads(squad, their_squad)
+    stance, reason = advise_match(p_win, p_loss, shared, len(squad))
+    log(f"    GW{gameweek} v {opponent_name}: win {p_win:.0%} · {stance}")
+
+    return {
+        "league_id": league_id,
+        "kind": "h2h",
+        "name": standings["league"]["name"],
+        "match": {
+            "gameweek": gameweek,
+            "opponent": opponent_id,
+            "opponent_name": opponent_name,
+            "p_win": round(p_win, 4),
+            "p_draw": round(p_draw, 4),
+            "p_loss": round(p_loss, 4),
+            "my_mean": round(my_mean, 1),
+            "their_mean": round(their_mean, 1),
+            "expected_league_points": round(p_win * 3 + p_draw, 2),
+            "shared_players": shared,
+            "my_differentials": mine_only,
+            "their_differentials": theirs_only,
+            "stance": stance,
+            "reason": reason,
+        },
+    }
+
+
 def _print_squad(payload: dict) -> None:
     by_id = {p["id"]: p for p in payload["players"]}
     squad, lineup = payload["squad"], payload["lineup"]
@@ -283,6 +367,23 @@ def _print_league(payload: dict) -> None:
     league = payload.get("league")
     if not league:
         return
+
+    if league.get("kind") == "h2h":
+        print(f"\n  {league['name']} — head to head")
+        match = league.get("match")
+        if not match:
+            print("    fixtures not published yet; they appear once the league starts")
+            return
+        print(f"    GW{match['gameweek']} v {match['opponent_name']}")
+        print(f"    win {match['p_win']:.0%}  draw {match['p_draw']:.0%}  "
+              f"loss {match['p_loss']:.0%}   "
+              f"({match['expected_league_points']:.2f} of 3 league points)")
+        print(f"    projected {match['my_mean']:.0f} v {match['their_mean']:.0f}")
+        print(f"    {match['shared_players']} shared players — they cannot change the result")
+        print(f"    stance: {match['stance'].upper()}")
+        print(f"    {match['reason']}")
+        return
+
     simulation, advice = league["simulation"], league["advice"]
     print(f"\n  mini-league — {league['rivals']} rivals")
     print(f"    my points over {simulation['gameweeks']} GW: {simulation['my_mean']:.0f} "

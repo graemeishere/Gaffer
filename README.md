@@ -144,9 +144,18 @@ model that history supports:
 
 ## Playing a mini-league
 
-National ownership is close to irrelevant when fifteen colleagues decide your
-table. Only the *difference* between your squad and theirs moves you — points
-scored on a player everybody owns move the whole table together.
+National ownership is close to irrelevant when a handful of colleagues decide
+your table. Only the *difference* between your squad and theirs moves you —
+points scored on a player everybody owns move the whole table together.
+
+Classic and head-to-head leagues are detected automatically, because they need
+opposite advice. A classic league accumulates points all season, so every extra
+point counts and the aim is to outscore the field. A head-to-head league draws
+you against one manager each week for three league points, and **margin pays
+nothing** — beating them by one is beating them by fifty. There, a player you
+both own cannot affect the result at all, and risk belongs to the underdog: a
+predictable gameweek loses a match you were expected to lose, while variance is
+the only thing that can rob you of one you should win.
 
 ```bash
 python -m gaffer.run --entry YOUR_TEAM_ID --league YOUR_LEAGUE_ID

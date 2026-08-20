@@ -169,3 +169,46 @@ def simulate_league(
         rival_means={rid: rival_sums[rid] / trials for rid in rival_squads},
         beat_each={rid: beat_counts[rid] / trials for rid in rival_squads},
     )
+
+
+def simulate_match(
+    my_squad: list[int],
+    my_captain: int,
+    their_squad: list[int],
+    their_captain: int,
+    draws_by_gw: dict,
+    *,
+    gameweeks: int = 1,
+    trials: int = 4000,
+    seed: int | None = 11,
+) -> tuple[float, float, float, float, float]:
+    """One head-to-head match: (p_win, p_draw, p_loss, my_mean, their_mean).
+
+    Totals are rounded to whole points before comparing. Real FPL scores are
+    integers and draws genuinely happen — a shared blank gameweek is a common way
+    to end level — but the sampler deliberately returns fractions so that the
+    steady components do not bias the mean. Comparing those fractions directly
+    would make an exact tie essentially impossible and report the draw
+    probability as zero, which is wrong in a competition where a draw is worth a
+    third of a win.
+    """
+    rng = random.Random(seed)
+    wins = draws = losses = 0
+    my_total = their_total = 0.0
+
+    for _ in range(trials):
+        mine = _squad_draw(my_squad, my_captain, draws_by_gw, gameweeks, rng)
+        theirs = _squad_draw(their_squad, their_captain, draws_by_gw, gameweeks, rng)
+        my_total += mine
+        their_total += theirs
+
+        mine_pts, theirs_pts = round(mine), round(theirs)
+        if mine_pts > theirs_pts:
+            wins += 1
+        elif mine_pts == theirs_pts:
+            draws += 1
+        else:
+            losses += 1
+
+    return (wins / trials, draws / trials, losses / trials,
+            my_total / trials, their_total / trials)

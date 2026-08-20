@@ -31,7 +31,8 @@ class FplClient:
     # ---- plumbing -------------------------------------------------------
 
     def _cache_path(self, endpoint: str) -> Path:
-        return self.cache_dir / (endpoint.strip("/").replace("/", "_") + ".json")
+        safe = endpoint.strip("/").replace("/", "_").replace("?", "_").replace("=", "_")
+        return self.cache_dir / (safe + ".json")
 
     def get(self, endpoint: str, *, ttl: int | None = None) -> Any:
         """Fetch an endpoint, serving from cache when it is still fresh.
@@ -45,7 +46,10 @@ class FplClient:
         if path.exists() and (time.time() - path.stat().st_mtime) < ttl:
             return json.loads(path.read_text())
 
-        url = f"{config.API}/{endpoint.strip('/')}/"
+        # FPL wants a trailing slash on the path, which has to go before any
+        # query string — appending it blindly yields "?page=1/" and a 400.
+        route, _, query = endpoint.strip("/").partition("?")
+        url = f"{config.API}/{route}/" + (f"?{query}" if query else "")
         try:
             resp = self.session.get(url, timeout=20)
             resp.raise_for_status()
@@ -98,3 +102,20 @@ class FplClient:
         """A classic league's table. Readable by ID without authentication —
         this is what lets us see every rival's squad in a mini-league."""
         return self.get(f"leagues-classic/{league_id}/standings")
+
+    def league_h2h_standings(self, league_id: int) -> dict:
+        """A head-to-head league's table.
+
+        Separate endpoint, and the classic one 404s for an h2h league rather
+        than saying so — which reads exactly like a league that does not exist.
+        """
+        return self.get(f"leagues-h2h/{league_id}/standings")
+
+    def league_h2h_matches(self, league_id: int, page: int = 1) -> dict:
+        """Who plays whom, gameweek by gameweek.
+
+        In a head-to-head league this is the thing that matters: each week you
+        are drawn against one manager, and beating them by a point counts the
+        same as beating them by fifty.
+        """
+        return self.get(f"leagues-h2h-matches/league/{league_id}?page={page}")

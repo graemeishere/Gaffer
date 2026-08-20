@@ -222,13 +222,52 @@ def _chip_rows(payload: dict) -> str:
     return "".join(out)
 
 
+def _h2h_block(league: dict) -> str:
+    """A head-to-head league turns on one opponent, not the whole field."""
+    match = league.get("match")
+    if not match:
+        return (f"<p><strong>{league['name']}</strong> is a head-to-head league. "
+                "Fixtures are published once the league starts, and this fills in "
+                "with your opponent for the week, your chance of beating them, and "
+                "whether to be taking risk on or squeezing it out.</p>")
+
+    tone = {"protect": "go", "gamble": "stop"}.get(match["stance"], "neu")
+    return (
+        f"<div class='stats' style='margin-bottom:.5rem;'>"
+        f"<div class='stat'><b>{match['p_win']:.0%}</b>"
+        f"<span>chance of beating {match['opponent_name']}</span></div>"
+        f"<div class='stat'><b>{match['my_mean']:.0f} v {match['their_mean']:.0f}</b>"
+        f"<span>projected gameweek points</span></div>"
+        f"<div class='stat'><b>{match['expected_league_points']:.2f}</b>"
+        f"<span>of 3 league points expected</span></div>"
+        f"<div class='stat'><b>{match['shared_players']}</b>"
+        f"<span>shared players — cannot change the result</span></div></div>"
+        f"<div class='panel' style='margin-bottom:.6rem;'>"
+        f"<div class='opt'><div class='opt-l'><b>Win</b>"
+        f"<span>3 league points</span></div>"
+        f"<div class='opt-r pos'>{match['p_win']:.0%}</div></div>"
+        f"<div class='opt'><div class='opt-l'><b>Draw</b>"
+        f"<span>1 league point</span></div>"
+        f"<div class='opt-r neu'>{match['p_draw']:.0%}</div></div>"
+        f"<div class='opt'><div class='opt-l'><b>Loss</b>"
+        f"<span>nothing</span></div>"
+        f"<div class='opt-r neg'>{match['p_loss']:.0%}</div></div></div>"
+        f"<div class='banner'><strong>{match['stance'].title()}.</strong> "
+        f"{match['reason']}</div>"
+    )
+
+
 def _league_block(payload: dict) -> str:
     league = payload.get("league")
     if not league:
         return ("<p>No mini-league linked. Pass <code>--league YOUR_LEAGUE_ID</code> once "
                 "the first deadline has passed and this fills with your rivals' actual "
                 "squads, your win probability against them, and whether to be taking risk "
-                "or squeezing it out.</p>")
+                "or squeezing it out. Classic and head-to-head leagues are detected "
+                "automatically — they need entirely different advice.</p>")
+    if league.get("kind") == "h2h":
+        return _h2h_block(league)
+
     simulation, advice = league["simulation"], league["advice"]
     exposure = "".join(f"<li>{name}</li>" for name in advice["biggest_exposure"])
     return (
