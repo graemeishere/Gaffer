@@ -102,7 +102,16 @@ as_service_user() {
   sudo -u "$USER_NAME" env HOME="$HOME_DIR" GIT_TERMINAL_PROMPT=0 "$@"
 }
 
-reachable() { as_service_user git ls-remote --heads "$1" >/dev/null 2>&1; }
+LAST_GIT_ERROR=""
+
+reachable() {
+  # Keep git's own message. It is the most useful line in any failure here:
+  # "Repository not found" (private, or the wrong name) and "could not read
+  # Username" (credentials wanted) need completely different fixes, and
+  # checking only the exit code throws both away.
+  LAST_GIT_ERROR="$(as_service_user git ls-remote --heads "$1" 2>&1 >/dev/null)"
+  [[ -z "$LAST_GIT_ERROR" ]]
+}
 
 diagnose() {
   # Say what is actually broken instead of guessing. Each layer is checked
@@ -139,11 +148,26 @@ diagnose() {
   if [[ -f "$HOME_DIR/.ssh/id_ed25519" ]]; then
     echo "    deploy key present          yes ($HOME_DIR/.ssh/id_ed25519)"
     local probe
-    probe="$(as_service_user ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new \
+    probe="$(timeout 15 sudo -u "$USER_NAME" env HOME="$HOME_DIR" ssh \
+             -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o ConnectTimeout=8 \
              -T git@github.com 2>&1 | head -1)"
     echo "    github ssh says             ${probe:-(no response)}"
   else
     echo "    deploy key present          no"
+  fi
+
+  # Can root see it when the service user cannot? Then this is credentials, not
+  # connectivity: root very often holds a token cached from an earlier clone
+  # that the service user has no access to.
+  local as_root
+  as_root="$(GIT_TERMINAL_PROMPT=0 timeout 25 git ls-remote --heads "$REPO" 2>&1 >/dev/null)"
+  if [[ -z "$as_root" ]]; then
+    echo "    as root over https          ok  <- root sees it, $USER_NAME does not"
+    echo "                                    Credentials, not the network. Either the"
+    echo "                                    repository is still private, or root has a"
+    echo "                                    token cached from when you cloned it."
+  else
+    echo "    as root over https          also fails"
   fi
   echo
 }
@@ -159,16 +183,30 @@ else
   echo "  Cannot reach the repository by either route:"
   echo "    $REPO"
   echo "    $REPO_SSH"
+  echo
+  echo "  git said:"
+  printf '    %s\n' "${LAST_GIT_ERROR:-(no message)}"
   diagnose
   cat <<'HELP'
-  Most likely one of:
+  Read git's message above first — it names the fault.
 
-    * The repository is private and this box has no credentials. Add a deploy
-      key (below), or make the repository public — nothing in it is secret.
-    * Outbound 22 is blocked, so ssh cannot work whatever key you add. If 443 is
-      open and the repo is public, https will work: re-run with
-          sudo GAFFER_REPO=https://github.com/OWNER/REPO.git bash deploy/setup.sh
-    * The URL is wrong. Check the owner and repository name, including its case.
+    "Repository not found"      Private, or the owner/name is wrong. GitHub
+                                answers this rather than "denied" so that
+                                private repositories stay unlisted, so check
+                                the visibility AND the spelling, case included.
+
+    "could not read Username"   It wants credentials. Make the repository
+                                public, or add a deploy key (printed below).
+
+    "Permission denied"         The key was rejected. Check the deploy key is on
+                                THIS repository and not another one.
+
+    "Could not resolve host" /  Network. See the layers above.
+    "Connection timed out"
+
+  If every network layer above is ok and root can see the repository while the
+  service user cannot, it is still private and root is using a cached token.
+  Making it public fixes that outright.
 
 HELP
   if [[ -f "$HOME_DIR/.ssh/id_ed25519.pub" ]]; then
