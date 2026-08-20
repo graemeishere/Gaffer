@@ -10,7 +10,12 @@ feeding an integer solver.
 
 ## Status
 
-**Phase 3 — done, and the verdict is "not yet".** The backtest scores the model
+**Phase 4 — done.** Chip timing, deadline-aware scheduling, and the mini-league
+engine: it reads your rivals' actual squads, simulates the run against them
+rather than averaging it, and says whether to be taking risk on or squeezing it
+out. Given Phase 3's verdict, this is the part the whole argument now rests on.
+
+**Phase 3 — the verdict is "not yet".** The backtest scores the model
 against the obvious alternatives on completed seasons. On the three seasons
 where its inputs actually exist, the model and "pick last season's highest
 scorers" finish level: 4871 points against 4881. The model ranks players
@@ -28,7 +33,7 @@ was tuned. The sweep stays in the repo for when more seasons exist.
 | 1 | Minutes model, team strength ratings, expected points | done |
 | 2 | MILP optimiser — squad, eleven, captain, transfer path | done |
 | 3 | Backtest harness, benchmarks and calibration | done |
-| 4 | Chip timing, deadline-aware scheduling, mini-league strategy | next |
+| 4 | Chip timing, deadline-aware scheduling, mini-league strategy | done |
 
 ### How a projection is built
 
@@ -63,8 +68,9 @@ Writes two files:
 
 Options: `--horizon N` (gameweeks to look ahead, default 6), `--refresh`
 (ignore the cache), `--top N` (print a table), `--quiet`, `--no-optimise`
-(board only), and `--entry YOUR_TEAM_ID` to price transfers against your actual
-squad once the season is under way.
+(board only), `--entry YOUR_TEAM_ID` to price transfers against your actual
+squad, and `--league YOUR_LEAGUE_ID` to simulate yourself against your rivals'
+real squads.
 
 ## Layout
 
@@ -76,6 +82,8 @@ gaffer/
   rank/      assembles projections into the ranked board
   optimise/  squad selection, lineup and captain, transfer pricing
   backtest/  historical dataset, benchmark strategies, calibration sweeps
+  league/    rival squads, season simulation, effective ownership and stance
+  schedule   what work is due, derived from the next deadline
   publish/   writes latest.json and report.html
 web/         static page that reads latest.json
 tests/       ranking maths
@@ -109,6 +117,29 @@ model that history supports:
   expected-goals data for them. Testing there scores a model with its inputs
   removed, loses to everything, and means nothing — an earlier run of this
   harness did exactly that and made the model look far worse than it is.
+
+## Playing a mini-league
+
+National ownership is close to irrelevant when fifteen colleagues decide your
+table. Only the *difference* between your squad and theirs moves you — points
+scored on a player everybody owns move the whole table together.
+
+```bash
+python -m gaffer.run --entry YOUR_TEAM_ID --league YOUR_LEAGUE_ID
+```
+
+Rival squads are public once a deadline has passed, so the engine reads all
+fourteen, simulates the coming gameweeks by drawing outcomes rather than
+averaging them, and reports how often you finish top. Then it takes a stance:
+ahead, match the field and kill variance; behind and late, take players they do
+not own, because playing the percentages from behind loses slowly and losing
+slowly is still losing. People reliably get this backwards.
+
+**Read the win probability for what it is.** Every squad in the simulation is
+scored with the same projections that chose yours, so it answers "if this model
+is right, how often do I finish top" — not "is this model right". Phase 3 is
+unflattering about the second question. Treat the number as a comparison of
+squad *shapes* under a shared assumption, never as a forecast of the table.
 
 ## Deploying
 

@@ -36,6 +36,11 @@ class ExpectedPoints:
     minutes: float
     variance: float = 0.0
     components: dict[str, float] = field(default_factory=dict)
+    # Parameters a simulation can draw from. An average cannot express that a
+    # forward's six points are mostly a blank-or-haul lottery while a defender's
+    # six are close to a certainty, and in a fifteen-player league that
+    # difference decides who wins.
+    draws: dict[str, float] = field(default_factory=dict)
 
     @property
     def sd(self) -> float:
@@ -166,6 +171,25 @@ def project_fixture(
         minutes=minutes.expected_minutes,
         variance=round(variance, 3),
         components={k: round(v, 3) for k, v in components.items()},
+        draws={
+            "goal_rate": round(expected_goals, 4),
+            "goal_value": goal_value,
+            "assist_rate": round(expected_assists, 4),
+            "assist_value": SCORING.assist,
+            "clean_sheet_chance": round(math.exp(-goals_against) * minutes.p_60, 4),
+            "clean_sheet_value": clean_sheet_value,
+            "p_appear": round(minutes.p_appear, 4),
+            "p_60": round(minutes.p_60, 4),
+            # Everything else — bonus, saves, defensive contribution, cards, the
+            # conceded deduction — is steady enough to carry at its average.
+            "steady": round(
+                total
+                - components.get("goals", 0.0)
+                - components.get("assists", 0.0)
+                - components.get("clean_sheet", 0.0)
+                - components.get("appearance", 0.0),
+                4),
+        },
     )
 
 

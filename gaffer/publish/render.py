@@ -26,6 +26,9 @@ def build_payload(
     squad=None,
     lineup=None,
     transfers=None,
+    chips=None,
+    league=None,
+    due=None,
 ) -> dict:
     """Assemble the JSON contract. Phase 0 fills `meta`, `players` and `fixtures`;
     `lineup`, `transfers` and `chips` arrive with the optimiser in Phase 2."""
@@ -40,7 +43,7 @@ def build_payload(
             "gameweek": (nxt or cur or events[0])["id"],
             "deadline": (nxt or cur or events[0])["deadline_time"],
             "horizon": horizon,
-            "stage": "phase-2",
+            "stage": "phase-4",
             "method": "expected-points",
             "strength_source": getattr(strength, "source", "unknown"),
             "matches_fitted": getattr(strength, "matches_fitted", 0),
@@ -67,9 +70,14 @@ def build_payload(
         "squad": squad.as_dict() if squad else None,
         "lineup": lineup.as_dict() if lineup else None,
         "transfers": [t.as_dict() for t in (transfers or [])],
-        # Reserved for Phase 4 so the contract stays stable.
+        "chips": [c.as_dict() for c in (chips or [])],
+        "league": league,
+        "schedule": {
+            "phase": due.phase,
+            "reason": due.reason,
+            "hours_remaining": round(due.hours_remaining, 1),
+        } if due else None,
         "manager": None,
-        "chips": [],
     }
 
 
@@ -200,6 +208,45 @@ def _transfer_rows(payload: dict) -> str:
     return "".join(out)
 
 
+def _chip_rows(payload: dict) -> str:
+    chips = payload.get("chips") or []
+    if not chips:
+        return "<p>No squad to time chips against yet.</p>"
+    out = []
+    for chip in chips:
+        tone = "pos" if chip["action"] == "play" else "neu"
+        out.append(
+            f"<div class='opt'><div class='opt-l'><b>{chip['chip'].title()}</b>"
+            f"<span>{chip['reason']}</span></div>"
+            f"<div class='opt-r {tone}'>{chip['action'].upper()}</div></div>")
+    return "".join(out)
+
+
+def _league_block(payload: dict) -> str:
+    league = payload.get("league")
+    if not league:
+        return ("<p>No mini-league linked. Pass <code>--league YOUR_LEAGUE_ID</code> once "
+                "the first deadline has passed and this fills with your rivals' actual "
+                "squads, your win probability against them, and whether to be taking risk "
+                "or squeezing it out.</p>")
+    simulation, advice = league["simulation"], league["advice"]
+    exposure = "".join(f"<li>{name}</li>" for name in advice["biggest_exposure"])
+    return (
+        f"<div class='stats' style='margin-bottom:.5rem;'>"
+        f"<div class='stat'><b>{simulation['win_probability']:.0%}</b>"
+        f"<span>chance of finishing top of {league['rivals'] + 1}</span></div>"
+        f"<div class='stat'><b>{simulation['my_mean']:.0f}</b>"
+        f"<span>my expected points, {simulation['gameweeks']} GW</span></div>"
+        f"<div class='stat'><b>{advice['differential_count']}</b>"
+        f"<span>players the field mostly lacks</span></div>"
+        f"<div class='stat'><b>{advice['stance'].title()}</b>"
+        f"<span>recommended stance</span></div></div>"
+        f"<div class='banner'><strong>{advice['stance'].title()}.</strong> {advice['reason']} "
+        f"{advice['suggested']}</div>"
+        + (f"<h3 style='margin-top:.6rem'>Biggest exposure</h3><ul>{exposure}</ul>" if exposure else "")
+    )
+
+
 def write_report(payload: dict, path: Path | None = None) -> Path:
     path = path or config.HTML_OUT
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -224,6 +271,10 @@ def write_report(payload: dict, path: Path | None = None) -> Path:
         "{{EASY_FIXTURES}}": _fixture_table(payload, reverse=False),
         "{{HARD_FIXTURES}}": _fixture_table(payload, reverse=True),
         "{{PITCH}}": _pitch(payload),
+        "{{CHIPS}}": _chip_rows(payload),
+        "{{LEAGUE}}": _league_block(payload),
+        "{{PHASE}}": (payload.get("schedule") or {}).get("phase", "—"),
+        "{{PHASE_REASON}}": (payload.get("schedule") or {}).get("reason", ""),
         "{{TRANSFERS}}": _transfer_rows(payload),
         "{{SQUAD_COST}}": f"{payload['squad']['cost']:.1f}" if payload.get("squad") else "—",
         "{{FORMATION}}": payload["lineup"]["formation"] if payload.get("lineup") else "—",

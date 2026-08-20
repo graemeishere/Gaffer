@@ -1,9 +1,10 @@
 name: refresh
 
-# Phase 0 runs on a fixed schedule. Phase 4 replaces this with an hourly wake-up
-# that reads the next deadline and decides for itself what work is due — FPL
-# deadlines land on four different weekdays, so a fixed weekly cron would miss
-# most of the season.
+# The engine now decides for itself what work is due, from the next deadline
+# rather than the calendar (see gaffer/schedule.py) — FPL deadlines land on four
+# weekdays at six clock times, so a fixed weekly cron would miss most of the
+# season. This runs twice a day purely to keep the published board visible; the
+# hourly wake-up that drives the real schedule belongs on the VPS cron.
 on:
   schedule:
     - cron: "0 3 * * *"    # after overnight price changes settle
