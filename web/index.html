@@ -6,62 +6,81 @@
 <title>Gaffer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Caveat:wght@500;600;700&display=swap">
 <style>
+/* Same tokens as the board, so the two pages read as one thing. Light only:
+   the kraft paper is the design, not a preference. */
 :root{
-  --ground:#f4f5f7; --surface:#fff; --surface-2:#eceef2;
-  --ink:#171c26; --ink-2:#3d4657; --ink-3:#6b7688;
-  --rule:#d6dae2; --accent:#b26a1f; --accent-soft:#f6ead8;
-  --stop:#9c3328; --stop-soft:#f7e4e1;
-}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --ground:#12151b; --surface:#191d25; --surface-2:#212630;
-  --ink:#e8eaef; --ink-2:#b3bac7; --ink-3:#818b9c;
-  --rule:#2b313d; --accent:#e0a458; --accent-soft:#2e2418;
-  --stop:#e08b7f; --stop-soft:#2c1e1c;
-}}
-:root[data-theme="dark"]{
-  --ground:#12151b; --surface:#191d25; --surface-2:#212630;
-  --ink:#e8eaef; --ink-2:#b3bac7; --ink-3:#818b9c;
-  --rule:#2b313d; --accent:#e0a458; --accent-soft:#2e2418;
-  --stop:#e08b7f; --stop-soft:#2c1e1c;
+  --paper:oklch(0.96 0.016 78);
+  --paper2:oklch(0.985 0.01 78);
+  --rule:oklch(0.86 0.03 75);
+  --ink:oklch(0.27 0.06 264);
+  --ink-soft:oklch(0.46 0.05 264);
+  --ink-faint:oklch(0.60 0.04 264);
+  --highlight:oklch(0.87 0.17 111);
+  --red:oklch(0.55 0.2 27);
+  --bad:oklch(0.58 0.19 27);
+  --neutral:oklch(0.8 0.006 90);
+  --shadow:rgba(40,30,10,.14);
 }
 *{box-sizing:border-box;}
-body{margin:0;background:var(--ground);color:var(--ink);
-  font-family:Archivo,"Helvetica Neue",Arial,sans-serif;font-size:15px;line-height:1.5;}
-.wrap{max-width:960px;margin:0 auto;padding:2rem 1.1rem 4rem;display:flex;flex-direction:column;gap:1.6rem;}
-h1{font-size:1.7rem;letter-spacing:-.02em;margin:0;font-weight:700;}
-.bar{font-family:"JetBrains Mono",monospace;font-size:.72rem;color:var(--ink-3);
-  display:flex;flex-wrap:wrap;gap:.4rem 1.2rem;padding-top:.8rem;border-top:1px solid var(--rule);}
-.stale{background:var(--stop-soft);color:var(--stop);padding:.75rem 1rem;border-radius:4px;
-  font-size:.85rem;font-weight:600;}
-.banner{background:var(--accent-soft);color:var(--ink-2);padding:.8rem 1rem;border-radius:4px;font-size:.85rem;}
-.controls{display:flex;gap:.4rem;flex-wrap:wrap;}
-button{font:inherit;font-size:.78rem;font-weight:600;padding:.4rem .8rem;border-radius:3px;
-  border:1px solid var(--rule);background:var(--surface);color:var(--ink-2);cursor:pointer;}
-button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--ground);}
-button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
-.scroll{overflow-x:auto;border:1px solid var(--rule);border-radius:4px;background:var(--surface);}
-table{border-collapse:collapse;width:100%;font-size:.84rem;min-width:560px;}
-th{text-align:left;font-size:.62rem;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-3);
-  padding:.55rem .7rem;border-bottom:1px solid var(--rule);white-space:nowrap;cursor:pointer;}
-th.num,td.num{text-align:right;font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums;}
-td{padding:.5rem .7rem;border-bottom:1px solid var(--rule);color:var(--ink-2);white-space:nowrap;}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:Archivo,"Helvetica Neue",Arial,sans-serif;font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;}
+.wrap{max-width:1180px;margin:0 auto;padding:1.1rem .9rem 3rem;
+  display:flex;flex-direction:column;gap:1.4rem;}
+/* The hand carries voice only, never a number. */
+h1{font-family:Caveat,cursive;font-weight:700;font-size:2.4rem;line-height:1.05;margin:0;
+  transform:rotate(-1.2deg);transform-origin:left center;}
+.bar{font-size:.66rem;letter-spacing:.06em;color:var(--ink-faint);
+  font-variant-numeric:tabular-nums;
+  display:flex;flex-wrap:wrap;gap:.25rem .8rem;padding-top:.6rem;border-top:1px dashed var(--rule);}
+.stale{background:var(--paper2);border:1.5px solid var(--ink);border-left:5px solid var(--bad);
+  border-radius:7px;padding:.8rem .9rem;color:var(--bad);
+  font-size:.85rem;font-weight:600;box-shadow:0 3px 0 var(--shadow);}
+.banner{background:var(--paper2);border:1.5px solid var(--ink);border-left:5px solid var(--highlight);
+  border-radius:7px;padding:.8rem .9rem;color:var(--ink-soft);font-size:.86rem;line-height:1.55;
+  box-shadow:0 3px 0 var(--shadow);}
+.controls{display:flex;gap:6px;flex-wrap:wrap;}
+button{font-family:Archivo,"Helvetica Neue",Arial,sans-serif;
+  font-size:11px;font-weight:600;letter-spacing:.02em;padding:9px 12px;border-radius:6px;
+  border:1.5px solid var(--ink);background:var(--paper2);color:var(--ink);cursor:pointer;
+  box-shadow:0 2px 0 var(--shadow);}
+button[aria-pressed="true"]{background:var(--ink);color:var(--paper);box-shadow:none;}
+button:focus-visible{outline:2px solid var(--red);outline-offset:2px;}
+.scroll{overflow-x:auto;border:1.5px solid var(--ink);border-radius:8px;background:var(--paper2);
+  box-shadow:0 2px 0 var(--shadow);}
+table{border-collapse:collapse;width:100%;font-size:.78rem;min-width:560px;}
+th{text-align:left;font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--ink-faint);padding:.45rem .5rem;border-bottom:1.5px solid var(--ink);
+  white-space:nowrap;cursor:pointer;}
+th.num,td.num{text-align:right;font-variant-numeric:tabular-nums;}
+td{padding:.4rem .5rem;border-bottom:1px dashed var(--rule);color:var(--ink-soft);white-space:nowrap;}
 tr:last-child td{border-bottom:none;}
 td.name{color:var(--ink);font-weight:600;}
-.pill{font-size:.6rem;font-weight:600;text-transform:uppercase;padding:.15em .45em;border-radius:3px;}
-.pill.warn{background:var(--accent-soft);color:var(--accent);}
-.pill.stop{background:var(--stop-soft);color:var(--stop);}
-.pill.low{background:var(--surface-2);color:var(--ink-3);}
+.pill{display:inline-block;font-size:.55rem;font-weight:700;letter-spacing:.05em;
+  text-transform:uppercase;padding:.14em .4em;border-radius:4px;white-space:nowrap;
+  border:1px solid var(--ink);}
+.pill.warn{background:var(--highlight);color:var(--ink);}
+.pill.stop{background:var(--bad);color:var(--paper2);}
+.pill.low{background:var(--neutral);color:var(--ink);}
+@media (min-width:900px){
+  body{font-size:16px;}
+  .wrap{padding:2.2rem 1.6rem 4rem;gap:1.8rem;}
+  h1{font-size:3.1rem;}
+  table{font-size:.83rem;}
+  button{font-size:12px;}
+}
+@media (prefers-reduced-motion:reduce){*{transform:none !important;}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div>
     <h1>Gaffer</h1>
-    <p style="font-size:.86rem;color:var(--ink-3);margin:.2rem 0 0">
+    <p style="font-size:.86rem;color:var(--ink-soft);margin:.3rem 0 0">
       Sortable player board. The full picture — squad, transfers, chips and your
-      mini-league — is on <a href="report.html" style="color:var(--accent)">the
+      mini-league — is on <a href="report.html" style="color:var(--red);font-weight:600">the
       main board</a>.
     </p>
     <div class="bar" id="bar"><span>loading…</span></div>
