@@ -5,279 +5,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Caveat:wght@500;600;700&display=swap">
 <style>
-/* Tokens lifted from the Claude Design project. Kept in OKLCH as authored.
-   Light is the only palette: the board is deliberately kraft paper for every
-   viewer, so there is no prefers-color-scheme block and no dark override. */
-:root{
-  --paper:oklch(0.96 0.016 78);
-  --paper2:oklch(0.985 0.01 78);
-  --rule:oklch(0.86 0.03 75);
-  --ink:oklch(0.27 0.06 264);
-  --ink-soft:oklch(0.46 0.05 264);
-  --ink-faint:oklch(0.60 0.04 264);
-  --highlight:oklch(0.87 0.17 111);
-  --red:oklch(0.55 0.2 27);
-  --good:oklch(0.62 0.14 150);
-  --bad:oklch(0.58 0.19 27);
-  --neutral:oklch(0.8 0.006 90);
-  --shadow:rgba(40,30,10,.14);
-
-  /* Fixture difficulty: a diverging scale. Green pole, NEUTRAL grey midpoint,
-     red pole — the midpoint takes --neutral, which is chroma 0.006 and so
-     genuinely grey. A third hue there is the classic mistake. */
-  --d1:oklch(0.88 0.09 150);  --d1i:oklch(0.36 0.10 150);
-  --d2:oklch(0.93 0.05 150);  --d2i:oklch(0.41 0.08 150);
-  --d3:oklch(0.92 0.006 90);  --d3i:oklch(0.45 0.01 90);
-  --d4:oklch(0.93 0.06 27);   --d4i:oklch(0.46 0.13 27);
-  --d5:oklch(0.87 0.10 27);   --d5i:oklch(0.39 0.16 27);
-}
-
-*{box-sizing:border-box;}
-body{
-  margin:0;
-  background:var(--paper);
-  color:var(--ink);
-  font-family:Archivo,"Helvetica Neue",Arial,sans-serif;
-  font-size:15px;
-  line-height:1.55;
-  -webkit-font-smoothing:antialiased;
-}
-/* The hand carries voice only — headings, verdicts, margin notes. It never
-   carries data: a scrawled decimal is a number you cannot trust at a glance. */
-.hand{font-family:Caveat,"Segoe Script",cursive;font-weight:600;letter-spacing:.01em;}
-
-/* Mobile first: base is the 390px artboard, widening at the design's 900px. */
-.wrap{
-  max-width:1180px;margin:0 auto;padding:1.1rem .9rem 3rem;
-  display:flex;flex-direction:column;gap:1.8rem;
-}
-h1{
-  font-family:Caveat,cursive;font-weight:700;
-  font-size:2.2rem;line-height:1.05;margin:0;
-  transform:rotate(-1.2deg);transform-origin:left center;
-}
-h2{
-  font-family:Caveat,cursive;font-weight:700;
-  font-size:1.7rem;line-height:1.1;margin:0 0 .1rem;
-  transform:rotate(-0.8deg);transform-origin:left center;
-}
-h2::after{
-  content:"";display:block;height:3px;width:2.6em;margin-top:.1rem;
-  background:var(--highlight);border-radius:2px;transform:rotate(-0.6deg);
-}
-h3{
-  font-family:Caveat,cursive;font-weight:600;font-size:1.2rem;
-  margin:0 0 .25rem;color:var(--ink-soft);
-}
-p{margin:0;max-width:62ch;color:var(--ink-soft);font-size:.88rem;line-height:1.6;}
-section{display:flex;flex-direction:column;gap:.75rem;}
-
-header{display:flex;flex-direction:column;gap:.5rem;}
-.eyebrow{
-  font-family:Caveat,cursive;font-size:1.05rem;color:var(--red);
-  transform:rotate(-1.5deg);transform-origin:left center;
-}
-.bar{
-  display:flex;flex-wrap:wrap;gap:.25rem .8rem;
-  padding-top:.6rem;border-top:1px dashed var(--rule);
-  font-size:.66rem;letter-spacing:.06em;color:var(--ink-faint);
-  font-variant-numeric:tabular-nums;
-}
-
-/* A note scrawled in the margin, not a system alert. Deliberately outside the
-   tabs: the caveat about trusting the numbers applies to every panel. */
-.banner{
-  background:var(--paper2);
-  border:1.5px solid var(--ink);
-  border-left:5px solid var(--highlight);
-  border-radius:7px;padding:.8rem .9rem;
-  font-size:.86rem;line-height:1.55;color:var(--ink-soft);
-  box-shadow:0 3px 0 var(--shadow);
-}
-.banner strong{color:var(--ink);}
-
-/* Tabs, progressively enhanced. Without JavaScript the nav is hidden and every
-   panel stays open, so the page still carries all seven sections — for a
-   printout, for Ctrl+F, and for anyone whose scripts did not load. */
-.tabs{display:none;gap:6px;}
-.js-tabs .tabs{display:flex;}
-.tabs button{
-  flex:1;padding:9px 2px;border-radius:6px;border:1.5px solid var(--ink);
-  background:var(--paper2);color:var(--ink);
-  font-family:Archivo,"Helvetica Neue",Arial,sans-serif;
-  font-size:10px;font-weight:600;letter-spacing:.02em;
-  cursor:pointer;box-shadow:0 2px 0 var(--shadow);
-}
-.tabs button[aria-selected="true"]{background:var(--ink);color:var(--paper);box-shadow:none;}
-.tabs button:focus-visible{outline:2px solid var(--red);outline-offset:2px;}
-.tab{display:flex;flex-direction:column;gap:1.8rem;}
-.js-tabs .tab{display:none;}
-.js-tabs .tab.on{display:flex;}
-
-.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem;}
-/* The squad's three cards read as one line across, at every width. */
-.stats.three{grid-template-columns:repeat(3,1fr);}
-.stat{
-  background:var(--paper2);border:1.5px solid var(--ink);border-radius:7px;
-  padding:.55rem .65rem;display:flex;flex-direction:column;gap:.05rem;
-  box-shadow:0 2px 0 var(--shadow);
-}
-.stat b{font-size:1.3rem;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em;}
-.stat span{font-size:.66rem;color:var(--ink-faint);line-height:1.3;}
-.stats.three .stat{padding:.5rem .45rem;}
-.stats.three .stat b{font-size:1.05rem;}
-.stats.three .stat span{font-size:.58rem;line-height:1.25;}
-
-/* The team sheet. Pitch markings drawn behind the tags rather than ruled
-   paper — the rules were on a fixed 28px pitch that cut through the cards
-   once the rows were given room. */
-.pitch{
-  position:relative;overflow:hidden;
-  background:var(--paper2);border:1.5px solid var(--ink);border-radius:9px;
-  padding:1.1rem .6rem;display:flex;flex-direction:column;gap:1.1rem;
-  box-shadow:0 3px 0 var(--shadow);
-}
-.pitch::before{
-  content:"";position:absolute;inset:.5rem;pointer-events:none;
-  background:
-    linear-gradient(to right,transparent calc(50% - .5px),var(--rule) calc(50% - .5px) calc(50% + .5px),transparent calc(50% + .5px)),
-    linear-gradient(to bottom,transparent calc(50% - .5px),var(--rule) calc(50% - .5px) calc(50% + .5px),transparent calc(50% + .5px));
-}
-
-.row{display:flex;justify-content:center;gap:.5rem;flex-wrap:wrap;position:relative;z-index:1;}
-.card{
-  background:var(--paper2);border:1.5px solid var(--ink);border-radius:7px;
-  padding:.45rem .5rem .4rem;min-width:84px;text-align:center;
-  display:flex;flex-direction:column;gap:.05rem;position:relative;z-index:1;
-}
-.card:nth-child(odd){transform:rotate(-0.5deg);}
-.card:nth-child(even){transform:rotate(0.4deg);}
-.card.muted{opacity:.6;}
-.card b{font-size:.7rem;font-weight:600;line-height:1.2;color:var(--ink);}
-.card i{font-size:.58rem;font-style:normal;color:var(--ink-faint);font-variant-numeric:tabular-nums;}
-.card u{
-  font-size:.68rem;text-decoration:none;color:var(--red);font-weight:700;
-  font-variant-numeric:tabular-nums;
-}
-.cap{
-  position:absolute;top:-9px;right:-6px;width:18px;height:18px;border-radius:50%;
-  background:var(--red);color:var(--paper2);font-size:10px;font-weight:700;
-  display:flex;align-items:center;justify-content:center;
-  transform:rotate(-6deg);border:1.5px solid var(--paper);
-}
-.cap.vice{background:var(--ink-soft);}
-.bench{display:flex;gap:.5rem;flex-wrap:wrap;}
-.mock-h{
-  font-family:Caveat,cursive;font-size:1rem;color:var(--ink-faint);
-  transform:rotate(-0.7deg);transform-origin:left center;
-}
-
-/* Priced options. The leader is ringed in red pen. */
-.panel{
-  border:1.5px solid var(--ink);border-radius:8px;overflow:hidden;
-  background:var(--paper2);box-shadow:0 3px 0 var(--shadow);
-}
-.opt{
-  display:grid;grid-template-columns:1fr auto;gap:.6rem;
-  padding:.6rem .75rem;border-bottom:1px dashed var(--rule);align-items:center;
-}
-.opt:last-child{border-bottom:none;}
-.opt.best{background:color-mix(in oklch,var(--highlight) 22%,var(--paper2));position:relative;}
-.opt.best::before{
-  content:"the one";font-family:Caveat,cursive;font-weight:700;
-  position:absolute;top:-2px;right:.6rem;font-size:.85rem;color:var(--red);
-  transform:rotate(-3deg);
-}
-.opt-l{display:flex;flex-direction:column;gap:.05rem;}
-.opt-l b{font-size:.83rem;font-weight:600;color:var(--ink);}
-.opt-l span{font-size:.72rem;color:var(--ink-faint);}
-.opt-r{
-  font-size:.95rem;font-weight:700;text-align:right;white-space:nowrap;
-  font-variant-numeric:tabular-nums;
-}
-.opt-r .band{font-size:.66rem;font-weight:500;color:var(--ink-faint);}
-.pos{color:var(--good);} .neg{color:var(--bad);} .neu{color:var(--ink-faint);}
-
-/* Data stays in Archivo with lining figures — never the hand. */
-.scroll{
-  overflow-x:auto;border:1.5px solid var(--ink);border-radius:8px;
-  background:var(--paper2);box-shadow:0 2px 0 var(--shadow);
-}
-table{border-collapse:collapse;width:100%;font-size:.78rem;min-width:430px;}
-th{
-  text-align:left;font-size:.58rem;font-weight:700;text-transform:uppercase;
-  letter-spacing:.08em;color:var(--ink-faint);
-  padding:.45rem .5rem;border-bottom:1.5px solid var(--ink);white-space:nowrap;
-}
-td{padding:.4rem .5rem;border-bottom:1px dashed var(--rule);color:var(--ink-soft);white-space:nowrap;}
-tr:last-child td{border-bottom:none;}
-td:first-child{color:var(--ink);font-weight:600;font-size:.78rem;}
-.sub{color:var(--ink-faint);font-size:.68rem;}
-.num{font-variant-numeric:tabular-nums;text-align:right;font-size:.74rem;}
-th.num{text-align:right;}
-
-.pill{
-  display:inline-block;font-size:.55rem;font-weight:700;letter-spacing:.05em;
-  text-transform:uppercase;padding:.14em .4em;border-radius:4px;white-space:nowrap;
-  border:1px solid var(--ink);
-}
-.pill.warn{background:var(--highlight);color:var(--ink);}
-.pill.stop{background:var(--bad);color:var(--paper2);}
-.pill.low{background:var(--neutral);color:var(--ink);}
-
-.fx{
-  display:inline-block;font-size:.58rem;font-weight:700;padding:.14em .35em;
-  border-radius:4px;margin-right:2px;border:1px solid currentColor;
-}
-.fx i{font-style:normal;opacity:.65;}
-.fx.d1{background:var(--d1);color:var(--d1i);} .fx.d2{background:var(--d2);color:var(--d2i);}
-.fx.d3{background:var(--d3);color:var(--d3i);} .fx.d4{background:var(--d4);color:var(--d4i);}
-.fx.d5{background:var(--d5);color:var(--d5i);}
-
-/* One series, fixed scale across every row so players stay comparable. */
-.spark{display:inline-flex;align-items:flex-end;gap:2px;height:18px;}
-.spark span{width:4px;background:var(--highlight);border:1px solid var(--ink);
-  border-bottom:none;border-radius:2px 2px 0 0;min-height:2px;}
-.spark span.z{background:var(--neutral);}
-
-.grid{display:flex;flex-direction:column;gap:1.1rem;}
-ul{margin:.2rem 0 0;padding-left:1.1rem;display:flex;flex-direction:column;gap:.3rem;}
-li{font-size:.85rem;color:var(--ink-soft);}
-footer{
-  border-top:1px dashed var(--rule);padding-top:.9rem;
-  font-size:.66rem;color:var(--ink-faint);line-height:1.6;
-}
-
-@media (min-width:900px){
-  body{font-size:16px;}
-  .wrap{padding:2.2rem 1.6rem 4rem;gap:2.6rem;}
-  .tab{gap:2.6rem;}
-  h1{font-size:3.1rem;}
-  h2{font-size:2.1rem;}
-  .stats{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));}
-  .tabs button{font-size:12px;padding:11px 4px;letter-spacing:.04em;}
-  .stats.three .stat b{font-size:1.3rem;}
-  .stats.three .stat span{font-size:.66rem;}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(370px,1fr));gap:1.5rem;}
-  .card{min-width:96px;}
-  /* A team sheet, not a stadium: stretched to 1180px the eleven
-     islands in the middle of an empty box. */
-  .pitch{padding:1.4rem 1rem;gap:1.4rem;max-width:720px;margin:0 auto;}
-  table{font-size:.83rem;}
-}
-@media (prefers-reduced-motion:reduce){
-  *{transform:none !important;}
-}
-@media print{
-  .tabs{display:none !important;}
-  .js-tabs .tab{display:flex !important;}
-}
+{{STYLE}}
 </style>
 
 <div class="wrap">
 
 <header>
-  <div class="eyebrow">Gaffer · Phase 4 · Chips &amp; Mini-League</div>
+  <div class="eyebrow">Gaffer · Phase 4 · Chips, Mini-League &amp; Last Man Standing</div>
   <h1>Gameweek {{GAMEWEEK}} — pre-season board</h1>
   <div class="bar">
     <span>DEADLINE {{DEADLINE}}</span>
@@ -295,6 +29,7 @@ footer{
   <button type="button" data-tab="transfers" aria-selected="false">TRANSFERS</button>
   <button type="button" data-tab="chips" aria-selected="false">CHIPS</button>
   <button type="button" data-tab="league" aria-selected="false">LEAGUE</button>
+  <button type="button" data-tab="lastman" aria-selected="false">LAST MAN</button>
   <button type="button" data-tab="tables" aria-selected="false">TABLES</button>
 </nav>
 
@@ -345,6 +80,18 @@ footer{
   <h2>Your mini-league</h2>
   <p>What decides a league is only the <em>difference</em> between your squad and your rivals'. Points scored on a player everybody owns move the whole table together and change nothing. In a head-to-head league that is even starker: only your one opponent matters that week, margin pays nothing, and a player you both own literally cannot affect the result.</p>
   {{LEAGUE}}
+</section>
+
+</div>
+
+<div class="tab" id="lastman">
+<section>
+  <h2>Last man standing</h2>
+  <p>A different competition off the same fixture list: back one club a week, survive
+  only if it wins, and never use the same club twice. It has a page of its own —
+  <a href="lastman.html">lastman.html</a> — with every candidate priced over the whole
+  season, the route the plan is holding clubs back for, and the clubs already spent.</p>
+  <div class="panel">{{LMS}}</div>
 </section>
 
 </div>

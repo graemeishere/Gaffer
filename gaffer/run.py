@@ -8,12 +8,14 @@ import time
 from gaffer import config
 from gaffer.ingest import FplClient
 from gaffer.model import TeamStrength, project, team_fixture_runs
+from gaffer.lms import Rules as LmsRules
+from gaffer.lms.advise import season_advice
 from gaffer.league import (advise, advise_match, compare_squads, effective_ownership,
                            fixture_for, is_head_to_head, read_league, read_league_any,
                            read_matches, simulate_league, simulate_match)
 from gaffer.optimise import best_lineup, evaluate_chips, evaluate_transfers, pick_squad
 from gaffer.schedule import work_due
-from gaffer.publish import write_json, write_report
+from gaffer.publish import write_json, write_lastman, write_report
 from gaffer.rank import build_board
 from gaffer.store import Store
 
@@ -27,6 +29,8 @@ def run(
     league_id: int | None = None,
     optimise: bool = True,
     trials: int = 2000,
+    last_man_standing: bool = True,
+    lms_used: str = "",
 ) -> dict:
     started = time.time()// 1
     log = (lambda *a: None) if quiet else print
@@ -74,6 +78,25 @@ def run(
     log("  fitting team strength …")
     strength = TeamStrength.fit(fixtures, bootstrap)
     log(f"    {strength.source}, {strength.matches_fitted} match(es) of results")
+
+    # Last Man Standing needs nothing from the projection layer — only the
+    # fixture list and the team ratings — so it is planned here, before the
+    # expensive half of the run, and survives a run made with --no-optimise.
+    lms = None
+    if last_man_standing:
+        log("  planning last man standing …")
+        try:
+            advice = season_advice(fixtures, bootstrap, strength, gameweek=gameweek,
+                                   rules=LmsRules.from_env(), extra_used=lms_used)
+            lms = advice.as_dict()
+            if advice.status == "alive":
+                log(f"    pick {advice.pick} — {advice.options[0].survival:.0%} to survive")
+            else:
+                log(f"    {advice.status}: {advice.reason}")
+        except Exception as exc:
+            # A different game sharing the same data should never be able to take
+            # the fantasy run down with it.
+            log(f"    ! could not plan the LMS route: {exc}")
 
     log("  projecting expected points …")
     runs = team_fixture_runs(fixtures, horizon)
@@ -200,9 +223,10 @@ def run(
     payload = build_payload(scores=scores, bootstrap=bootstrap, fixture_runs=runs,
                             horizon=horizon, strength=strength, squad=squad,
                             lineup=lineup, transfers=transfers, chips=chips,
-                            league=league, due=due, manager=manager)
+                            league=league, due=due, manager=manager, lms=lms)
     json_path = write_json(payload)
     html_path = write_report(payload)
+    lastman_path = write_lastman(payload)
 
     log(f"\n  gameweek {gameweek}, deadline {payload['meta']['deadline']}")
     log(f"  {counts['player']} players · {counts['fixture']} fixtures · {snapshots} snapshot(s) stored")
@@ -213,6 +237,7 @@ def run(
             f"({top.projected / horizon:.2f}/gw)")
     log(f"\n  wrote {json_path.relative_to(config.ROOT)}")
     log(f"  wrote {html_path.relative_to(config.ROOT)}")
+    log(f"  wrote {lastman_path.relative_to(config.ROOT)}")
     log(f"  done in {time.time() - started:.1f}s")
     return payload
 
@@ -234,11 +259,18 @@ def main(argv: list[str] | None = None) -> int:
                         help="simulation trials for the league (default 2000)")
     parser.add_argument("--no-optimise", action="store_true",
                         help="skip squad selection and only build the board")
+    parser.add_argument("--no-lms", action="store_true",
+                        help="skip the Last Man Standing route")
+    parser.add_argument("--lms-used", default="",
+                        help="clubs already spent in your Last Man Standing pool, "
+                             "comma separated — added to the saved record for this "
+                             "run without being written to it")
     args = parser.parse_args(argv)
 
     payload = run(horizon=args.horizon, refresh=args.refresh, quiet=args.quiet,
                   entry_id=args.entry, league_id=args.league,
-                  optimise=not args.no_optimise, trials=args.trials)
+                  optimise=not args.no_optimise, trials=args.trials,
+                  last_man_standing=not args.no_lms, lms_used=args.lms_used)
 
     if not args.quiet:
         if payload.get("squad"):
@@ -247,6 +279,7 @@ def main(argv: list[str] | None = None) -> int:
             _print_transfer(option, payload)
         _print_chips(payload)
         _print_league(payload)
+        _print_lms(payload)
 
     if args.top:
         print(f"\n  top {args.top} by projected points ({payload['meta']['horizon']} GW):\n")
@@ -403,6 +436,24 @@ def _print_league(payload: dict) -> None:
     print(f"    stance: {advice['stance'].upper()} — {advice['suggested']}")
     if advice["biggest_exposure"]:
         print(f"    biggest exposure: {', '.join(advice['biggest_exposure'])}")
+
+
+def _print_lms(payload: dict) -> None:
+    lms = payload.get("lms")
+    if not lms:
+        return
+    print(f"\n  last man standing — GW{lms['gameweek']}")
+    if lms.get("standing_pick"):
+        print(f"    GW{lms['standing_gameweek']} already picked: {lms['standing_pick']}")
+    if lms["status"] != "alive":
+        print(f"    {lms['reason']}")
+        return
+    print(f"    PICK {lms['pick']}")
+    print(f"    {lms['reason']}")
+    route = lms.get("route") or {}
+    trail = "  ".join(f"GW{p['gameweek']} {p['name']}" for p in route.get("picks", []))
+    print(f"    route ({route.get('survival', 0):.1%} to survive all "
+          f"{route.get('rounds', 0)}): {trail}")
 
 
 def _print_transfer(option: dict, payload: dict) -> None:

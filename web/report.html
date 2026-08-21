@@ -5,9 +5,16 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Caveat:wght@500;600;700&display=swap">
 <style>
-/* Tokens lifted from the Claude Design project. Kept in OKLCH as authored.
-   Light is the only palette: the board is deliberately kraft paper for every
-   viewer, so there is no prefers-color-scheme block and no dark override. */
+/* The design system, shared by every page the engine writes.
+   Lifted out of the report template when Last Man Standing got a page of
+   its own: two copies of this would have drifted apart within a month, and
+   the pages have to look like one site or they read as two projects.
+
+   Restyled from the Claude Design project — kraft paper, biro ink, Caveat
+   for the hand. Light is the only palette: the board is deliberately paper
+   for every viewer, so there is no prefers-color-scheme block and no dark
+   override. Numbers stay in Archivo with tabular figures; .hand is
+   decoration and never carries data. */
 :root{
   --paper:oklch(0.96 0.016 78);
   --paper2:oklch(0.985 0.01 78);
@@ -70,6 +77,12 @@ h3{
   margin:0 0 .25rem;color:var(--ink-soft);
 }
 p{margin:0;max-width:62ch;color:var(--ink-soft);font-size:.88rem;line-height:1.6;}
+
+/* Links are red pen underlined by hand, not browser blue. The board itself
+   has almost none, but the Last Man Standing page leans on them. */
+a{color:var(--red);text-decoration:none;border-bottom:1.5px solid currentColor;font-weight:600;}
+a:hover{color:var(--ink);}
+.bar a,.banner a{border-bottom-width:1px;}
 section{display:flex;flex-direction:column;gap:.75rem;}
 
 header{display:flex;flex-direction:column;gap:.5rem;}
@@ -99,10 +112,12 @@ header{display:flex;flex-direction:column;gap:.5rem;}
 /* Tabs, progressively enhanced. Without JavaScript the nav is hidden and every
    panel stays open, so the page still carries all seven sections — for a
    printout, for Ctrl+F, and for anyone whose scripts did not load. */
-.tabs{display:none;gap:6px;}
+/* Six tabs will not sit across a 390px phone at a legible size, so the bar
+   wraps to two rows there and straightens out once there is room. */
+.tabs{display:none;gap:6px;flex-wrap:wrap;}
 .js-tabs .tabs{display:flex;}
 .tabs button{
-  flex:1;padding:9px 2px;border-radius:6px;border:1.5px solid var(--ink);
+  flex:1 1 28%;padding:9px 2px;border-radius:6px;border:1.5px solid var(--ink);
   background:var(--paper2);color:var(--ink);
   font-family:Archivo,"Helvetica Neue",Arial,sans-serif;
   font-size:10px;font-weight:600;letter-spacing:.02em;
@@ -110,6 +125,7 @@ header{display:flex;flex-direction:column;gap:.5rem;}
 }
 .tabs button[aria-selected="true"]{background:var(--ink);color:var(--paper);box-shadow:none;}
 .tabs button:focus-visible{outline:2px solid var(--red);outline-offset:2px;}
+@media (min-width:600px){.tabs{flex-wrap:nowrap;}.tabs button{flex:1 1 auto;}}
 .tab{display:flex;flex-direction:column;gap:1.8rem;}
 .js-tabs .tab{display:none;}
 .js-tabs .tab.on{display:flex;}
@@ -272,18 +288,19 @@ footer{
   .tabs{display:none !important;}
   .js-tabs .tab{display:flex !important;}
 }
+
 </style>
 
 <div class="wrap">
 
 <header>
-  <div class="eyebrow">Gaffer · Phase 4 · Chips &amp; Mini-League</div>
+  <div class="eyebrow">Gaffer · Phase 4 · Chips, Mini-League &amp; Last Man Standing</div>
   <h1>Gameweek 1 — pre-season board</h1>
   <div class="bar">
     <span>DEADLINE Fri 21 Aug, 17:30 UTC</span>
-    <span>4h REMAINING</span>
+    <span>3h REMAINING</span>
     <span>HORIZON 6 GW</span>
-    <span>GENERATED 21 Aug 2026, 13:25 UTC</span>
+    <span>GENERATED 21 Aug 2026, 14:02 UTC</span>
     <span>PHASE full-solve</span>
   </div>
 </header>
@@ -295,6 +312,7 @@ footer{
   <button type="button" data-tab="transfers" aria-selected="false">TRANSFERS</button>
   <button type="button" data-tab="chips" aria-selected="false">CHIPS</button>
   <button type="button" data-tab="league" aria-selected="false">LEAGUE</button>
+  <button type="button" data-tab="lastman" aria-selected="false">LAST MAN</button>
   <button type="button" data-tab="tables" aria-selected="false">TABLES</button>
 </nav>
 
@@ -345,6 +363,18 @@ footer{
   <h2>Your mini-league</h2>
   <p>What decides a league is only the <em>difference</em> between your squad and your rivals'. Points scored on a player everybody owns move the whole table together and change nothing. In a head-to-head league that is even starker: only your one opponent matters that week, margin pays nothing, and a player you both own literally cannot affect the result.</p>
   <div class='banner'><strong>Cutting Edge Services</strong> is a head-to-head league, so one opponent decides each week rather than the whole table. Fixtures are published when the league starts. Once they are, this shows who you are drawn against, your chance of beating them, and whether to take risk on or squeeze it out — which in head-to-head depends on whether you are favourite, not on where you sit in the table.</div>
+</section>
+
+</div>
+
+<div class="tab" id="lastman">
+<section>
+  <h2>Last man standing</h2>
+  <p>A different competition off the same fixture list: back one club a week, survive
+  only if it wins, and never use the same club twice. It has a page of its own —
+  <a href="lastman.html">lastman.html</a> — with every candidate priced over the whole
+  season, the route the plan is holding clubs back for, and the clubs already spent.</p>
+  <div class="panel"><div class='opt best'><div class='opt-l'><b>Arsenal — home to Coventry City</b><span>GW1 · 1.8% to survive all 8 planned rounds · 0 clubs spent</span></div><div class='opt-r pos'>72%</div></div></div>
 </section>
 
 </div>
@@ -498,8 +528,8 @@ footer{
 </div>
 
 <footer>
-  Generated by gaffer 21 Aug 2026, 13:25 UTC from the public Fantasy Premier League API.<br>
-  Phase 4 — 4h to the GW1 deadline — full solve
+  Generated by gaffer 21 Aug 2026, 14:02 UTC from the public Fantasy Premier League API.<br>
+  Phase 4 — 3h to the GW1 deadline — full solve
 </footer>
 
 <script>

@@ -2,13 +2,22 @@
 
 A Fantasy Premier League squad engine. It reads the public FPL API, projects
 points, and — from Phase 2 — picks the squad, the eleven, the captain and the
-transfers that maximise them.
+transfers that maximise them. From Phase 5 it also plays Last Man Standing off
+the same fixture list.
 
 No AI API, no inference costs, no keys. Fantasy football is a constrained
 optimisation problem, not a language problem: the engine is a points model
 feeding an integer solver.
 
 ## Status
+
+**Phase 5 — done.** Last Man Standing, off the same fixture list and the same
+team ratings. Expected goals become a distribution over scorelines, which becomes
+a win probability; the season is then solved as an assignment of clubs to rounds
+rather than a weekly pick, because the constraint that a club may be used once is
+the entire game. Every candidate is priced by re-planning the season behind it,
+and the route is reported against what most entries actually do — take the best
+available team every week — so the planning has to earn its place.
 
 **Phase 4 — done.** Chip timing, deadline-aware scheduling, and the mini-league
 engine: it reads your rivals' actual squads, simulates the run against them
@@ -34,6 +43,7 @@ was tuned. The sweep stays in the repo for when more seasons exist.
 | 2 | MILP optimiser — squad, eleven, captain, transfer path | done |
 | 3 | Backtest harness, benchmarks and calibration | done |
 | 4 | Chip timing, deadline-aware scheduling, mini-league strategy | done |
+| 5 | Last Man Standing — match odds and the season-long route | done |
 
 ### How a projection is built
 
@@ -61,16 +71,17 @@ pip install -e ".[dev]"
 python -m gaffer.run --top 20
 ```
 
-Writes two files:
+Writes three files:
 
 - `data/latest.json` — the contract. The only thing anything downstream reads.
 - `data/report.html` — the same run as a standalone page, no server needed.
+- `data/lastman.html` — the Last Man Standing route, on a page of its own.
 
 Options: `--horizon N` (gameweeks to look ahead, default 6), `--refresh`
 (ignore the cache), `--top N` (print a table), `--quiet`, `--no-optimise`
-(board only), `--entry YOUR_TEAM_ID` to price transfers against your actual
-squad, and `--league YOUR_LEAGUE_ID` to simulate yourself against your rivals'
-real squads.
+(board only), `--no-lms` (skip the Last Man Standing route), `--entry
+YOUR_TEAM_ID` to price transfers against your actual squad, and `--league
+YOUR_LEAGUE_ID` to simulate yourself against your rivals' real squads.
 
 ## Layout
 
@@ -83,9 +94,10 @@ gaffer/
   optimise/  squad selection, lineup and captain, transfer pricing
   backtest/  historical dataset, benchmark strategies, calibration sweeps
   league/    rival squads, season simulation, effective ownership and stance
+  lms/       match odds, the used list, and the season-long route
   schedule   what work is due, derived from the next deadline
-  publish/   writes latest.json and report.html
-web/         static page that reads latest.json
+  publish/   writes latest.json, report.html and lastman.html
+web/         static pages: the sortable board, and what CI publishes
 tests/       ranking maths
 ```
 
@@ -182,6 +194,109 @@ is right, how often do I finish top" — not "is this model right". Phase 3 is
 unflattering about the second question. Treat the number as a comparison of
 squad *shapes* under a shared assumption, never as a forecast of the table.
 
+## Last man standing
+
+Same fixture list, different competition. Back one club a week; if it wins you go
+through, and you may never use the same club twice.
+
+```bash
+python -m gaffer.lms
+```
+
+The engine already has what this needs. Team strength gives every fixture a pair
+of expected-goals rates, a pair of rates is a distribution over scorelines, and a
+distribution over scorelines is a win probability. Nothing about players,
+prices or points enters it, which is why it is a separate command that happens to
+share a repository — and why it also runs as part of `gaffer.run`, since it costs
+one solve on data already fetched.
+
+It gets **a page of its own**, `lastman.html`, rather than a section on the
+fantasy board. It is a different competition, read by people who may not play the
+fantasy game at all, and putting it under a squad they do not have made it look
+like an appendix to something else. The board keeps a one-line pointer; the page
+carries the argument. Both are written from the same `lms` block in
+`latest.json`, which stays the contract.
+
+**It is a route, not a weekly pick.** This is the whole thing. Asked to choose a
+team for Saturday, almost everyone takes the shortest-priced home favourite
+available, which is locally right and globally wrong: it spends the best clubs on
+weeks where the second-best club would have survived anyway, and leaves you in
+November holding nothing but the sides you were avoiding in August. The right
+question is which *assignment* of clubs to rounds maximises the chance of
+surviving all of them — one club per round, each club once — and that is an
+assignment problem the same integer solver already in the repo does in
+milliseconds.
+
+So every candidate is priced by re-planning the entire season behind it, exactly
+as transfers are priced by re-optimising the whole squad. The number to read is
+the cost: the share of the run you give up by taking that club now rather than
+the one the plan wants.
+
+```
+  club              fixture                win  draw  survive   route    cost  field  holds for
+  ------------------------------------------------------------------------------------------------
+  Arsenal           v Coventry City        72%   20%      72%    1.8%     -0%    36%
+  Man City          v Bournemouth          70%   18%      70%    1.6%     -9%    26%  GW5
+  Chelsea           at Fulham              53%   26%      53%    1.5%    -13%     4%  GW6
+```
+
+**A draw is a defeat**, so the draw probability is not a rounding error — it is
+half the reason favourites go out. Independent Poisson is known to under-count
+draws, especially 0-0 and 1-1, because goals in a real match are not independent.
+The Dixon-Coles correction reweights the four lowest scorelines to fix it;
+without it every recommendation here would read as safer than it is — a 2.4 v 0.7
+mismatch draws 17.9% of the time with the correction against 15.9% without.
+That fixture is not a formality either way: 74% to win, which is three-to-one,
+and a quarter of the time you are out. Treating it as a certainty is the most
+common way out of a pool.
+
+**Read the survival numbers honestly.** Surviving eight straight rounds at 60-70%
+a time is a couple of percent, and the engine prints that rather than hiding it.
+The margin that matters is not the absolute number but the one against the naive
+alternative, which is reported on every run: how much more often the planned
+route survives than taking the best available team every week.
+
+### Your pool's rules, and your used list
+
+No two pools agree on the rules, and nothing about a pool is public — it is a
+spreadsheet in somebody's inbox. Both have to be told to the engine.
+
+```bash
+python -m gaffer.lms --pick Arsenal            # record this round's pick
+python -m gaffer.lms --used "Arsenal,Man City" # or just name what is spent
+python -m gaffer.lms --draw-survives --lives 2 # pools vary; these change the pick
+python -m gaffer.lms --forget Arsenal          # correct the record
+python -m gaffer.lms --json                    # the same, as JSON
+```
+
+Recorded picks live in `record/lms.json`, committed for the same reason the
+prediction log is: the machines this runs on are disposable. Results are never
+entered by hand — a pick is a club and a round, the fixture list says what that
+club did, so the engine settles its own record and can tell you that you are out
+rather than planning a route for someone eliminated on Saturday.
+
+Rules can go in `gaffer.env` or `.env` instead, so every run picks them up:
+
+```
+GAFFER_LMS_DRAW_SURVIVES=false
+GAFFER_LMS_LIVES=1
+GAFFER_LMS_HORIZON=8
+```
+
+### The part that is modelled rather than measured
+
+The pool pays one person, so who else is on your club matters. Backing the
+crowd's pick means surviving together or going out together, and a round that
+eliminates everybody is usually void and replayed — which makes the crowd pick
+far safer than its price early on, and close to worthless at the end, when what
+you need is the field going out without you.
+
+Nothing publishes pool picks, so the `field` column is a **model of the crowd**,
+not a measurement: a softmax over win probability, flattened to account for
+everyone else having their own used list. It is labelled that way everywhere it
+appears, and it is the one number here that should not be treated as evidence.
+
+
 ## Deploying
 
 The engine runs to completion and exits — it is not a server, so there is
@@ -227,3 +342,7 @@ prediction log, so the current picture stays visible with or without a VPS.
 - The scoring table is not in the API and is transcribed by hand in
   `gaffer/model/scoring.py`. Goalkeeper goals are worth **10**, not the 6 they
   were historically.
+- Fixtures are the only input Last Man Standing takes, and they move. A club with
+  two fixtures in one round is settled on the first, because a pool names one
+  match — treating a double gameweek as two chances to survive would invent a
+  safety net the rules do not give you.

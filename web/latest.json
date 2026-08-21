@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated": "2026-08-21T13:25:30+00:00",
+  "generated": "2026-08-21T14:02:48+00:00",
   "gameweek": 1,
   "deadline": "2026-08-21T17:30:00Z",
   "horizon": 6,
@@ -151,7 +151,7 @@
    "team": "MUN",
    "position": "MID",
    "price": 8.0,
-   "owned": 37.5,
+   "owned": 37.7,
    "xp": [
     4.25,
     4.85,
@@ -215,7 +215,7 @@
    "team": "CHE",
    "position": "FWD",
    "price": 7.5,
-   "owned": 63.9,
+   "owned": 64.0,
    "xp": [
     3.93,
     4.34,
@@ -375,7 +375,7 @@
    "team": "ARS",
    "position": "MID",
    "price": 7.5,
-   "owned": 18.4,
+   "owned": 18.3,
    "xp": [
     4.05,
     3.64,
@@ -695,7 +695,7 @@
    "team": "CHE",
    "position": "DEF",
    "price": 6.0,
-   "owned": 9.3,
+   "owned": 9.2,
    "xp": [
     3.67,
     3.71,
@@ -855,7 +855,7 @@
    "team": "NFO",
    "position": "MID",
    "price": 8.0,
-   "owned": 11.8,
+   "owned": 11.7,
    "xp": [
     3.48,
     3.03,
@@ -951,7 +951,7 @@
    "team": "ARS",
    "position": "GKP",
    "price": 6.0,
-   "owned": 37.2,
+   "owned": 37.3,
    "xp": [
     3.61,
     3.28,
@@ -1143,7 +1143,7 @@
    "team": "TOT",
    "position": "GKP",
    "price": 4.0,
-   "owned": 20.3,
+   "owned": 20.2,
    "xp": [
     3.01,
     3.29,
@@ -1207,7 +1207,7 @@
    "team": "AVL",
    "position": "FWD",
    "price": 8.0,
-   "owned": 10.6,
+   "owned": 10.5,
    "xp": [
     2.97,
     2.78,
@@ -1303,7 +1303,7 @@
    "team": "EVE",
    "position": "MID",
    "price": 6.0,
-   "owned": 16.0,
+   "owned": 16.1,
    "xp": [
     3.18,
     2.97,
@@ -1335,7 +1335,7 @@
    "team": "BHA",
    "position": "GKP",
    "price": 4.5,
-   "owned": 21.4,
+   "owned": 21.5,
    "xp": [
     3.31,
     2.75,
@@ -1463,7 +1463,7 @@
    "team": "CRY",
    "position": "DEF",
    "price": 5.0,
-   "owned": 0.8,
+   "owned": 0.7,
    "xp": [
     2.87,
     2.45,
@@ -1559,7 +1559,7 @@
    "team": "EVE",
    "position": "GKP",
    "price": 5.5,
-   "owned": 8.0,
+   "owned": 7.9,
    "xp": [
     2.93,
     2.86,
@@ -1719,7 +1719,7 @@
    "team": "SUN",
    "position": "MID",
    "price": 6.0,
-   "owned": 10.8,
+   "owned": 10.7,
    "xp": [
     2.89,
     3.11,
@@ -2007,7 +2007,7 @@
    "team": "ARS",
    "position": "MID",
    "price": 6.5,
-   "owned": 2.2,
+   "owned": 2.1,
    "xp": [
     3.01,
     2.61,
@@ -2423,7 +2423,7 @@
    "team": "CHE",
    "position": "FWD",
    "price": 6.0,
-   "owned": 1.5,
+   "owned": 1.4,
    "xp": [
     2.52,
     2.78,
@@ -2743,7 +2743,7 @@
    "team": "ARS",
    "position": "DEF",
    "price": 5.5,
-   "owned": 37.0,
+   "owned": 37.3,
    "xp": [
     2.92,
     2.44,
@@ -2903,7 +2903,7 @@
    "team": "ARS",
    "position": "MID",
    "price": 7.0,
-   "owned": 5.5,
+   "owned": 5.4,
    "xp": [
     2.74,
     2.39,
@@ -2967,7 +2967,7 @@
    "team": "TOT",
    "position": "DEF",
    "price": 5.5,
-   "owned": 22.4,
+   "owned": 22.3,
    "xp": [
     2.09,
     2.86,
@@ -3191,7 +3191,7 @@
    "team": "CHE",
    "position": "DEF",
    "price": 5.5,
-   "owned": 9.4,
+   "owned": 9.5,
    "xp": [
     2.52,
     2.6,
@@ -5015,7 +5015,7 @@
    "team": "ARS",
    "position": "MID",
    "price": 6.5,
-   "owned": 7.6,
+   "owned": 7.7,
    "xp": [
     1.82,
     1.62,
@@ -5207,7 +5207,7 @@
    "team": "MUN",
    "position": "DEF",
    "price": 5.0,
-   "owned": 17.2,
+   "owned": 17.3,
    "xp": [
     1.58,
     1.95,
@@ -5911,7 +5911,7 @@
    "team": "TOT",
    "position": "DEF",
    "price": 4.5,
-   "owned": 3.6,
+   "owned": 3.7,
    "xp": [
     1.19,
     1.51,
@@ -6903,7 +6903,7 @@
    "team": "ARS",
    "position": "DEF",
    "price": 5.5,
-   "owned": 7.2,
+   "owned": 7.1,
    "xp": [
     1.22,
     1.08,
@@ -7767,7 +7767,7 @@
    "team": "LIV",
    "position": "FWD",
    "price": 9.0,
-   "owned": 16.5,
+   "owned": 16.6,
    "xp": [
     0.77,
     0.86,
@@ -8178,6 +8178,38 @@
    "note": "rotation risk"
   },
   {
+   "id": 239,
+   "name": "Garner",
+   "team": "EVE",
+   "position": "MID",
+   "price": 6.0,
+   "owned": 0.1,
+   "xp": [
+    0.66,
+    0.63,
+    0.64,
+    0.62,
+    0.7,
+    0.64
+   ],
+   "var": [
+    1.485,
+    1.379,
+    1.434,
+    1.354,
+    1.552,
+    1.41
+   ],
+   "projected": 3.89,
+   "per_million": 0.648,
+   "minutes": 19.3,
+   "fixture_score": 3.2,
+   "availability": 0.25,
+   "confidence": "high",
+   "moved_club": false,
+   "note": "Groin injury - 25% chance of playing; rotation risk"
+  },
+  {
    "id": 20,
    "name": "Dowman",
    "team": "ARS",
@@ -8439,7 +8471,7 @@
    "team": "TOT",
    "position": "GKP",
    "price": 4.5,
-   "owned": 23.9,
+   "owned": 24.0,
    "xp": [
     0.52,
     0.67,
@@ -10903,7 +10935,7 @@
    "team": "LIV",
    "position": "DEF",
    "price": 5.5,
-   "owned": 2.2,
+   "owned": 2.3,
    "xp": [
     0.16,
     0.18,
@@ -11767,7 +11799,7 @@
    "team": "ARS",
    "position": "MID",
    "price": 6.5,
-   "owned": 23.3,
+   "owned": 23.5,
    "xp": [
     0.14,
     0.14,
@@ -12087,7 +12119,7 @@
    "team": "IPS",
    "position": "GKP",
    "price": 4.5,
-   "owned": 0.6,
+   "owned": 0.5,
    "xp": [
     0.17,
     0.09,
@@ -12215,7 +12247,7 @@
    "team": "IPS",
    "position": "DEF",
    "price": 4.0,
-   "owned": 3.4,
+   "owned": 3.5,
    "xp": [
     0.17,
     0.09,
@@ -12471,7 +12503,7 @@
    "team": "NFO",
    "position": "DEF",
    "price": 4.0,
-   "owned": 0.2,
+   "owned": 0.3,
    "xp": [
     0.14,
     0.12,
@@ -12663,7 +12695,7 @@
    "team": "FUL",
    "position": "GKP",
    "price": 4.0,
-   "owned": 1.3,
+   "owned": 1.2,
    "xp": [
     0.11,
     0.15,
@@ -17074,38 +17106,6 @@
    "note": "new club \u2014 prior stats earned elsewhere; Unspecified injury - Unknown return date"
   },
   {
-   "id": 239,
-   "name": "Garner",
-   "team": "EVE",
-   "position": "MID",
-   "price": 6.0,
-   "owned": 0.2,
-   "xp": [
-    0.0,
-    0.0,
-    0.0,
-    0.0,
-    0.0,
-    0.0
-   ],
-   "var": [
-    0.0,
-    0.0,
-    0.0,
-    0.0,
-    0.0,
-    0.0
-   ],
-   "projected": 0.0,
-   "per_million": 0.0,
-   "minutes": 0.0,
-   "fixture_score": 3.2,
-   "availability": 0.0,
-   "confidence": "high",
-   "moved_club": false,
-   "note": "Groin injury - Unknown return date"
-  },
-  {
    "id": 240,
    "name": "Iroegbunam",
    "team": "EVE",
@@ -17207,7 +17207,7 @@
    "team": "HUL",
    "position": "GKP",
    "price": 4.5,
-   "owned": 0.2,
+   "owned": 0.1,
    "xp": [
     0.0,
     0.0,
@@ -17975,7 +17975,7 @@
    "team": "MCI",
    "position": "MID",
    "price": 7.5,
-   "owned": 2.8,
+   "owned": 2.7,
    "xp": [
     0.0,
     0.0,
@@ -18359,7 +18359,7 @@
    "team": "NFO",
    "position": "MID",
    "price": 4.5,
-   "owned": 2.5,
+   "owned": 2.4,
    "xp": [
     0.0,
     0.0,
@@ -19610,10 +19610,304 @@
   "name": "Cutting Edge Services",
   "waiting": true
  },
+ "lms": {
+  "gameweek": 1,
+  "status": "alive",
+  "pick": "Arsenal",
+  "pick_team": 1,
+  "reason": "Arsenal home to Coventry City, 72% to survive (72% win, 20% draw \u2014 which does not). The strongest club on the board is also the right one to spend. Planning the whole route rather than taking the best team each week survives all 8 rounds 23% more often (1.8% against 1.4%).",
+  "rules": {
+   "draw_survives": false,
+   "lives": 1,
+   "horizon": 8
+  },
+  "used": [],
+  "rounds_survived": 0,
+  "lives_left": 1,
+  "options": [
+   {
+    "team": 1,
+    "name": "Arsenal",
+    "opponent": "Coventry City",
+    "home": true,
+    "win": 0.7197,
+    "draw": 0.1955,
+    "survival": 0.7197,
+    "route_survival": 0.0176,
+    "cost": 0.0,
+    "crowd": 0.3562,
+    "reserved_for": null
+   },
+   {
+    "team": 15,
+    "name": "Man City",
+    "opponent": "Bournemouth",
+    "home": true,
+    "win": 0.6972,
+    "draw": 0.1798,
+    "survival": 0.6972,
+    "route_survival": 0.016,
+    "cost": 0.0902,
+    "crowd": 0.2631,
+    "reserved_for": 5
+   },
+   {
+    "team": 5,
+    "name": "Brighton",
+    "opponent": "Aston Villa",
+    "home": true,
+    "win": 0.4474,
+    "draw": 0.2957,
+    "survival": 0.4474,
+    "route_survival": 0.0155,
+    "cost": 0.1189,
+    "crowd": 0.0244,
+    "reserved_for": null
+   },
+   {
+    "team": 6,
+    "name": "Chelsea",
+    "opponent": "Fulham",
+    "home": false,
+    "win": 0.53,
+    "draw": 0.2562,
+    "survival": 0.53,
+    "route_survival": 0.0153,
+    "cost": 0.1313,
+    "crowd": 0.04,
+    "reserved_for": 6
+   },
+   {
+    "team": 4,
+    "name": "Brentford",
+    "opponent": "Spurs",
+    "home": true,
+    "win": 0.4625,
+    "draw": 0.2576,
+    "survival": 0.4625,
+    "route_survival": 0.0146,
+    "cost": 0.1693,
+    "crowd": 0.0261,
+    "reserved_for": 3
+   },
+   {
+    "team": 16,
+    "name": "Man Utd",
+    "opponent": "Hull City",
+    "home": false,
+    "win": 0.478,
+    "draw": 0.2588,
+    "survival": 0.478,
+    "route_survival": 0.0134,
+    "cost": 0.2383,
+    "crowd": 0.0282,
+    "reserved_for": 2
+   }
+  ],
+  "route": {
+   "picks": [
+    {
+     "gameweek": 1,
+     "team": 1,
+     "name": "Arsenal",
+     "opponent": "Coventry City",
+     "home": true,
+     "win": 0.7197,
+     "draw": 0.1955,
+     "survival": 0.7197,
+     "doubled": false
+    },
+    {
+     "gameweek": 2,
+     "team": 16,
+     "name": "Man Utd",
+     "opponent": "Ipswich Town",
+     "home": true,
+     "win": 0.6569,
+     "draw": 0.2143,
+     "survival": 0.6569,
+     "doubled": false
+    },
+    {
+     "gameweek": 3,
+     "team": 4,
+     "name": "Brentford",
+     "opponent": "Sunderland",
+     "home": true,
+     "win": 0.5413,
+     "draw": 0.2599,
+     "survival": 0.5413,
+     "doubled": false
+    },
+    {
+     "gameweek": 4,
+     "team": 14,
+     "name": "Liverpool",
+     "opponent": "Fulham",
+     "home": true,
+     "win": 0.556,
+     "draw": 0.2762,
+     "survival": 0.556,
+     "doubled": false
+    },
+    {
+     "gameweek": 5,
+     "team": 15,
+     "name": "Man City",
+     "opponent": "Sunderland",
+     "home": true,
+     "win": 0.7249,
+     "draw": 0.1778,
+     "survival": 0.7249,
+     "doubled": false
+    },
+    {
+     "gameweek": 6,
+     "team": 6,
+     "name": "Chelsea",
+     "opponent": "Bournemouth",
+     "home": true,
+     "win": 0.6224,
+     "draw": 0.2059,
+     "survival": 0.6224,
+     "doubled": false
+    },
+    {
+     "gameweek": 7,
+     "team": 19,
+     "name": "Spurs",
+     "opponent": "Coventry City",
+     "home": true,
+     "win": 0.5355,
+     "draw": 0.2615,
+     "survival": 0.5355,
+     "doubled": false
+    },
+    {
+     "gameweek": 8,
+     "team": 8,
+     "name": "Crystal Palace",
+     "opponent": "Newcastle",
+     "home": true,
+     "win": 0.5125,
+     "draw": 0.2672,
+     "survival": 0.5125,
+     "doubled": false
+    }
+   ],
+   "survival": 0.0176,
+   "rounds": 8,
+   "status": "optimal",
+   "method": "planned",
+   "note": ""
+  },
+  "greedy": {
+   "picks": [
+    {
+     "gameweek": 1,
+     "team": 1,
+     "name": "Arsenal",
+     "opponent": "Coventry City",
+     "home": true,
+     "win": 0.7197,
+     "draw": 0.1955,
+     "survival": 0.7197,
+     "doubled": false
+    },
+    {
+     "gameweek": 2,
+     "team": 16,
+     "name": "Man Utd",
+     "opponent": "Ipswich Town",
+     "home": true,
+     "win": 0.6569,
+     "draw": 0.2143,
+     "survival": 0.6569,
+     "doubled": false
+    },
+    {
+     "gameweek": 3,
+     "team": 15,
+     "name": "Man City",
+     "opponent": "Coventry City",
+     "home": true,
+     "win": 0.745,
+     "draw": 0.1641,
+     "survival": 0.745,
+     "doubled": false
+    },
+    {
+     "gameweek": 4,
+     "team": 6,
+     "name": "Chelsea",
+     "opponent": "Hull City",
+     "home": true,
+     "win": 0.668,
+     "draw": 0.1918,
+     "survival": 0.668,
+     "doubled": false
+    },
+    {
+     "gameweek": 5,
+     "team": 19,
+     "name": "Spurs",
+     "opponent": "Aston Villa",
+     "home": true,
+     "win": 0.4926,
+     "draw": 0.2722,
+     "survival": 0.4926,
+     "doubled": false
+    },
+    {
+     "gameweek": 6,
+     "team": 8,
+     "name": "Crystal Palace",
+     "opponent": "Nott'm Forest",
+     "home": true,
+     "win": 0.5454,
+     "draw": 0.2556,
+     "survival": 0.5454,
+     "doubled": false
+    },
+    {
+     "gameweek": 7,
+     "team": 3,
+     "name": "Bournemouth",
+     "opponent": "Sunderland",
+     "home": true,
+     "win": 0.4759,
+     "draw": 0.2864,
+     "survival": 0.4759,
+     "doubled": false
+    },
+    {
+     "gameweek": 8,
+     "team": 14,
+     "name": "Liverpool",
+     "opponent": "Brighton",
+     "home": true,
+     "win": 0.4759,
+     "draw": 0.2854,
+     "survival": 0.4759,
+     "doubled": false
+    }
+   ],
+   "survival": 0.0143,
+   "rounds": 8,
+   "status": "optimal",
+   "method": "greedy",
+   "note": ""
+  },
+  "planning_gain": 0.0033,
+  "field_survival": 0.574,
+  "crowd_note": "Modelled \u2014 no pool publishes its picks. Roughly 36% of a typical field lands on Arsenal, so this is a pick with the crowd. About 43% of the field goes out this round, against your 28% \u2014 +15%. Early on that matters little, because a round that eliminates everybody is usually replayed; it matters most when the pool is down to a handful and you need the others to go out without you.",
+  "standing_pick": null,
+  "standing_gameweek": null
+ },
  "schedule": {
   "phase": "full-solve",
-  "reason": "4h to the GW1 deadline \u2014 full solve",
-  "hours_remaining": 4.1
+  "reason": "3h to the GW1 deadline \u2014 full solve",
+  "hours_remaining": 3.5
  },
  "manager": {
   "entry_id": 6674798,

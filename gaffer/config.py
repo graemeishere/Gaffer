@@ -41,6 +41,14 @@ def env_int(name: str) -> int | None:
         return None
 
 
+def env_bool(name: str, default: bool = False) -> bool:
+    """A yes/no setting, tolerant of how people actually write one."""
+    value = os.environ.get(name)
+    if value is None:
+        return default
+    return value.strip().lower() in ("1", "true", "yes", "y", "on", "survives")
+
+
 ENTRY_ID = env_int("GAFFER_ENTRY")
 LEAGUE_ID = env_int("GAFFER_LEAGUE")
 DATA = ROOT / "data"
@@ -58,11 +66,20 @@ JSON_OUT = DATA / "latest.json"
 STATE_DIR = Path(os.environ.get("GAFFER_STATE_DIR") or (ROOT / "record"))
 PREDICTIONS_CSV = STATE_DIR / "predictions.csv"
 ACTUALS_CSV = STATE_DIR / "actuals.csv"
+# Last Man Standing keeps its own record beside them, for the same reason: no
+# pool publishes anything, so the list of clubs you have spent exists only where
+# you put it, and the planner is useless without it.
+LMS_STATE = STATE_DIR / "lms.json"
 
 # Where the published copy is written. Same reasoning: on a deployed box it must
 # not be inside the checkout.
 PUBLISH_DIR = Path(os.environ.get("GAFFER_PUBLISH_DIR") or (ROOT / "web"))
 HTML_OUT = DATA / "report.html"
+# Last Man Standing gets a page rather than a section. It is a different
+# competition, read by people who do not play the fantasy game at all, and
+# burying it under a squad they do not have made it look like an appendix to
+# something else.
+LASTMAN_OUT = DATA / "lastman.html"
 
 API = "https://fantasy.premierleague.com/api"
 USER_AGENT = "gaffer/0.1 (+https://github.com/graemeishere)"
@@ -80,6 +97,15 @@ SEASON_GAMES = 38
 # Players who joined their club on or after this date have prior-season stats
 # that belong to a different team. We flag them rather than guess.
 TRANSFER_WINDOW_START = "2026-06-01"
+
+# Last Man Standing. Pools differ on all three of these, and getting them wrong
+# does not produce slightly worse advice — it produces advice for another game.
+LMS_HORIZON = env_int("GAFFER_LMS_HORIZON") or 8
+LMS_LIVES = env_int("GAFFER_LMS_LIVES") or 1
+LMS_DRAW_SURVIVES = env_bool("GAFFER_LMS_DRAW_SURVIVES")
+# Clubs already spent, as a comma-separated list, for anyone who would rather
+# set one variable than keep the record file.
+LMS_USED = os.environ.get("GAFFER_LMS_USED", "")
 
 # Squad rules, read from the API at runtime but defaulted here.
 SQUAD_SIZE = 15

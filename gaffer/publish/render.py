@@ -14,6 +14,10 @@ from gaffer import config
 from gaffer.rank import PlayerRow
 
 TEMPLATE = Path(__file__).parent / "report_template.html"
+LASTMAN_TEMPLATE = Path(__file__).parent / "lastman_template.html"
+# One stylesheet behind both pages, injected rather than linked so each stays a
+# single file that opens from disk with no server.
+STYLESHEET = Path(__file__).parent / "style.css"
 
 
 def build_payload(
@@ -30,6 +34,7 @@ def build_payload(
     league=None,
     due=None,
     manager=None,
+    lms=None,
 ) -> dict:
     """Assemble the JSON contract. Phase 0 fills `meta`, `players` and `fixtures`;
     `lineup`, `transfers` and `chips` arrive with the optimiser in Phase 2."""
@@ -73,6 +78,10 @@ def build_payload(
         "transfers": [t.as_dict() for t in (transfers or [])],
         "chips": [c.as_dict() for c in (chips or [])],
         "league": league,
+        # A different game off the same fixture list and the same team ratings.
+        # Null when the run skipped it, so the page can tell "not asked for"
+        # from "asked for and there is nothing to say".
+        "lms": lms,
         "schedule": {
             "phase": due.phase,
             "reason": due.reason,
@@ -307,6 +316,130 @@ def _league_block(payload: dict) -> str:
     )
 
 
+def _lms_route(route: dict) -> str:
+    """The planned route as a chain of rounds, so the reservations are visible.
+
+    The reason a club is not this week's pick is almost always that the plan
+    wants it later, and that argument only lands if you can see where.
+    """
+    picks = (route or {}).get("picks") or []
+    if not picks:
+        return ""
+    cards = "".join(
+        f"<div class='card'><b>{p['name']}</b>"
+        f"<i>GW{p['gameweek']} · {'v' if p['home'] else 'at'} {p['opponent']}</i>"
+        f"<u>{p['survival']:.0%}</u></div>"
+        for p in picks
+    )
+    return (f"<div class='mock-h' style='margin-top:.8rem'>The route · "
+            f"{route['survival']:.1%} chance of surviving all {route['rounds']} "
+            f"rounds</div><div class='bench'>{cards}</div>")
+
+
+def _lms_teaser(payload: dict) -> str:
+    """A pointer from the board to the Last Man Standing page.
+
+    Deliberately not the whole section. Two pages showing the same table would
+    drift in the reader's head into two different recommendations, and the board
+    is about a squad while that page is about a route.
+    """
+    lms = payload.get("lms")
+    if not lms:
+        return ("<p>Not planned on this run. It costs nothing extra — the route is "
+                "built from the same fixture list and the same team ratings as the "
+                "board above — so it is on by default and only <code>--no-lms</code> "
+                "turns it off.</p>")
+
+    if lms["status"] != "alive":
+        return (f"<div class='banner'>{lms['reason']} "
+                f"<a href='lastman.html'>The full page</a> has the record.</div>")
+
+    best = (lms.get("options") or [{}])[0]
+    route = lms.get("route") or {}
+    fixture = f"{'home to' if best.get('home') else 'away at'} {best.get('opponent', '')}"
+    return (
+        f"<div class='opt best'><div class='opt-l'><b>{lms['pick']} — {fixture}</b>"
+        f"<span>GW{lms['gameweek']} · {route.get('survival', 0):.1%} to survive all "
+        f"{route.get('rounds', 0)} planned rounds · {len(lms.get('used') or [])} clubs spent"
+        f"</span></div>"
+        f"<div class='opt-r pos'>{best.get('survival', 0):.0%}</div></div>"
+    )
+
+
+def _lms_block(payload: dict) -> str:
+    """Last Man Standing: one club a week, each usable once, a draw is a defeat."""
+    lms = payload.get("lms")
+    if not lms:
+        return ("<p>Not planned on this run. It costs nothing extra — the route "
+                "is built from the same fixture list and the same team ratings as "
+                "the board above — so it is on by default and only <code>--no-lms</code> "
+                "turns it off.</p>")
+
+    rules = lms.get("rules") or {}
+    used = lms.get("used") or []
+    used_html = ("".join(f"<span class='fx d5'>{name}</span>" for name in used)
+                 if used else "<span class='sub'>nothing yet</span>")
+    standing = (f"<div class='banner' style='margin-bottom:.5rem'><strong>"
+                f"GW{lms['standing_gameweek']} is already picked: {lms['standing_pick']}."
+                f"</strong> The route below plans around it rather than proposing a "
+                f"replacement for a club it can no longer use.</div>"
+                if lms.get("standing_pick") else "")
+
+    if lms["status"] != "alive":
+        tone = "stop" if lms["status"] == "out" else "warn"
+        return (standing + f"<div class='banner'><strong>"
+                f"<span class='pill {tone}'>{lms['status']}</span></strong> "
+                f"{lms['reason']}</div>"
+                f"<div class='mock-h' style='margin-top:.8rem'>Clubs used</div>"
+                f"<div>{used_html}</div>")
+
+    options = lms.get("options") or []
+    rows = []
+    for i, option in enumerate(options):
+        fixture = f"{'v' if option['home'] else 'at'} {option['opponent']}"
+        held = (f"<span class='pill warn'>held for GW{option['reserved_for']}</span>"
+                if option.get("reserved_for") else "")
+        cost = ("<span class='sub'>—</span>" if i == 0
+                else f"<span class='neg'>-{option['cost']:.0%}</span>")
+        rows.append(
+            f"<tr><td>{option['name']}</td><td class='sub'>{fixture}</td>"
+            f"<td class='num'>{option['win']:.0%}</td>"
+            f"<td class='num'>{option['draw']:.0%}</td>"
+            f"<td class='num'>{option['survival']:.0%}</td>"
+            f"<td class='num'>{option['route_survival']:.1%}</td>"
+            f"<td class='num'>{cost}</td>"
+            f"<td class='num'>{option['crowd']:.0%}</td>"
+            f"<td>{held}</td></tr>")
+
+    best = options[0] if options else {}
+    return (
+        standing
+        + f"<div class='stats' style='margin-bottom:.5rem;'>"
+        f"<div class='stat'><b>{lms['pick']}</b><span>the pick for GW{lms['gameweek']}</span></div>"
+        f"<div class='stat'><b>{best.get('survival', 0):.0%}</b>"
+        f"<span>chance it survives the round</span></div>"
+        f"<div class='stat'><b>{(lms.get('route') or {}).get('survival', 0):.1%}</b>"
+        f"<span>chance of surviving all {(lms.get('route') or {}).get('rounds', 0)} "
+        f"planned rounds</span></div>"
+        f"<div class='stat'><b>{len(used)}</b><span>clubs already spent</span></div></div>"
+        f"<div class='banner'><strong>{lms['pick']}.</strong> {lms['reason']}</div>"
+        f"<div class='mock-h' style='margin-top:.8rem'>This round, priced over the whole route</div>"
+        f"<div class='scroll'><table>"
+        f"<thead><tr><th>Club</th><th>Fixture</th><th class='num'>Win</th>"
+        f"<th class='num'>Draw</th><th class='num'>Survive</th>"
+        f"<th class='num'>Route</th><th class='num'>Cost</th>"
+        f"<th class='num'>Field</th><th></th></tr></thead>"
+        f"<tbody>{''.join(rows)}</tbody></table></div>"
+        + _lms_route(lms.get("route") or {})
+        + f"<div class='mock-h' style='margin-top:.8rem'>Clubs used · "
+        f"{'one life' if rules.get('lives', 1) == 1 else str(rules['lives']) + ' lives'}, "
+        f"{'a draw survives' if rules.get('draw_survives') else 'a draw is out'}</div>"
+        f"<div>{used_html}</div>"
+        f"<div class='banner' style='margin-top:.6rem'><strong>Against the field.</strong> "
+        f"{lms.get('crowd_note', '')}</div>"
+    )
+
+
 def write_report(payload: dict, path: Path | None = None) -> Path:
     path = path or config.HTML_OUT
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -319,6 +452,7 @@ def write_report(payload: dict, path: Path | None = None) -> Path:
 
     html = TEMPLATE.read_text()
     replacements = {
+        "{{STYLE}}": STYLESHEET.read_text(),
         "{{GAMEWEEK}}": str(meta["gameweek"]),
         "{{DEADLINE}}": deadline.strftime("%a %d %b, %H:%M UTC"),
         "{{COUNTDOWN}}": f"{hours_left:.0f}h" if hours_left > 0 else "passed",
@@ -333,6 +467,7 @@ def write_report(payload: dict, path: Path | None = None) -> Path:
         "{{PITCH}}": _pitch(payload),
         "{{CHIPS}}": _chip_rows(payload),
         "{{LEAGUE}}": _league_block(payload),
+        "{{LMS}}": _lms_teaser(payload),
         "{{PHASE}}": (payload.get("schedule") or {}).get("phase", "—"),
         "{{PHASE_REASON}}": (payload.get("schedule") or {}).get("reason", ""),
         "{{TRANSFERS}}": _transfer_rows(payload),
@@ -345,6 +480,46 @@ def write_report(payload: dict, path: Path | None = None) -> Path:
         replacements[f"{{{{{token}_VALUE}}}}"] = _rows(scores, position, 8, key=lambda s: -s.per_million)
         replacements[f"{{{{{token}_TOTAL}}}}"] = _rows(scores, position, 8, key=lambda s: -s.projected)
 
+    for token, value in replacements.items():
+        html = html.replace(token, value)
+    path.write_text(html)
+    return path
+
+
+def write_lastman(payload: dict, path: Path | None = None) -> Path:
+    """The Last Man Standing page, standalone and readable from disk.
+
+    Same data as the `lms` block in `latest.json` — the JSON stays the contract
+    and this is one more reader of it, not a second source of truth.
+    """
+    path = path or config.LASTMAN_OUT
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    meta, lms = payload["meta"], payload.get("lms") or {}
+    rules = lms.get("rules") or {}
+    deadline = datetime.fromisoformat(meta["deadline"].replace("Z", "+00:00"))
+    generated = datetime.fromisoformat(meta["generated"])
+    hours_left = (deadline - generated).total_seconds() / 3600
+
+    lives = rules.get("lives", 1)
+    rule_summary = (
+        f"{'DRAW SURVIVES' if rules.get('draw_survives') else 'DRAW IS OUT'} · "
+        f"{'1 LIFE' if lives == 1 else f'{lives} LIVES'}"
+    ) if rules else "—"
+
+    html = LASTMAN_TEMPLATE.read_text()
+    replacements = {
+        "{{STYLE}}": STYLESHEET.read_text(),
+        "{{GAMEWEEK}}": str(lms.get("gameweek") or meta["gameweek"]),
+        "{{DEADLINE}}": deadline.strftime("%a %d %b, %H:%M UTC"),
+        "{{COUNTDOWN}}": f"{hours_left:.0f}h" if hours_left > 0 else "passed",
+        "{{GENERATED}}": generated.strftime("%d %b %Y, %H:%M UTC"),
+        "{{RULES}}": rule_summary,
+        "{{STRENGTH}}": (f"{meta.get('strength_source', 'unknown').upper()}, "
+                         f"{meta.get('matches_fitted', 0)} MATCHES"),
+        "{{LMS}}": _lms_block(payload),
+        "{{PHASE_REASON}}": (payload.get("schedule") or {}).get("reason", ""),
+    }
     for token, value in replacements.items():
         html = html.replace(token, value)
     path.write_text(html)

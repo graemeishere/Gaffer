@@ -11,7 +11,7 @@ on:
     - cron: "0 15 * * *"
   workflow_dispatch:
   push:
-    branches: [claude/fantasy-football-recommendations-7q0di3]
+    branches: [master]
     paths: ["gaffer/**", ".github/workflows/refresh.yml"]
 
 permissions:
@@ -47,13 +47,17 @@ jobs:
         run: |
           # web/ is the published copy. data/ is the local run's output and is
           # gitignored, so the two never collide.
-          cp data/latest.json data/report.html web/
+          cp data/latest.json data/report.html data/lastman.html web/
           git config user.name  "gaffer-bot"
           git config user.email "noreply@github.com"
-          git add -f web/latest.json web/report.html
+          git add -f web/latest.json web/report.html web/lastman.html
           # The prediction log is the experiment's evidence and the CI container
           # is thrown away after every run, so it has to be committed or it is lost.
           git add record/predictions.csv record/actuals.csv
+          # The Last Man Standing record is the same kind of thing: a season's
+          # picks that nothing else in the world stores, in a container about to
+          # be thrown away. It only exists once a pick has been recorded.
+          git add record/lms.json 2>/dev/null || true
           if git diff --staged --quiet; then
             echo "No change in output — nothing to publish."
           else

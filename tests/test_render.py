@@ -20,11 +20,14 @@ import pytest
 from gaffer.publish import render as R
 
 TEMPLATE = R.TEMPLATE.read_text()
+LASTMAN_TEMPLATE = R.LASTMAN_TEMPLATE.read_text()
+# The stylesheet is shared by every page the engine writes and injected through
+# {{STYLE}}, so it is read from its own file rather than sliced out of a
+# template — slicing the template would only ever find the placeholder.
 # Comments are stripped before anything is asserted about the rules. A comment
 # that merely mentions `prefers-color-scheme`, or names a `.class`, must not
 # read as a rule that exists — that would make these checks quietly lenient.
-STYLE = re.sub(r"/\*.*?\*/", "",
-               TEMPLATE[TEMPLATE.index("<style>"):TEMPLATE.index("</style>")], flags=re.S)
+STYLE = re.sub(r"/\*.*?\*/", "", R.STYLESHEET.read_text(), flags=re.S)
 
 VOID = {"br", "img", "meta", "link", "hr", "input", "col"}
 
@@ -185,9 +188,9 @@ class TestStructure:
         assert p.errors == []
         assert [t for t, _ in p.stack] == []
 
-    def test_all_seven_sections_are_present(self, tmp_path):
+    def test_all_eight_sections_are_present(self, tmp_path):
         doc = render(tmp_path)
-        assert len(re.findall(r"<h2>", doc)) == 7
+        assert len(re.findall(r"<h2>", doc)) == 8
 
     def test_table_headers_match_their_body_cells(self, tmp_path):
         """A column added to a header without a matching cell silently shifts
@@ -204,7 +207,7 @@ class TestStructure:
 
 
 class TestTabs:
-    """The nav hides four panels in five, so a broken link is invisible."""
+    """The nav hides five panels in six, so a broken link is invisible."""
 
     def test_every_button_points_at_a_panel_that_exists(self, tmp_path):
         doc = render(tmp_path)
@@ -222,6 +225,8 @@ class TestTabs:
         assert p.headings["transfers"] == ["Transfers"]
         assert p.headings["chips"] == ["Chips"]
         assert p.headings["league"] == ["Your mini-league"]
+        # Last man standing is a different competition, not a player table.
+        assert p.headings["lastman"] == ["Last man standing"]
         assert len(p.headings["tables"]) == 3
 
     def test_panels_are_visible_without_javascript(self, tmp_path):
@@ -306,3 +311,53 @@ class TestNumbersStayLegible:
         at a glance, so no numeric class may set it."""
         for block in re.findall(r"\.(num|stat b|opt-r|spark)[^{]*\{([^}]*)\}", STYLE):
             assert "Caveat" not in block[1]
+
+
+class TestLastManStandingPage:
+    """The pool page shares the stylesheet with the board, so a restyle written
+    against the board alone can leave it unstyled without failing anything.
+    These are the design checks the board already gets, pointed at that page.
+    """
+
+    def lastman(self, tmp_path):
+        from gaffer.lms.advise import advise
+        from gaffer.lms.rules import Rules
+        from gaffer.lms.state import LmsState
+        from tests.test_lms import NAMES, TestAdvice
+
+        result = advise(TestAdvice.ROUNDS, NAMES, LmsState(), Rules(horizon=2))
+        data = {
+            "meta": {"generated": "2026-08-21T09:00:00+00:00",
+                     "deadline": "2026-08-21T17:30:00Z", "gameweek": 1,
+                     "strength_source": "fitted", "matches_fitted": 40},
+            "lms": result.as_dict(),
+            "schedule": {"reason": "9h to the GW1 deadline"},
+        }
+        return R.write_lastman(data, tmp_path / "lastman.html").read_text()
+
+    def test_it_is_readable_on_a_phone(self, tmp_path):
+        """The board is mobile-first; a sister page with no viewport tag would
+        render at desktop width and shrink to nothing."""
+        doc = self.lastman(tmp_path)
+        assert 'name="viewport"' in doc
+        assert 'charset="utf-8"' in doc
+
+    def test_it_asks_for_the_same_two_faces_as_the_board(self, tmp_path):
+        doc = self.lastman(tmp_path)
+        assert "family=Archivo" in doc and "family=Caveat" in doc
+        # The faces the restyle replaced. Left behind, they load on every view
+        # and never get used.
+        assert "Source+Serif" not in doc and "JetBrains" not in doc
+
+    def test_every_class_it_emits_is_styled(self, tmp_path):
+        # Parsed rather than regexed: the fragment builders quote with ' and
+        # the template with ", and anchoring on one would skip half the page.
+        emitted = parse(self.lastman(tmp_path)).classes
+        assert len(emitted) > 10, "the page under test emitted almost no classes"
+        styled = set(re.findall(r"\.([a-zA-Z][\w-]*)", STYLE))
+        assert emitted <= styled, f"unstyled: {sorted(emitted - styled)}"
+
+    def test_its_tags_are_balanced(self, tmp_path):
+        p = parse(self.lastman(tmp_path))
+        assert p.errors == []
+        assert [t for t, _ in p.stack] == []

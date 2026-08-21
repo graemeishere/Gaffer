@@ -479,7 +479,7 @@ EnvironmentFile=-$HOME_DIR/.env
 Environment=GAFFER_STATE_DIR=$STATE_DIR
 Environment=GAFFER_PUBLISH_DIR=$PUBLISH_DIR
 ExecStart=$HOME_DIR/.venv/bin/python -m gaffer.run --quiet
-ExecStartPost=/bin/sh -c 'cp -f $HOME_DIR/web/*.html $PUBLISH_DIR/ 2>/dev/null; cp -f $HOME_DIR/data/latest.json $HOME_DIR/data/report.html $PUBLISH_DIR/ 2>/dev/null || true'
+ExecStartPost=/bin/sh -c 'cp -f $HOME_DIR/web/*.html $PUBLISH_DIR/ 2>/dev/null; cp -f $HOME_DIR/data/latest.json $HOME_DIR/data/report.html $HOME_DIR/data/lastman.html $PUBLISH_DIR/ 2>/dev/null || true'
 TimeoutStartSec=600
 Nice=10
 
@@ -522,7 +522,8 @@ log "First run (this may take a minute)"
 # which reads like a permissions fault and is really a missing default document.
 ( cd / && sudo -u "$USER_NAME" sh -c \
   "cp -f '$HOME_DIR'/web/*.html '$PUBLISH_DIR'/ 2>/dev/null; \
-   cp -f '$HOME_DIR'/data/latest.json '$HOME_DIR'/data/report.html '$PUBLISH_DIR'/ 2>/dev/null" ) || true
+   cp -f '$HOME_DIR'/data/latest.json '$HOME_DIR'/data/report.html \
+         '$HOME_DIR'/data/lastman.html '$PUBLISH_DIR'/ 2>/dev/null" ) || true
 
 cat <<DONE
 
