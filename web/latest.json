@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated": "2026-08-21T14:07:03+00:00",
+  "generated": "2026-08-21T14:09:24+00:00",
   "gameweek": 1,
   "deadline": "2026-08-21T17:30:00Z",
   "horizon": 6,
@@ -19907,7 +19907,7 @@
  "schedule": {
   "phase": "full-solve",
   "reason": "3h to the GW1 deadline \u2014 full solve",
-  "hours_remaining": 3.4
+  "hours_remaining": 3.3
  },
  "manager": {
   "entry_id": 6674798,

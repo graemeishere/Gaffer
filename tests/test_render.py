@@ -188,9 +188,9 @@ class TestStructure:
         assert p.errors == []
         assert [t for t, _ in p.stack] == []
 
-    def test_all_eight_sections_are_present(self, tmp_path):
+    def test_all_seven_sections_are_present(self, tmp_path):
         doc = render(tmp_path)
-        assert len(re.findall(r"<h2>", doc)) == 8
+        assert len(re.findall(r"<h2>", doc)) == 7
 
     def test_table_headers_match_their_body_cells(self, tmp_path):
         """A column added to a header without a matching cell silently shifts
@@ -207,7 +207,7 @@ class TestStructure:
 
 
 class TestTabs:
-    """The nav hides five panels in six, so a broken link is invisible."""
+    """The nav hides four panels in five, so a broken link is invisible."""
 
     def test_every_button_points_at_a_panel_that_exists(self, tmp_path):
         doc = render(tmp_path)
@@ -225,8 +225,6 @@ class TestTabs:
         assert p.headings["transfers"] == ["Transfers"]
         assert p.headings["chips"] == ["Chips"]
         assert p.headings["league"] == ["Your mini-league"]
-        # Last man standing is a different competition, not a player table.
-        assert p.headings["lastman"] == ["Last man standing"]
         assert len(p.headings["tables"]) == 3
 
     def test_panels_are_visible_without_javascript(self, tmp_path):
@@ -361,3 +359,20 @@ class TestLastManStandingPage:
         p = parse(self.lastman(tmp_path))
         assert p.errors == []
         assert [t for t, _ in p.stack] == []
+
+
+class TestLastManStandingIsSeparate:
+    """It is a different competition off the same fixture list, not a section
+    of the fantasy board. Two pages carrying the same recommendation drift in
+    the reader's head into two different recommendations."""
+
+    def test_the_board_carries_no_last_man_standing_section(self, tmp_path):
+        p = parse(render(tmp_path))
+        assert all("last man" not in h.lower()
+                   for hs in p.headings.values() for h in hs)
+        assert "lastman" not in p.tab_ids
+
+    def test_the_board_still_links_to_its_page(self, tmp_path):
+        """Separate must not mean unreachable — the pool page links back here,
+        and this is the other half of that pair."""
+        assert 'href="lastman.html"' in render(tmp_path)

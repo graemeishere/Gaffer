@@ -336,36 +336,6 @@ def _lms_route(route: dict) -> str:
             f"rounds</div><div class='bench'>{cards}</div>")
 
 
-def _lms_teaser(payload: dict) -> str:
-    """A pointer from the board to the Last Man Standing page.
-
-    Deliberately not the whole section. Two pages showing the same table would
-    drift in the reader's head into two different recommendations, and the board
-    is about a squad while that page is about a route.
-    """
-    lms = payload.get("lms")
-    if not lms:
-        return ("<p>Not planned on this run. It costs nothing extra — the route is "
-                "built from the same fixture list and the same team ratings as the "
-                "board above — so it is on by default and only <code>--no-lms</code> "
-                "turns it off.</p>")
-
-    if lms["status"] != "alive":
-        return (f"<div class='banner'>{lms['reason']} "
-                f"<a href='lastman.html'>The full page</a> has the record.</div>")
-
-    best = (lms.get("options") or [{}])[0]
-    route = lms.get("route") or {}
-    fixture = f"{'home to' if best.get('home') else 'away at'} {best.get('opponent', '')}"
-    return (
-        f"<div class='opt best'><div class='opt-l'><b>{lms['pick']} — {fixture}</b>"
-        f"<span>GW{lms['gameweek']} · {route.get('survival', 0):.1%} to survive all "
-        f"{route.get('rounds', 0)} planned rounds · {len(lms.get('used') or [])} clubs spent"
-        f"</span></div>"
-        f"<div class='opt-r pos'>{best.get('survival', 0):.0%}</div></div>"
-    )
-
-
 def _lms_block(payload: dict) -> str:
     """Last Man Standing: one club a week, each usable once, a draw is a defeat."""
     lms = payload.get("lms")
@@ -467,7 +437,6 @@ def write_report(payload: dict, path: Path | None = None) -> Path:
         "{{PITCH}}": _pitch(payload),
         "{{CHIPS}}": _chip_rows(payload),
         "{{LEAGUE}}": _league_block(payload),
-        "{{LMS}}": _lms_teaser(payload),
         "{{PHASE}}": (payload.get("schedule") or {}).get("phase", "—"),
         "{{PHASE_REASON}}": (payload.get("schedule") or {}).get("reason", ""),
         "{{TRANSFERS}}": _transfer_rows(payload),
