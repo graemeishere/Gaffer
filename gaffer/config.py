@@ -94,6 +94,13 @@ CACHE_TTL = 3600
 # A full season is 38 games of 90 minutes.
 SEASON_GAMES = 38
 
+# Below this, the board is not a close call — it is a broken evidence base.
+# A real league always has someone expected to play most of a match; when the
+# best-projected player in it is on a handful of minutes, every number has
+# collapsed to the same floor and the "recommendation" is an arbitrary
+# tie-break. Withhold advice rather than publish it.
+MINIMUM_CREDIBLE_MINUTES = 45.0
+
 # Players who joined their club on or after this date have prior-season stats
 # that belong to a different team. We flag them rather than guess.
 TRANSFER_WINDOW_START = "2026-06-01"

@@ -58,14 +58,17 @@ def _availability(player: dict) -> tuple[float, str]:
 def estimate(player: dict, *, games_played: int = SEASON_GAMES) -> MinutesModel:
     """Build the minutes picture for one player.
 
-    `games_played` is how many games the evidence covers — a full prior season by
-    default, or fewer once we are scoring current-season form.
+    `games_played` is how many games the evidence covers. Callers hand this a
+    record already expressed over a full season — see `gaffer.model.carryover`,
+    which blends last season with this one before anything gets here, because
+    the API zeroes these fields at the rollover and the model would otherwise
+    have no evidence at all in August.
     """
     p_available, news = _availability(player)
 
-    starts = player.get("starts") or 0
-    minutes = player.get("minutes") or 0
-    games = max(games_played, 1)
+    starts = float(player.get("starts") or 0)
+    minutes = float(player.get("minutes") or 0)
+    games = float(max(games_played, 1))
 
     # Start rate, shrunk toward the base rate by how much evidence we have.
     raw_start_rate = starts / games

@@ -40,7 +40,32 @@ CREATE TABLE IF NOT EXISTS player_snapshot (
     status          TEXT,
     chance_playing  INTEGER,
     news            TEXT,
+    starts          INTEGER,
     PRIMARY KEY (taken_at, player_id)
+);
+
+-- Last season's playing time, which is the only evidence the model has in
+-- August. It has to live here because bootstrap-static does not keep it: those
+-- `minutes` and `starts` fields carry last season's totals right up to the
+-- rollover and are then zeroed, which silently emptied the model's entire
+-- evidence base on the morning of GW1. A completed season's totals never
+-- change, so this is written once and read forever.
+CREATE TABLE IF NOT EXISTS player_history (
+    player_id    INTEGER NOT NULL REFERENCES player(id),
+    season_name  TEXT NOT NULL,
+    minutes      INTEGER,
+    starts       INTEGER,
+    total_points INTEGER,
+    goals        INTEGER,
+    assists      INTEGER,
+    clean_sheets INTEGER,
+    goals_conceded INTEGER,
+    saves        INTEGER,
+    bps          INTEGER,
+    yellow_cards INTEGER,
+    red_cards    INTEGER,
+    defensive_contribution INTEGER,
+    PRIMARY KEY (player_id, season_name)
 );
 
 CREATE TABLE IF NOT EXISTS fixture (
@@ -97,7 +122,24 @@ class Store:
         self.conn = sqlite3.connect(self.path)
         self.conn.row_factory = sqlite3.Row
         self.conn.executescript(SCHEMA)
+        self._migrate()
         self.conn.commit()
+
+    def _migrate(self) -> None:
+        """Add columns that CREATE TABLE IF NOT EXISTS will not add.
+
+        A deployed box has a database from before the column existed, and
+        executescript silently leaves it alone.
+        """
+        have = {r["name"] for r in self.conn.execute("PRAGMA table_info(player_snapshot)")}
+        if "starts" not in have:
+            self.conn.execute("ALTER TABLE player_snapshot ADD COLUMN starts INTEGER")
+
+        have = {r["name"] for r in self.conn.execute("PRAGMA table_info(player_history)")}
+        for column in ("goals", "assists", "clean_sheets", "goals_conceded", "saves",
+                       "bps", "yellow_cards", "red_cards", "defensive_contribution"):
+            if column not in have:
+                self.conn.execute(f"ALTER TABLE player_history ADD COLUMN {column} INTEGER")
 
     def close(self) -> None:
         self.conn.close()
@@ -132,20 +174,75 @@ class Store:
         self.conn.executemany(
             "INSERT OR REPLACE INTO player_snapshot "
             "(taken_at, gameweek, player_id, now_cost, selected_by, total_points, minutes, "
-            " form, status, chance_playing, news) "
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            " form, status, chance_playing, news, starts) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [
                 (
                     taken_at, gameweek, p["id"], p["now_cost"],
                     _as_float(p.get("selected_by_percent")), p.get("total_points"), p.get("minutes"),
                     _as_float(p.get("form")), p.get("status"),
                     p.get("chance_of_playing_next_round"), p.get("news") or None,
+                    p.get("starts"),
                 )
                 for p in players
             ],
         )
         self.conn.commit()
         return taken_at
+
+    def record_history(self, player_id: int, seasons: list[dict]) -> int:
+        """Store a player's completed seasons from `element-summary`."""
+        rows = [
+            (player_id, s["season_name"], s.get("minutes"), s.get("starts"),
+             s.get("total_points"), s.get("goals_scored"), s.get("assists"),
+             s.get("clean_sheets"), s.get("goals_conceded"), s.get("saves"),
+             s.get("bps"), s.get("yellow_cards"), s.get("red_cards"),
+             s.get("defensive_contribution"))
+            for s in seasons if s.get("season_name")
+        ]
+        if not rows:
+            return 0
+        self.conn.executemany(
+            "INSERT OR REPLACE INTO player_history "
+            "(player_id, season_name, minutes, starts, total_points, goals, assists, "
+            " clean_sheets, goals_conceded, saves, bps, yellow_cards, red_cards, "
+            " defensive_contribution) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            rows)
+        self.conn.commit()
+        return len(rows)
+
+    def latest_history(self) -> dict[int, dict]:
+        """Each player's most recent completed season, by player id.
+
+        Seasons sort correctly as strings — "2025/26" > "2024/25" — so the
+        newest row per player is the one to carry into the new campaign.
+        """
+        out: dict[int, dict] = {}
+        columns = ("minutes", "starts", "total_points", "goals", "assists",
+                   "clean_sheets", "goals_conceded", "saves", "bps",
+                   "yellow_cards", "red_cards", "defensive_contribution")
+        for r in self.conn.execute(
+                f"SELECT player_id, season_name, {', '.join(columns)} "
+                "FROM player_history ORDER BY player_id, season_name"):
+            row = {"season_name": r["season_name"]}
+            row.update({c: r[c] or 0 for c in columns})
+            out[r["player_id"]] = row
+        return out
+
+    def players_missing_history(self, player_ids: list[int]) -> list[int]:
+        """Players whose stored history is absent or incomplete.
+
+        Incomplete counts as missing. A row written before the scoring columns
+        existed reads as all-zero output, which is indistinguishable from a
+        player who genuinely never scored — so it has to be refetched rather
+        than trusted. This is what lets a deployed box heal itself after a
+        schema change instead of quietly projecting nobody to score.
+        """
+        known = {r["player_id"] for r in self.conn.execute(
+            "SELECT player_id FROM player_history "
+            "GROUP BY player_id HAVING SUM(goals IS NULL) = 0")}
+        return [pid for pid in player_ids if pid not in known]
 
     def upsert_fixtures(self, fixtures: list[dict]) -> None:
         self.conn.executemany(

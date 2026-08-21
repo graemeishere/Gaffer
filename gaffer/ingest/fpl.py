@@ -119,3 +119,40 @@ class FplClient:
         same as beating them by fifty.
         """
         return self.get(f"leagues-h2h-matches/league/{league_id}?page={page}")
+
+
+def backfill_history(client: "FplClient", store, player_ids: list[int], *,
+                     limit: int = 0, pause: float = 0.12,
+                     log=lambda _msg: None) -> int:
+    """Record each player's completed seasons, for players we have none for.
+
+    A finished season's totals never change, so this runs once per player and
+    then never again — the cost is one slow first run at the start of a season,
+    not an ongoing tax on every wake-up.
+
+    It exists because `bootstrap-static` cannot be trusted as a season store:
+    its `minutes` and `starts` carry last season right up to the rollover and
+    are then zeroed, taking the model's whole evidence base with them.
+    Failures are per-player and non-fatal — a missing history costs one player
+    his prior form, while aborting the run would cost the board entirely.
+    """
+    missing = store.players_missing_history(player_ids)
+    if limit:
+        missing = missing[:limit]
+    if not missing:
+        return 0
+
+    log(f"  backfilling last season for {len(missing)} player(s) …")
+    done = 0
+    for index, pid in enumerate(missing):
+        try:
+            summary = client.player_summary(pid)
+        except Exception:
+            continue
+        if store.record_history(pid, summary.get("history_past") or []):
+            done += 1
+        # Be a good citizen on an API that owes us nothing.
+        if pause and index + 1 < len(missing):
+            time.sleep(pause)
+    log(f"    stored history for {done} player(s)")
+    return done

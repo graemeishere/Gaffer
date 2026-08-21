@@ -16,8 +16,26 @@ from gaffer.league import (advise, advise_match, compare_squads, effective_owner
 from gaffer.optimise import best_lineup, evaluate_chips, evaluate_transfers, pick_squad
 from gaffer.schedule import work_due
 from gaffer.publish import write_json, write_lastman, write_report
+import requests
+
+from gaffer.ingest.fpl import FplError, backfill_history
+from gaffer.model.carryover import effective_player
 from gaffer.rank import build_board
 from gaffer.store import Store
+
+
+# Shown on the page when the model has no usable evidence. It names the cause
+# rather than the symptom: the previous wording blamed configuration for what
+# was really an empty evidence base, which sent the reader looking in the wrong
+# place entirely.
+EVIDENCE_BROKEN_REASON = (
+    "Projections could not be built this run. The Fantasy Premier League API "
+    "clears every player's minutes and starts when a new season begins, and the "
+    "model has not yet recovered last season's record to replace them — so it "
+    "cannot tell who is expected to play. Your squad is shown as you picked it; "
+    "squad, captain and transfer advice are withheld until the numbers mean "
+    "something rather than published as a guess."
+)
 
 
 def run(
@@ -100,8 +118,38 @@ def run(
 
     log("  projecting expected points …")
     runs = team_fixture_runs(fixtures, horizon)
+
+    # Last season is the evidence base until this one has games in it. It has to
+    # come from the store: bootstrap-static zeroes every player's minutes and
+    # starts at the rollover, which is what silently emptied the model on the
+    # morning of GW1 and left a goalkeeper captained on 0.2 expected points.
+    games_played = sum(1 for e in events if e.get("finished"))
+    with Store() as store:
+        backfill_history(client, store, [p["id"] for p in bootstrap["elements"]], log=log)
+        history = store.latest_history()
+    log(f"    {len(history)} player(s) with a prior season · "
+        f"{games_played} gameweek(s) played this season")
+
+    # One overlay, applied before anything reads a player. Everything
+    # downstream — minutes, points, the board — then works unchanged.
+    bootstrap = dict(bootstrap, elements=[
+        effective_player(p, history.get(p["id"]), games_played)
+        for p in bootstrap["elements"]
+    ])
+
     projections = project(bootstrap, runs, strength)
     scores = build_board(bootstrap, projections, strength)
+
+    # The failure this guards against was silent: every projection collapsed to
+    # a floor, the run exited cleanly, and the page published an arbitrary
+    # tie-break as a recommendation. An eleven nobody is expected to play in is
+    # not a close call, it is a broken evidence base.
+    peak_minutes = max((row.minutes for row in scores), default=0.0)
+    evidence_broken = peak_minutes < config.MINIMUM_CREDIBLE_MINUTES
+    if evidence_broken:
+        log(f"  ! projections are not credible — the best-projected player in the "
+            f"league is expected to play {peak_minutes:.0f} minutes. Withholding "
+            f"squad, captain and transfer advice.")
 
     with Store() as store:
         made_at = store.record_predictions(scores, gameweek, stage="phase-4")
@@ -119,7 +167,7 @@ def run(
         p["id"]: positions[p["element_type"]] for p in bootstrap["elements"]
     }
 
-    if optimise:
+    if optimise and not evidence_broken:
         log("  optimising squad …")
         squad = pick_squad(scores)
         first_gw_xp = {row.id: (row.xp[0] if row.xp else 0.0) for row in scores}
@@ -132,20 +180,45 @@ def run(
         log(f"  reading entry {entry_id} …")
         try:
             picks = client.entry_picks(entry_id, gameweek - 1 if gameweek > 1 else 1)
-            held = [p["element"] for p in picks["picks"]]
+            rows = picks["picks"]
+            held = [p["element"] for p in rows]
+            # What was actually fielded, not just who is owned. The board used to
+            # drop all of this and show only what the model would do, which left
+            # no way to see your own team next to its opinion.
+            actual = {
+                "captain": next((p["element"] for p in rows if p.get("is_captain")), None),
+                "vice": next((p["element"] for p in rows if p.get("is_vice_captain")), None),
+                # FPL numbers picks 1-15; 12-15 are the bench, in order.
+                "starters": [p["element"] for p in sorted(rows, key=lambda r: r["position"])
+                             if p["position"] <= 11],
+                "bench": [p["element"] for p in sorted(rows, key=lambda r: r["position"])
+                          if p["position"] > 11],
+                "gameweek": gameweek - 1 if gameweek > 1 else 1,
+            }
             entry = client.entry(entry_id)
             bank = (entry.get("last_deadline_bank") or 0) / 10.0
-            transfers = evaluate_transfers(scores, held, bank=bank)
-            lineup = best_lineup(
-                held, {row.id: (row.xp[0] if row.xp else 0.0) for row in scores},
-                positions_by_id)
-            manager.update({"squad_readable": True, "name": entry.get("name")})
-            log(f"    {len(transfers)} option(s) priced")
-        except Exception as exc:
+            manager.update({"squad_readable": True, "name": entry.get("name"),
+                            "actual": actual})
+            if evidence_broken:
+                manager["reason"] = EVIDENCE_BROKEN_REASON
+                log("    squad read, but advice withheld — projections not credible")
+            else:
+                transfers = evaluate_transfers(scores, held, bank=bank)
+                lineup = best_lineup(
+                    held, {row.id: (row.xp[0] if row.xp else 0.0) for row in scores},
+                    positions_by_id)
+                log(f"    {len(transfers)} option(s) priced")
+        except (FplError, requests.RequestException, KeyError, ValueError) as exc:
             # Before the first deadline of a gameweek nobody's picks are public,
             # including your own. That is timing, not a configuration mistake,
             # and the page has to say which — otherwise it reads as "you set this
             # up wrong" when the only thing to do is wait.
+            #
+            # Deliberately not a bare `except Exception`: one swallowed a typo in
+            # this very block and reported it as "squads are private" — a message
+            # that would have stood for the rest of the season while the real
+            # cause was a NameError two lines up. A bug here must surface as a
+            # bug, not as a plausible-sounding empty state.
             manager["reason"] = (
                 "Squads are private until the deadline passes. Yours appears here "
                 "once it does, along with transfer pricing and your head-to-head "

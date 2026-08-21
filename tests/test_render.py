@@ -376,3 +376,60 @@ class TestLastManStandingIsSeparate:
         """Separate must not mean unreachable — the pool page links back here,
         and this is the other half of that pair."""
         assert 'href="lastman.html"' in render(tmp_path)
+
+
+class TestTheSquadPanelShowsYourTeam:
+    """Your team is the base and the model is an annotation on it.
+
+    The panel used to render only the eleven and captain the optimiser would
+    field, discarding the captain, vice and bench order the API actually
+    reports. That is unusable: you could see what someone else would have done
+    but not what to change.
+    """
+
+    def mine(self, **over):
+        actual = {"captain": 13, "vice": 3,
+                  "starters": [1, 3, 4, 5, 8, 9, 10, 11, 13, 14, 15],
+                  "bench": [2, 6, 7, 12], "gameweek": 1}
+        actual.update(over.pop("actual", {}))
+        return payload(manager={"entry_id": 1, "squad_readable": True,
+                                "name": "Worrall FC", "reason": "", "actual": actual},
+                       **over)
+
+    def test_it_shows_the_captain_you_actually_picked(self, tmp_path):
+        doc = render(tmp_path, self.mine())
+        # The captain badge sits inside its player's card.
+        card = [c for c in doc.split("<div class='card") if "Player13" in c]
+        assert card and "class='cap'>C<" in card[0]
+
+    def test_it_shows_your_vice_not_the_models(self, tmp_path):
+        doc = render(tmp_path, self.mine())
+        card = [c for c in doc.split("<div class='card") if "Player3" in c]
+        assert card and "cap vice'>V<" in card[0]
+
+    def test_it_keeps_your_bench_in_your_order(self, tmp_path):
+        """Bench order decides who replaces whom, so shuffling it is a real
+        change to the team, not a display detail."""
+        doc = render(tmp_path, self.mine())
+        bench = doc[doc.index("Bench &middot;") if "Bench &middot;" in doc
+                    else doc.index("Bench ·"):]
+        seen = [n for n in ("Player2", "Player6", "Player7", "Player12") if n in bench]
+        order = sorted(seen, key=lambda n: bench.index(n))
+        assert order == ["Player2", "Player6", "Player7", "Player12"]
+
+    def test_it_says_so_when_the_model_wants_a_different_captain(self, tmp_path):
+        """The fixture's model captains 13, so captaining 1 is a disagreement."""
+        doc = render(tmp_path, self.mine(actual={"captain": 1, "vice": 3}))
+        assert "would captain Player13, not Player1" in doc
+
+    def test_it_says_so_when_the_model_agrees(self, tmp_path):
+        """Silence would be ambiguous — unread, or read and agreed?"""
+        doc = render(tmp_path, self.mine())          # both captain 13
+        assert "would field this eleven and this captain too" in doc
+
+    def test_your_team_still_renders_with_no_model_at_all(self, tmp_path):
+        """A run that cannot build credible projections withholds its lineup.
+        Your own team must still be on the page."""
+        doc = render(tmp_path, self.mine(squad=None, lineup=None, transfers=[]))
+        assert "Player13" in doc and "class='cap'>C<" in doc
+        assert "would captain" not in doc

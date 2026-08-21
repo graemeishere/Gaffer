@@ -20,6 +20,33 @@ LASTMAN_TEMPLATE = Path(__file__).parent / "lastman_template.html"
 STYLESHEET = Path(__file__).parent / "style.css"
 
 
+def _basis_warning(strength, games_played: int) -> str:
+    """Say what the numbers are actually built on, this run.
+
+    This sentence used to be hardcoded to "this season has not happened". It
+    stopped being true the moment the season started, and the page went on
+    asserting it while the model was in fact running on nothing at all — the
+    API had cleared every rate overnight. A page that states its own basis
+    wrongly is worse than one that stays quiet.
+    """
+    source = getattr(strength, "source", "unknown")
+    fitted = getattr(strength, "matches_fitted", 0)
+    ratings = f"Team ratings are currently {source} ({fitted} matches of results)."
+
+    if games_played <= 0:
+        return ("Expected points are built entirely from last season's rates — this "
+                "season has not started, so there is nothing else to go on. " + ratings)
+    if games_played < 6:
+        return (f"Expected points still lean on last season's rates: only "
+                f"{games_played} gameweek(s) of this season have been played, which is "
+                f"too few to judge anyone on. " + ratings)
+    if games_played < 20:
+        return (f"Expected points blend this season's {games_played} gameweeks with last "
+                f"season's rates, weighted toward what has actually happened. " + ratings)
+    return (f"Expected points are built from this season's {games_played} gameweeks. "
+            + ratings)
+
+
 def build_payload(
     *,
     scores: list[PlayerRow],
@@ -42,6 +69,7 @@ def build_payload(
     nxt = next((e for e in events if e.get("is_next")), None)
     cur = next((e for e in events if e.get("is_current")), None)
     teams = {t["id"]: t["short_name"] for t in bootstrap["teams"]}
+    games_played = sum(1 for e in events if e.get("finished"))
 
     return {
         "meta": {
@@ -53,12 +81,8 @@ def build_payload(
             "method": "expected-points",
             "strength_source": getattr(strength, "source", "unknown"),
             "matches_fitted": getattr(strength, "matches_fitted", 0),
-            "warning": (
-                "Expected points are built from last season's rates until this season has "
-                "results to fit to. Team ratings are currently "
-                f"{getattr(strength, 'source', 'unknown')} "
-                f"({getattr(strength, 'matches_fitted', 0)} matches of results)."
-            ),
+            "games_played": games_played,
+            "warning": _basis_warning(strength, games_played),
         },
         "counts": {
             "players_ranked": len(scores),
@@ -160,32 +184,53 @@ def _fixture_table(payload: dict, reverse: bool, limit: int = 5) -> str:
 
 
 def _pitch(payload: dict) -> str:
-    """The chosen eleven laid out by position, with the bench beneath it."""
-    squad, lineup = payload.get("squad"), payload.get("lineup")
-    if not squad or not lineup:
-        return "<p>No squad selected for this run.</p>"
+    """The team sheet: your eleven as you picked it, with the model marked on it.
 
+    Your team is the base and the model's opinion is an annotation, never a
+    replacement. Showing only what the optimiser would field made the board
+    impossible to act on — you could not see what to change, only what someone
+    else would have done.
+    """
     manager = payload.get("manager") or {}
-    if manager.get("squad_readable"):
+    actual = manager.get("actual") or {}
+    squad, lineup = payload.get("squad"), payload.get("lineup")
+
+    if actual.get("starters"):
+        starters, bench = list(actual["starters"]), list(actual["bench"])
+        captain, vice = actual.get("captain"), actual.get("vice")
+        gw = actual.get("gameweek")
         caption = (f"<p style='margin-bottom:.6rem'><strong>Your squad</strong>"
                    f"{' — ' + manager['name'] if manager.get('name') else ''}, "
-                   f"with the eleven and captain the model would field.</p>")
-    else:
+                   f"as you picked it{f' in GW{gw}' if gw else ''}. "
+                   f"Where the model disagrees it is noted in the margin.</p>")
+    elif squad and lineup:
+        starters, bench = list(lineup["starters"]), list(lineup["bench"])
+        captain, vice = lineup.get("captain"), lineup.get("vice")
         caption = ("<p style='margin-bottom:.6rem'><strong>Suggested squad.</strong> "
                    "This is what the optimiser would buy, not your team — squads are "
                    "private until the deadline passes, after which yours replaces it.</p>")
+    else:
+        return "<p>No squad selected for this run.</p>"
 
     by_id = {p["id"]: p for p in payload["players"]}
-    starters, bench = set(lineup["starters"]), lineup["bench"]
+
+    # The model's view, where there is one. It may be absent entirely: a run
+    # that cannot build credible projections withholds its lineup rather than
+    # publishing an arbitrary tie-break.
+    model = lineup or {}
+    model_starters = set(model.get("starters") or [])
+    model_captain = model.get("captain")
+    has_model = bool(model_starters)
+    disagreements: list[str] = []
 
     def card(pid: int, muted: bool = False) -> str:
         row = by_id.get(pid)
         if not row:
             return ""
         badge = ""
-        if pid == lineup["captain"]:
+        if pid == captain:
             badge = "<span class='cap'>C</span>"
-        elif pid == lineup["vice"]:
+        elif pid == vice:
             badge = "<span class='cap vice'>V</span>"
         first = row["xp"][0] if row["xp"] else 0.0
         return (f"<div class='card{' muted' if muted else ''}'>{badge}"
@@ -194,15 +239,37 @@ def _pitch(payload: dict) -> str:
 
     rows = []
     for position in ("GKP", "DEF", "MID", "FWD"):
-        line = [pid for pid in lineup["starters"] if by_id.get(pid, {}).get("position") == position]
+        line = [pid for pid in starters if by_id.get(pid, {}).get("position") == position]
         line.sort(key=lambda pid: -(by_id[pid]["xp"][0] if by_id[pid]["xp"] else 0))
         if line:
             rows.append("<div class='row'>" + "".join(card(pid) for pid in line) + "</div>")
 
+    if has_model and actual.get("starters"):
+        if model_captain and model_captain != captain:
+            name = (by_id.get(model_captain) or {}).get("name", "someone else")
+            mine = (by_id.get(captain) or {}).get("name", "your pick")
+            disagreements.append(f"would captain {name}, not {mine}")
+        drop = [pid for pid in starters if pid not in model_starters]
+        add = [pid for pid in model_starters if pid not in starters]
+        if drop and add:
+            drop_names = ", ".join((by_id.get(p) or {}).get("name", "?") for p in drop[:3])
+            add_names = ", ".join((by_id.get(p) or {}).get("name", "?") for p in add[:3])
+            disagreements.append(f"would bench {drop_names} for {add_names}")
+
+    note = ""
+    if disagreements:
+        note = ("<div class='mock-h' style='margin-top:.6rem'>The model "
+                + "; ".join(disagreements) + "</div>")
+    elif has_model and actual.get("starters"):
+        note = ("<div class='mock-h' style='margin-top:.6rem'>The model would "
+                "field this eleven and this captain too</div>")
+
     bench_html = "".join(card(pid, muted=True) for pid in bench)
+    bench_label = "Bench · your order" if actual.get("bench") else "Bench · auto-sub order"
     return (caption
             + f"<div class='pitch'>{''.join(rows)}</div>"
-            f"<div class='mock-h' style='margin-top:.8rem'>Bench · auto-sub order</div>"
+            + note
+            + f"<div class='mock-h' style='margin-top:.8rem'>{bench_label}</div>"
             f"<div class='bench'>{bench_html}</div>")
 
 
