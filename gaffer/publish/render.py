@@ -14,6 +14,10 @@ from gaffer import config
 from gaffer.rank import PlayerRow
 
 TEMPLATE = Path(__file__).parent / "report_template.html"
+LASTMAN_TEMPLATE = Path(__file__).parent / "lastman_template.html"
+# One stylesheet behind both pages, injected rather than linked so each stays a
+# single file that opens from disk with no server.
+STYLESHEET = Path(__file__).parent / "style.css"
 
 
 def build_payload(
@@ -332,6 +336,36 @@ def _lms_route(route: dict) -> str:
             f"rounds</div><div class='bench'>{cards}</div>")
 
 
+def _lms_teaser(payload: dict) -> str:
+    """A pointer from the board to the Last Man Standing page.
+
+    Deliberately not the whole section. Two pages showing the same table would
+    drift in the reader's head into two different recommendations, and the board
+    is about a squad while that page is about a route.
+    """
+    lms = payload.get("lms")
+    if not lms:
+        return ("<p>Not planned on this run. It costs nothing extra — the route is "
+                "built from the same fixture list and the same team ratings as the "
+                "board above — so it is on by default and only <code>--no-lms</code> "
+                "turns it off.</p>")
+
+    if lms["status"] != "alive":
+        return (f"<div class='banner'>{lms['reason']} "
+                f"<a href='lastman.html'>The full page</a> has the record.</div>")
+
+    best = (lms.get("options") or [{}])[0]
+    route = lms.get("route") or {}
+    fixture = f"{'home to' if best.get('home') else 'away at'} {best.get('opponent', '')}"
+    return (
+        f"<div class='opt best'><div class='opt-l'><b>{lms['pick']} — {fixture}</b>"
+        f"<span>GW{lms['gameweek']} · {route.get('survival', 0):.1%} to survive all "
+        f"{route.get('rounds', 0)} planned rounds · {len(lms.get('used') or [])} clubs spent"
+        f"</span></div>"
+        f"<div class='opt-r pos'>{best.get('survival', 0):.0%}</div></div>"
+    )
+
+
 def _lms_block(payload: dict) -> str:
     """Last Man Standing: one club a week, each usable once, a draw is a defeat."""
     lms = payload.get("lms")
@@ -418,6 +452,7 @@ def write_report(payload: dict, path: Path | None = None) -> Path:
 
     html = TEMPLATE.read_text()
     replacements = {
+        "{{STYLE}}": STYLESHEET.read_text(),
         "{{GAMEWEEK}}": str(meta["gameweek"]),
         "{{DEADLINE}}": deadline.strftime("%a %d %b, %H:%M UTC"),
         "{{COUNTDOWN}}": f"{hours_left:.0f}h" if hours_left > 0 else "passed",
@@ -432,7 +467,7 @@ def write_report(payload: dict, path: Path | None = None) -> Path:
         "{{PITCH}}": _pitch(payload),
         "{{CHIPS}}": _chip_rows(payload),
         "{{LEAGUE}}": _league_block(payload),
-        "{{LMS}}": _lms_block(payload),
+        "{{LMS}}": _lms_teaser(payload),
         "{{PHASE}}": (payload.get("schedule") or {}).get("phase", "—"),
         "{{PHASE_REASON}}": (payload.get("schedule") or {}).get("reason", ""),
         "{{TRANSFERS}}": _transfer_rows(payload),
@@ -445,6 +480,46 @@ def write_report(payload: dict, path: Path | None = None) -> Path:
         replacements[f"{{{{{token}_VALUE}}}}"] = _rows(scores, position, 8, key=lambda s: -s.per_million)
         replacements[f"{{{{{token}_TOTAL}}}}"] = _rows(scores, position, 8, key=lambda s: -s.projected)
 
+    for token, value in replacements.items():
+        html = html.replace(token, value)
+    path.write_text(html)
+    return path
+
+
+def write_lastman(payload: dict, path: Path | None = None) -> Path:
+    """The Last Man Standing page, standalone and readable from disk.
+
+    Same data as the `lms` block in `latest.json` — the JSON stays the contract
+    and this is one more reader of it, not a second source of truth.
+    """
+    path = path or config.LASTMAN_OUT
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    meta, lms = payload["meta"], payload.get("lms") or {}
+    rules = lms.get("rules") or {}
+    deadline = datetime.fromisoformat(meta["deadline"].replace("Z", "+00:00"))
+    generated = datetime.fromisoformat(meta["generated"])
+    hours_left = (deadline - generated).total_seconds() / 3600
+
+    lives = rules.get("lives", 1)
+    rule_summary = (
+        f"{'DRAW SURVIVES' if rules.get('draw_survives') else 'DRAW IS OUT'} · "
+        f"{'1 LIFE' if lives == 1 else f'{lives} LIVES'}"
+    ) if rules else "—"
+
+    html = LASTMAN_TEMPLATE.read_text()
+    replacements = {
+        "{{STYLE}}": STYLESHEET.read_text(),
+        "{{GAMEWEEK}}": str(lms.get("gameweek") or meta["gameweek"]),
+        "{{DEADLINE}}": deadline.strftime("%a %d %b, %H:%M UTC"),
+        "{{COUNTDOWN}}": f"{hours_left:.0f}h" if hours_left > 0 else "passed",
+        "{{GENERATED}}": generated.strftime("%d %b %Y, %H:%M UTC"),
+        "{{RULES}}": rule_summary,
+        "{{STRENGTH}}": (f"{meta.get('strength_source', 'unknown').upper()}, "
+                         f"{meta.get('matches_fitted', 0)} MATCHES"),
+        "{{LMS}}": _lms_block(payload),
+        "{{PHASE_REASON}}": (payload.get("schedule") or {}).get("reason", ""),
+    }
     for token, value in replacements.items():
         html = html.replace(token, value)
     path.write_text(html)

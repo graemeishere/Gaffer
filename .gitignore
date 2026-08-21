@@ -13,11 +13,13 @@ data/*.sqlite
 data/cache/
 data/latest.json
 data/report.html
+data/lastman.html
 
 # The published copy is written by CI, which force-adds it. Ignoring it here
 # means a local run can never stage a competing version.
 web/latest.json
 web/report.html
+web/lastman.html
 
 # record/ is deliberately NOT ignored. It is the durable prediction log, and the
 # only copy that survives — every machine this runs on is disposable.

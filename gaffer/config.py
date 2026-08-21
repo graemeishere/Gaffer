@@ -75,6 +75,11 @@ LMS_STATE = STATE_DIR / "lms.json"
 # not be inside the checkout.
 PUBLISH_DIR = Path(os.environ.get("GAFFER_PUBLISH_DIR") or (ROOT / "web"))
 HTML_OUT = DATA / "report.html"
+# Last Man Standing gets a page rather than a section. It is a different
+# competition, read by people who do not play the fantasy game at all, and
+# burying it under a squad they do not have made it look like an appendix to
+# something else.
+LASTMAN_OUT = DATA / "lastman.html"
 
 API = "https://fantasy.premierleague.com/api"
 USER_AGENT = "gaffer/0.1 (+https://github.com/graemeishere)"

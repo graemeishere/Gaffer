@@ -354,3 +354,53 @@ class TestSeasonAdvice:
         assert json.loads(path.read_text())["picks"][0]["result"] == WON
         assert result.rounds_survived == 1
         assert "Alpha" not in [o.name for o in result.options]
+
+
+class TestPage:
+    """The engine writes a standalone page for the pool, not a section on the
+    fantasy board. It has to survive being opened from disk with no server, and
+    it has to say the same thing the JSON says."""
+
+    def payload(self, lms):
+        return {
+            "meta": {"generated": "2026-08-21T09:00:00+00:00",
+                     "deadline": "2026-08-21T17:30:00Z", "gameweek": 1,
+                     "strength_source": "fitted", "matches_fitted": 40},
+            "lms": lms, "schedule": {"reason": "9h to the GW1 deadline"},
+        }
+
+    def advice(self):
+        result = advise(TestAdvice.ROUNDS, NAMES, LmsState(), Rules(horizon=2))
+        return result.as_dict()
+
+    def test_it_writes_a_page_carrying_the_pick(self, tmp_path):
+        from gaffer.publish.render import write_lastman
+
+        lms = self.advice()
+        path = write_lastman(self.payload(lms), tmp_path / "lastman.html")
+        html = path.read_text()
+
+        assert path.name == "lastman.html"
+        assert lms["pick"] in html
+        assert "{{" not in html          # every token replaced
+        assert "<style>" in html         # the stylesheet is inlined, not linked
+        assert 'href="report.html"' in html
+
+    def test_the_pool_rules_are_on_the_page(self, tmp_path):
+        from gaffer.publish.render import write_lastman
+
+        result = advise(TestAdvice.ROUNDS, NAMES, LmsState(),
+                        Rules(draw_survives=True, lives=2, horizon=2))
+        html = write_lastman(self.payload(result.as_dict()),
+                             tmp_path / "lastman.html").read_text()
+        assert "DRAW SURVIVES" in html
+        assert "2 LIVES" in html
+
+    def test_a_run_without_the_route_still_produces_a_page(self, tmp_path):
+        """--no-lms should leave a page that explains itself rather than a
+        half-rendered one full of unreplaced tokens."""
+        from gaffer.publish.render import write_lastman
+
+        html = write_lastman(self.payload(None), tmp_path / "lastman.html").read_text()
+        assert "{{" not in html
+        assert "--no-lms" in html

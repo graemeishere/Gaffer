@@ -15,7 +15,7 @@ from gaffer.league import (advise, advise_match, compare_squads, effective_owner
                            read_matches, simulate_league, simulate_match)
 from gaffer.optimise import best_lineup, evaluate_chips, evaluate_transfers, pick_squad
 from gaffer.schedule import work_due
-from gaffer.publish import write_json, write_report
+from gaffer.publish import write_json, write_lastman, write_report
 from gaffer.rank import build_board
 from gaffer.store import Store
 
@@ -226,6 +226,7 @@ def run(
                             league=league, due=due, manager=manager, lms=lms)
     json_path = write_json(payload)
     html_path = write_report(payload)
+    lastman_path = write_lastman(payload)
 
     log(f"\n  gameweek {gameweek}, deadline {payload['meta']['deadline']}")
     log(f"  {counts['player']} players · {counts['fixture']} fixtures · {snapshots} snapshot(s) stored")
@@ -236,6 +237,7 @@ def run(
             f"({top.projected / horizon:.2f}/gw)")
     log(f"\n  wrote {json_path.relative_to(config.ROOT)}")
     log(f"  wrote {html_path.relative_to(config.ROOT)}")
+    log(f"  wrote {lastman_path.relative_to(config.ROOT)}")
     log(f"  done in {time.time() - started:.1f}s")
     return payload
 

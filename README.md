@@ -71,10 +71,11 @@ pip install -e ".[dev]"
 python -m gaffer.run --top 20
 ```
 
-Writes two files:
+Writes three files:
 
 - `data/latest.json` — the contract. The only thing anything downstream reads.
 - `data/report.html` — the same run as a standalone page, no server needed.
+- `data/lastman.html` — the Last Man Standing route, on a page of its own.
 
 Options: `--horizon N` (gameweeks to look ahead, default 6), `--refresh`
 (ignore the cache), `--top N` (print a table), `--quiet`, `--no-optimise`
@@ -95,8 +96,8 @@ gaffer/
   league/    rival squads, season simulation, effective ownership and stance
   lms/       match odds, the used list, and the season-long route
   schedule   what work is due, derived from the next deadline
-  publish/   writes latest.json and report.html
-web/         static page that reads latest.json
+  publish/   writes latest.json, report.html and lastman.html
+web/         static pages: the sortable board, and what CI publishes
 tests/       ranking maths
 ```
 
@@ -206,8 +207,15 @@ The engine already has what this needs. Team strength gives every fixture a pair
 of expected-goals rates, a pair of rates is a distribution over scorelines, and a
 distribution over scorelines is a win probability. Nothing about players,
 prices or points enters it, which is why it is a separate command that happens to
-share a repository — and why it also runs as part of `gaffer.run`, appearing in
-`latest.json` and the report, since it costs one solve on data already fetched.
+share a repository — and why it also runs as part of `gaffer.run`, since it costs
+one solve on data already fetched.
+
+It gets **a page of its own**, `lastman.html`, rather than a section on the
+fantasy board. It is a different competition, read by people who may not play the
+fantasy game at all, and putting it under a squad they do not have made it look
+like an appendix to something else. The board keeps a one-line pointer; the page
+carries the argument. Both are written from the same `lms` block in
+`latest.json`, which stays the contract.
 
 **It is a route, not a weekly pick.** This is the whole thing. Asked to choose a
 team for Saturday, almost everyone takes the shortest-priced home favourite
