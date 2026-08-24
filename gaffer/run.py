@@ -8,6 +8,7 @@ import time
 from gaffer import config
 from gaffer.ingest import FplClient
 from gaffer.model import TeamStrength, project, team_fixture_runs
+from gaffer.model.points import squad_minutes
 from gaffer.lms import Rules as LmsRules
 from gaffer.lms.advise import season_advice
 from gaffer.league import (advise, advise_match, compare_squads, effective_ownership,
@@ -137,8 +138,11 @@ def run(
         for p in bootstrap["elements"]
     ])
 
-    projections = project(bootstrap, runs, strength)
-    scores = build_board(bootstrap, projections, strength)
+    # One minutes model, club-normalised, shared by the projection and the board
+    # so the minutes printed are the minutes the points were built from.
+    minutes_by_id = squad_minutes(bootstrap)
+    projections = project(bootstrap, runs, strength, minutes_by_id)
+    scores = build_board(bootstrap, projections, strength, minutes_by_id)
 
     # The failure this guards against was silent: every projection collapsed to
     # a floor, the run exited cleanly, and the page published an arbitrary

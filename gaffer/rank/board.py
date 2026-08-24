@@ -58,7 +58,11 @@ def build_board(
     bootstrap: dict,
     projections: dict[int, list[ExpectedPoints]],
     strength,
+    minutes_by_id: dict | None = None,
 ) -> list[PlayerRow]:
+    """`minutes_by_id` is the club-normalised minutes model the projections were
+    built from. Re-estimating here instead would print a different number to the
+    one behind the expected points beside it."""
     teams = {t["id"]: t["short_name"] for t in bootstrap["teams"]}
     positions = {t["id"]: t["singular_name_short"] for t in bootstrap["element_types"]}
 
@@ -70,7 +74,7 @@ def build_board(
         if player.get("status") == "u" and not (player.get("minutes") or 0):
             continue  # unavailable and never played — noise on the board
 
-        minutes = estimate_minutes(player)
+        minutes = (minutes_by_id or {}).get(player["id"]) or estimate_minutes(player)
         moved = (player.get("team_join_date") or "") >= config.TRANSFER_WINDOW_START
         price = player["now_cost"] / 10.0
         xp = [round(r.total, 2) for r in runs]

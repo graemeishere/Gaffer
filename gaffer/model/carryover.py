@@ -65,6 +65,23 @@ def carryover_weight(games_played: float) -> float:
     return games / (games + prior) if (games + prior) else 0.0
 
 
+def _scaled_to_a_season(player: dict, games_played: float) -> dict:
+    """This season's record alone, expressed over a full season.
+
+    For a player with no prior season there is nothing to blend, but the totals
+    still have to arrive downstream on the scale `estimate` expects. Before a
+    ball is kicked there is genuinely nothing, and the player passes through
+    untouched to meet the base rate.
+    """
+    games = _f(games_played)
+    if games <= 0:
+        return player
+    out = dict(player)
+    for field in SEASON_TOTALS:
+        out[field] = _f(player.get(field)) / games * SEASON_GAMES
+    return out
+
+
 def effective_player(player: dict, history: dict | None, games_played: float) -> dict:
     """A player record the model can actually use, whatever the calendar says.
 
@@ -73,17 +90,19 @@ def effective_player(player: dict, history: dict | None, games_played: float) ->
     and `chance_of_playing_next_round` describe him today, and last season has
     nothing to say about whether he is injured now.
     """
-    if not history:
-        return player
-
-    prev_minutes = _f(history.get("minutes"))
-    if prev_minutes <= 0:
-        # No prior top-flight minutes: a promotion, or a first season. There is
-        # genuinely nothing to carry, and the shrinkage downstream already
-        # treats a thin record as thin.
-        return player
-
+    prev_minutes = _f(history.get("minutes")) if history else 0.0
     weight = carryover_weight(games_played)
+
+    if prev_minutes <= 0:
+        # No prior top-flight minutes: a promotion, or a signing from abroad.
+        # There is nothing to carry, but the record still has to be expressed
+        # over a full season, because that is what `estimate` assumes it is
+        # being handed. Returning the raw player here left a promoted-club
+        # starter's 90 minutes divided by 38 games — 6.9 expected minutes for
+        # someone who had just played the whole match, for the rest of the
+        # season. Three clubs, 15% of the league, every week.
+        return _scaled_to_a_season(player, games_played)
+
     if weight >= 1.0:
         return player
 

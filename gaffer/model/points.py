@@ -14,7 +14,8 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass, field, asdict
 
-from gaffer.model.minutes import MinutesModel, estimate as estimate_minutes
+from gaffer.model.minutes import (MinutesModel, estimate as estimate_minutes,
+                                  normalise_team)
 from gaffer.model.scoring import SCORING
 from gaffer.model.strength import LEAGUE_GOALS_PER_GAME, TeamStrength
 
@@ -193,26 +194,96 @@ def project_fixture(
     )
 
 
+def squad_minutes(bootstrap: dict) -> dict[int, "MinutesModel"]:
+    """Every player's minutes model, normalised so each club adds up to a match.
+
+    Done club by club rather than player by player because the total is fixed:
+    eleven players, ninety minutes. Modelling in isolation let a club's total
+    drift to 118 minutes in GW1 while it went out and played 985.
+    """
+    by_team: dict[int, dict[int, MinutesModel]] = {}
+    price: dict[int, float] = {}
+    for player in bootstrap["elements"]:
+        by_team.setdefault(player["team"], {})[player["id"]] = estimate_minutes(player)
+        # The club's own valuation is the only read on who is first choice when
+        # a promoted squad has no record to go on.
+        price[player["id"]] = (player.get("now_cost") or 0) / 10.0
+
+    out: dict[int, MinutesModel] = {}
+    for models in by_team.values():
+        weights = {pid: price.get(pid, 0.0) for pid in models}
+        out.update(normalise_team(models, fallback_weight=weights))
+    return out
+
+
+# Three points, two and one, in every fixture. Ties can push a match slightly
+# above this, but six is what the rules hand out and it does not depend on who
+# earns it.
+BONUS_PER_FIXTURE = 6.0
+
+
+def normalise_bonus(bootstrap: dict,
+                    projections: dict[int, list[ExpectedPoints]]) -> None:
+    """Share out each fixture's six bonus points, in place.
+
+    `_expected_bonus` scores a player against an absolute bps scale with no idea
+    who else is on the pitch, so the totals do not add up: GW1 modelled 30 bonus
+    points across the round when the rules awarded 64. Half the bonus in the
+    game was going to nobody, and bonus turns up in almost every large
+    under-prediction — a 17-point return is rarely 17 without it.
+
+    Like the minutes normalisation this redistributes a fixed quantity rather
+    than estimating one, so it cannot be fitted to a result. Relative order is
+    untouched: whoever the logistic liked most still gets the most.
+    """
+    team_of = {p["id"]: p["team"] for p in bootstrap["elements"]}
+    short = {t["id"]: t["short_name"] for t in bootstrap["teams"]}
+
+    fixtures: dict[tuple, list[ExpectedPoints]] = {}
+    for player_id, runs in projections.items():
+        team = short.get(team_of.get(player_id), "?")
+        for run in runs:
+            key = (run.gameweek, frozenset((team, run.opponent)))
+            fixtures.setdefault(key, []).append(run)
+
+    for runs in fixtures.values():
+        total = sum(r.components.get("bonus", 0.0) for r in runs)
+        if total <= 0:
+            continue
+        factor = BONUS_PER_FIXTURE / total
+        for run in runs:
+            before = run.components.get("bonus", 0.0)
+            after = before * factor
+            run.components["bonus"] = round(after, 3)
+            run.total = round(run.total - before + after, 3)
+            # Bonus is lumpy, and the variance term treats it as count-like.
+            run.variance = round(max(0.0, run.variance - before + after), 3)
+
+
 def project(
     bootstrap: dict,
     fixture_runs: dict[int, list[dict]],
     strength: TeamStrength,
+    minutes_by_id: dict[int, "MinutesModel"] | None = None,
 ) -> dict[int, list[ExpectedPoints]]:
     """Expected points for every player across their team's upcoming fixtures."""
     positions = {t["id"]: t["singular_name_short"] for t in bootstrap["element_types"]}
     team_short = {t["id"]: t["short_name"] for t in bootstrap["teams"]}
+    if minutes_by_id is None:
+        minutes_by_id = squad_minutes(bootstrap)
 
     projections: dict[int, list[ExpectedPoints]] = {}
     for player in bootstrap["elements"]:
         run = fixture_runs.get(player["team"], [])
         if not run:
             continue
-        minutes = estimate_minutes(player)
+        minutes = minutes_by_id.get(player["id"]) or estimate_minutes(player)
         position = positions[player["element_type"]]
         projections[player["id"]] = [
             project_fixture(player, position, fixture, strength, minutes, team_short)
             for fixture in run
         ]
+    normalise_bonus(bootstrap, projections)
     return projections
 
 
