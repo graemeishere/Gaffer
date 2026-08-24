@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated": "2026-08-24T21:58:14+00:00",
+  "generated": "2026-08-24T22:01:49+00:00",
   "gameweek": 2,
   "deadline": "2026-08-28T17:30:00Z",
   "horizon": 6,
@@ -20443,7 +20443,7 @@
  },
  "schedule": {
   "phase": "idle",
-  "reason": "92h to the GW2 deadline \u2014 refresh prices and injuries only",
+  "reason": "91h to the GW2 deadline \u2014 refresh prices and injuries only",
   "hours_remaining": 91.5
  },
  "manager": {
