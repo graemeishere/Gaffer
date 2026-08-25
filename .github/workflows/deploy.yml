@@ -50,7 +50,9 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p ~/.ssh && chmod 700 ~/.ssh
-          printf '%s\n' "$KEY" > ~/.ssh/id_ed25519
+          # Strip carriage returns: a key pasted from a Windows clipboard carries
+          # CRLF line endings, which OpenSSH rejects with "error in libcrypto".
+          printf '%s\n' "$KEY" | tr -d '\r' > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H "$HOST" >> ~/.ssh/known_hosts 2>/dev/null
 
@@ -58,12 +60,14 @@ jobs:
           # that republishes the pages — a complete deploy on its own.
           ssh -o BatchMode=yes "$USER@$HOST" 'sudo bash /srv/gaffer/deploy/setup.sh'
 
-          # Prove it landed: the VPS checkout must now be on the commit we pushed.
-          # A skipped or half-applied deploy showing green is the failure this
-          # guards against.
-          remote_sha="$(ssh -o BatchMode=yes "$USER@$HOST" 'git -C /srv/gaffer rev-parse HEAD')"
-          if [ "$remote_sha" != "$SHA" ]; then
-            echo "::error title=Deploy did not land::VPS is on $remote_sha, expected $SHA."
+          # Prove it landed: the pushed commit must be present on the VPS. Checked
+          # as "is an ancestor of HEAD" rather than exact equality, so an hourly
+          # data-refresh commit racing ahead of this run does not read as a
+          # failed deploy — the VPS having more than we pushed is still a success.
+          if ssh -o BatchMode=yes "$USER@$HOST" "git -C /srv/gaffer merge-base --is-ancestor $SHA HEAD"; then
+            echo "Deployed: VPS includes $SHA." >> "$GITHUB_STEP_SUMMARY"
+          else
+            remote_sha="$(ssh -o BatchMode=yes "$USER@$HOST" 'git -C /srv/gaffer rev-parse HEAD')"
+            echo "::error title=Deploy did not land::VPS is on $remote_sha, which does not include $SHA."
             exit 1
           fi
-          echo "Deployed: VPS is on $remote_sha." >> "$GITHUB_STEP_SUMMARY"
