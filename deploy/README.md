@@ -287,6 +287,13 @@ ssh-copy-id -i gaffer-deploy.pub youruser@your-vps
 
 Put the key in GitHub's secret store, never in a chat window or a commit.
 
+`VPS_USER` must be able to run `sudo bash setup.sh` without being prompted for a
+password — the workflow is non-interactive. `root` is simplest (running `sudo` as
+root never prompts); a normal account works too if it has `NOPASSWD` sudo for
+that command. After each push the run's summary says whether it deployed or
+skipped, and a deploy only goes green once the VPS is confirmed on the pushed
+commit.
+
 ## "failed to stat '/root/...': Permission denied"
 
 Not an access problem, despite appearances. `git` stats its working directory
