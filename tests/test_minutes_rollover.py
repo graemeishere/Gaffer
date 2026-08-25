@@ -155,11 +155,11 @@ class TestThePageStatesItsBasis:
 
     def test_before_a_ball_is_kicked_it_says_last_season(self):
         assert "last season" in self.basis(0)
-        assert "has not started" in self.basis(0)
+        assert "hasn't kicked off" in self.basis(0)
 
     def test_early_season_admits_the_sample_is_thin(self):
         text = self.basis(2)
-        assert "2 gameweek" in text and "too few" in text
+        assert "2 gameweeks" in text and "too early" in text
 
     def test_mid_season_says_it_is_a_blend(self):
         assert "blend" in self.basis(10)
@@ -171,4 +171,6 @@ class TestThePageStatesItsBasis:
 
     def test_it_never_claims_the_season_has_not_happened_once_it_has(self):
         for played in (1, 5, 12, 25, 38):
-            assert "has not started" not in self.basis(played)
+            text = self.basis(played)
+            assert "has not started" not in text
+            assert "hasn't kicked off" not in text

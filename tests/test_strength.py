@@ -49,3 +49,14 @@ def test_fitting_uses_results_once_they_exist(bootstrap, fixtures):
     strength = TeamStrength.fit(played, bootstrap)
     assert strength.matches_fitted == 1
     assert strength.source == "blended", "one result should not outweigh the prior"
+
+
+def test_fitting_counts_provisionally_finished_fixtures(bootstrap, fixtures):
+    """FPL sets `finished_provisional` when a match ends and lags the `finished`
+    flag by days. Waiting for the slow flag meant a fully-played gameweek was
+    treated as unplayed, and the whole model ran on last season alone with the
+    results sitting right there."""
+    provisional = [{**fixtures[0], "finished": False, "finished_provisional": True,
+                    "team_h_score": 3, "team_a_score": 0}]
+    strength = TeamStrength.fit(provisional, bootstrap)
+    assert strength.matches_fitted == 1

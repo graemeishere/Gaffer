@@ -29,22 +29,21 @@ def _basis_warning(strength, games_played: int) -> str:
     API had cleared every rate overnight. A page that states its own basis
     wrongly is worse than one that stays quiet.
     """
-    source = getattr(strength, "source", "unknown")
     fitted = getattr(strength, "matches_fitted", 0)
-    ratings = f"Team ratings are currently {source} ({fitted} matches of results)."
+    tail = (" Team strength is still last season's until this season has more "
+            "results in.") if fitted <= 0 else ""
 
     if games_played <= 0:
-        return ("Expected points are built entirely from last season's rates — this "
-                "season has not started, so there is nothing else to go on. " + ratings)
+        return ("The season hasn't kicked off yet, so every number here is built "
+                "from last season's form." + tail)
+    weeks = "gameweek" if games_played == 1 else "gameweeks"
     if games_played < 6:
-        return (f"Expected points still lean on last season's rates: only "
-                f"{games_played} gameweek(s) of this season have been played, which is "
-                f"too few to judge anyone on. " + ratings)
+        return (f"Only {games_played} {weeks} played so far — too early to lean on "
+                f"this season, so the numbers still weigh last season heavily." + tail)
     if games_played < 20:
-        return (f"Expected points blend this season's {games_played} gameweeks with last "
-                f"season's rates, weighted toward what has actually happened. " + ratings)
-    return (f"Expected points are built from this season's {games_played} gameweeks. "
-            + ratings)
+        return (f"These blend this season's {games_played} gameweeks with last "
+                f"season, tilted toward what's actually happened.")
+    return f"Built on this season's {games_played} gameweeks."
 
 
 def build_payload(
@@ -63,14 +62,19 @@ def build_payload(
     manager=None,
     lms=None,
     review=None,
+    games_played=None,
 ) -> dict:
-    """Assemble the JSON contract. Phase 0 fills `meta`, `players` and `fixtures`;
-    `lineup`, `transfers` and `chips` arrive with the optimiser in Phase 2."""
+    """Assemble the JSON contract. `meta`, `players` and `fixtures` fill first;
+    `lineup`, `transfers` and `chips` arrive with the optimiser."""
     events = bootstrap["events"]
     nxt = next((e for e in events if e.get("is_next")), None)
     cur = next((e for e in events if e.get("is_current")), None)
     teams = {t["id"]: t["short_name"] for t in bootstrap["teams"]}
-    games_played = sum(1 for e in events if e.get("finished"))
+    if games_played is None:
+        # Fallback for a caller without the fixtures to hand. The run passes the
+        # authoritative count, from fixtures actually played rather than the
+        # lagging event flag.
+        games_played = sum(1 for e in events if e.get("finished"))
 
     return {
         "meta": {
@@ -248,8 +252,9 @@ def _review_block(payload: dict) -> str:
     if diffs:
         got = sum(d["points"] for d in diffs)
         names = ", ".join(f"{d['name']} ({d['ownership']}%, {d['points']})" for d in diffs)
+        noun = "differential" if len(diffs) == 1 else "differentials"
         rows.append(
-            f"<div class='opt'><div class='opt-l'><b>{len(diffs)} differential(s)</b>"
+            f"<div class='opt'><div class='opt-l'><b>{len(diffs)} {noun}</b>"
             f"<span>{names}</span></div><div class='opt-r'>{got}</div></div>")
 
     return flag + verdict + stats + f"<div class='panel'>{''.join(rows)}</div>"
@@ -563,6 +568,14 @@ def write_report(payload: dict, path: Path | None = None) -> Path:
     replacements = {
         "{{STYLE}}": STYLESHEET.read_text(),
         "{{GAMEWEEK}}": str(meta["gameweek"]),
+        # The board is the plan for the gameweek ahead; before a ball is kicked
+        # that is the opener. Never "pre-season" once the season is under way.
+        "{{HEADLINE_SUFFIX}}": ("the season opener" if meta.get("games_played", 0) <= 0
+                                else "the week ahead"),
+        # Name the gameweek that just finished when there is one; before the
+        # first deadline there is nothing to review and it reads generically.
+        "{{REVIEW_HEADING}}": (f"Gameweek {payload['review']['gameweek']} — how it went"
+                               if payload.get("review") else "Your last gameweek"),
         "{{DEADLINE}}": deadline.strftime("%a %d %b, %H:%M UTC"),
         "{{COUNTDOWN}}": f"{hours_left:.0f}h" if hours_left > 0 else "passed",
         "{{GENERATED}}": generated.strftime("%d %b %Y, %H:%M UTC"),
@@ -577,7 +590,6 @@ def write_report(payload: dict, path: Path | None = None) -> Path:
         "{{REVIEW}}": _review_block(payload),
         "{{CHIPS}}": _chip_rows(payload),
         "{{LEAGUE}}": _league_block(payload),
-        "{{PHASE}}": (payload.get("schedule") or {}).get("phase", "—"),
         "{{PHASE_REASON}}": (payload.get("schedule") or {}).get("reason", ""),
         "{{TRANSFERS}}": _transfer_rows(payload),
         "{{SQUAD_COST}}": f"{payload['squad']['cost']:.1f}" if payload.get("squad") else "—",
@@ -624,8 +636,10 @@ def write_lastman(payload: dict, path: Path | None = None) -> Path:
         "{{COUNTDOWN}}": f"{hours_left:.0f}h" if hours_left > 0 else "passed",
         "{{GENERATED}}": generated.strftime("%d %b %Y, %H:%M UTC"),
         "{{RULES}}": rule_summary,
-        "{{STRENGTH}}": (f"{meta.get('strength_source', 'unknown').upper()}, "
-                         f"{meta.get('matches_fitted', 0)} MATCHES"),
+        # Plain English, not "PRIOR, 0 MATCHES". Last season until this one has
+        # results, then how many games in.
+        "{{STRENGTH}}": ("last season's form" if meta.get("matches_fitted", 0) <= 0
+                         else f"{meta['matches_fitted']} matches in"),
         "{{LMS}}": _lms_block(payload),
         "{{PHASE_REASON}}": (payload.get("schedule") or {}).get("reason", ""),
     }

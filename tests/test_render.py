@@ -225,7 +225,7 @@ class TestTabs:
         assert p.headings["transfers"] == ["Transfers"]
         assert p.headings["chips"] == ["Chips"]
         assert p.headings["league"] == ["Your mini-league"]
-        assert p.headings["review"] == ["Last week"]
+        assert p.headings["review"] == ["Your last gameweek"]  # no review in the fixture
         assert len(p.headings["tables"]) == 3
 
     def test_panels_are_visible_without_javascript(self, tmp_path):
@@ -434,3 +434,49 @@ class TestTheSquadPanelShowsYourTeam:
         doc = render(tmp_path, self.mine(squad=None, lineup=None, transfers=[]))
         assert "Player13" in doc and "class='cap'>C<" in doc
         assert "would captain" not in doc
+
+
+class TestTheReaderFacingLanguage:
+    """Internal jargon and stale framing must not reach the page. The season
+    had started while the header still said 'pre-season board' and the banner
+    claimed it had not begun."""
+
+    def test_no_internal_phase_labels(self, tmp_path):
+        doc = render(tmp_path)
+        assert "Phase 4" not in doc
+        assert "pre-season board" not in doc
+        # The raw scheduler-state bar item and the horizon jargon are gone.
+        assert ">PHASE " not in doc
+        assert "HORIZON" not in doc
+
+    def test_the_header_is_about_the_gameweek_ahead(self, tmp_path):
+        """Before a ball is kicked it is the opener; once the season is under
+        way it is the week ahead — never 'pre-season'."""
+        opener = render(tmp_path, payload())          # meta has no games_played -> 0
+        assert "the season opener" in opener
+
+        data = payload()
+        data["meta"]["games_played"] = 1
+        under_way = render(tmp_path, data)
+        assert "the week ahead" in under_way
+        assert "pre-season" not in under_way
+
+    def test_the_review_heading_names_the_gameweek(self, tmp_path):
+        data = payload(manager={"entry_id": 1, "squad_readable": True, "name": "X",
+                                "reason": "", "actual": {
+                                    "captain": 10, "vice": 3,
+                                    "starters": [1, 3, 4, 5, 8, 9, 10, 11, 13, 14, 15],
+                                    "bench": [2, 6, 7, 12], "gameweek": 1}})
+        data["review"] = {"gameweek": 1, "provisional": False, "points": 44,
+                          "verdict": "an ordinary week", "league_position": 12,
+                          "league_size": 15, "league_mean": 49.1, "league_spread": 13.6,
+                          "deviations": -0.38, "within_normal_variation": True,
+                          "xi_points": 42, "xi_projected": 46.2, "points_on_bench": 5,
+                          "auto_subs": 0, "captain": "Haaland", "captain_points": 2,
+                          "captain_agreed": True, "captain_cost": 9,
+                          "best_starter": "Joao Pedro", "best_starter_points": 11,
+                          "differentials": [], "picks": []}
+        doc = render(tmp_path, data)
+        assert "Gameweek 1 — how it went" in doc
+        # The verdict prose is de-jargoned — no raw stats term on the page.
+        assert "standard deviation" not in doc

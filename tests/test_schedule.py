@@ -62,3 +62,39 @@ class TestPhases:
         assert work_due(EVENTS, D1 - timedelta(hours=2)).should_solve
         assert work_due(EVENTS, D1 + timedelta(hours=2)).should_sync
         assert not work_due(EVENTS, D1 - timedelta(hours=120)).should_solve
+
+
+class TestGameweeksPlayed:
+    """Which gameweeks have actually happened, by the football rather than by
+    FPL's lagging `finished` flag. Getting this wrong left the board reviewing
+    GW1's results on the same page that claimed the season had not started."""
+
+    def fixtures(self, spec):
+        """spec: {gameweek: [done?, done?, ...]} -> fixture dicts."""
+        out = []
+        for gw, dones in spec.items():
+            for done in dones:
+                out.append({"event": gw, "finished_provisional": done, "finished": False})
+        return out
+
+    def test_a_fully_played_gameweek_counts_before_the_flag_flips(self):
+        from gaffer.schedule import gameweeks_played
+        fx = self.fixtures({1: [True] * 10, 2: [False] * 10})
+        assert gameweeks_played([], fx) == 1
+
+    def test_a_gameweek_in_progress_does_not_count(self):
+        from gaffer.schedule import gameweeks_played
+        fx = self.fixtures({1: [True] * 6 + [False] * 4})
+        assert gameweeks_played([], fx) == 0
+
+    def test_before_a_ball_is_kicked_none_have_played(self):
+        from gaffer.schedule import gameweeks_played
+        fx = self.fixtures({1: [False] * 10, 2: [False] * 10})
+        assert gameweeks_played([], fx) == 0
+
+    def test_either_finished_flag_counts_as_played(self):
+        from gaffer.schedule import _is_played
+        assert _is_played({"finished": True})
+        assert _is_played({"finished_provisional": True})
+        assert not _is_played({"finished": False, "finished_provisional": False})
+        assert not _is_played({})

@@ -47,6 +47,34 @@ def _parse(value: str) -> datetime:
     return datetime.fromisoformat(value.replace("Z", "+00:00"))
 
 
+def _is_played(fixture: dict) -> bool:
+    """Whether a fixture's football is over.
+
+    FPL sets `finished_provisional` the moment a match ends; the `finished`
+    flag lags by a day or two while bonus points are confirmed. Waiting for the
+    slow flag meant the model treated a fully-played gameweek as not-yet-played
+    — it ran GW2's projections on nothing but last season while GW1 sat on the
+    same page under the Review tab.
+    """
+    return bool(fixture.get("finished") or fixture.get("finished_provisional"))
+
+
+def gameweeks_played(events: list[dict], fixtures: list[dict]) -> int:
+    """How many gameweeks are done, by the football rather than the flag.
+
+    A gameweek counts once every one of its fixtures has been played. Counting
+    part-played weeks would fold half a round of results into the model, so a
+    gameweek in progress does not count until its last match is over.
+    """
+    by_gameweek: dict[int, list[dict]] = {}
+    for fixture in fixtures:
+        gw = fixture.get("event")
+        if gw is not None:
+            by_gameweek.setdefault(gw, []).append(fixture)
+    return sum(1 for group in by_gameweek.values()
+               if group and all(_is_played(f) for f in group))
+
+
 def next_deadline(events: list[dict], now: datetime | None = None) -> tuple[int, datetime] | None:
     """The next gameweek still open, as (gameweek, deadline)."""
     now = now or datetime.now(timezone.utc)

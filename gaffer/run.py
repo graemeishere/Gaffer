@@ -16,7 +16,7 @@ from gaffer.league import (advise, advise_match, compare_squads, effective_owner
                            fixture_for, is_head_to_head, read_league, read_league_any,
                            read_matches, simulate_league, simulate_match)
 from gaffer.optimise import best_lineup, evaluate_chips, evaluate_transfers, pick_squad
-from gaffer.schedule import work_due
+from gaffer.schedule import gameweeks_played, work_due
 from gaffer.publish import write_json, write_lastman, write_report
 from gaffer.review import review_gameweek, summarise
 import requests
@@ -163,7 +163,7 @@ def run(
     # come from the store: bootstrap-static zeroes every player's minutes and
     # starts at the rollover, which is what silently emptied the model on the
     # morning of GW1 and left a goalkeeper captained on 0.2 expected points.
-    games_played = sum(1 for e in events if e.get("finished"))
+    games_played = gameweeks_played(events, fixtures)
     with Store() as store:
         backfill_history(client, store, [p["id"] for p in bootstrap["elements"]], log=log)
         history = store.latest_history()
@@ -384,7 +384,7 @@ def run(
                             horizon=horizon, strength=strength, squad=squad,
                             lineup=lineup, transfers=transfers, chips=chips,
                             league=league, due=due, manager=manager, lms=lms,
-                            review=review)
+                            review=review, games_played=games_played)
     json_path = write_json(payload)
     html_path = write_report(payload)
     lastman_path = write_lastman(payload)

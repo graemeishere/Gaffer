@@ -131,18 +131,15 @@ class GameweekReview:
         if not self.league_scores:
             return "No league to compare against this week."
         gap = self.points - self.league_mean
-        sigma = self.deviations_from_mean
         where = (f"{self.points} points, {self.league_position} of {self.league_size}, "
-                 f"{gap:+.1f} against a league mean of {self.league_mean:.1f}")
+                 f"{gap:+.1f} against a league average of {self.league_mean:.1f}")
         if self.within_normal_variation:
-            return (f"{where}. The league's scores ranged {min(self.league_scores)} to "
-                    f"{max(self.league_scores)} this week — a spread of "
-                    f"{self.league_spread:.1f} points — so at {sigma:+.2f} standard "
-                    f"deviations this is an ordinary week, not a verdict on the picks.")
+            return (f"{where}. The league's scores ran from {min(self.league_scores)} to "
+                    f"{max(self.league_scores)} this week, so a gap this size is an "
+                    f"ordinary week — not a verdict on the picks.")
         direction = "ahead of" if gap > 0 else "behind"
-        return (f"{where}. That is {abs(sigma):.2f} standard deviations {direction} the "
-                f"field, which is beyond what a normal week produces and worth "
-                f"understanding rather than shrugging off.")
+        return (f"{where}. That is further {direction} the field than a normal week "
+                f"produces, so it is worth understanding rather than shrugging off.")
 
 
 def review_gameweek(gameweek: int, picks: dict, live: dict, bootstrap: dict,
@@ -229,6 +226,7 @@ def summarise(review: GameweekReview) -> list[str]:
     diffs = review.differentials
     if diffs:
         got = sum(p.points for p in diffs)
-        out.append(f"    {len(diffs)} differential(s) under "
+        noun = "differential" if len(diffs) == 1 else "differentials"
+        out.append(f"    {len(diffs)} {noun} under "
                    f"{DIFFERENTIAL_OWNERSHIP:.0f}% ownership returned {got}")
     return out

@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
+from gaffer.schedule import _is_played
 
 # How many matches of real results it takes for the fit to outweigh the prior.
 PRIOR_MATCHES = 8
@@ -148,7 +149,7 @@ def _results(fixtures: list[dict]) -> list[tuple[int, int, int, int]]:
     return [
         (f["team_h"], f["team_a"], f["team_h_score"], f["team_a_score"])
         for f in fixtures
-        if f.get("finished") and f.get("team_h_score") is not None and f.get("team_a_score") is not None
+        if _is_played(f) and f.get("team_h_score") is not None and f.get("team_a_score") is not None
     ]
 
 
