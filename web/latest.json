@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated": "2026-08-25T04:35:48+00:00",
+  "generated": "2026-08-25T04:39:42+00:00",
   "gameweek": 2,
   "deadline": "2026-08-28T17:30:00Z",
   "horizon": 6,
@@ -56,7 +56,7 @@
    "team": "MUN",
    "position": "MID",
    "price": 12.0,
-   "owned": 50.1,
+   "owned": 50.0,
    "xp": [
     4.98,
     5.84,
@@ -4632,7 +4632,7 @@
    "team": "MUN",
    "position": "DEF",
    "price": 4.5,
-   "owned": 20.5,
+   "owned": 20.4,
    "xp": [
     2.26,
     2.71,
@@ -20444,7 +20444,7 @@
  "schedule": {
   "phase": "idle",
   "reason": "85h to the GW2 deadline \u2014 refresh prices and injuries only",
-  "hours_remaining": 84.9
+  "hours_remaining": 84.8
  },
  "manager": {
   "entry_id": 6674798,
