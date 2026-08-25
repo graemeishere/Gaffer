@@ -49,9 +49,12 @@ def score_gameweek(store: Store, gameweek: int, *, deadline: str | None = None) 
     if len(rows) < 10:
         return None
 
-    predicted = [r[1] for r in rows]
-    actual = [float(r[2]) for r in rows]
-    minutes = [r[3] or 0 for r in rows]
+    # Read by name, not position. These rows are sqlite3.Row, and reading them
+    # positionally meant that appending one column to the query silently shifted
+    # every number here onto the wrong field.
+    predicted = [r["xp"] for r in rows]
+    actual = [float(r["points"]) for r in rows]
+    minutes = [r["minutes"] or 0 for r in rows]
 
     errors = [p - a for p, a in zip(predicted, actual)]
     played = [(p, a) for p, a, m in zip(predicted, actual, minutes) if m >= PLAYED_MINUTES]

@@ -105,10 +105,12 @@ header{display:flex;flex-direction:column;gap:.5rem;}
 /* Tabs, progressively enhanced. Without JavaScript the nav is hidden and every
    panel stays open, so the page still carries all seven sections — for a
    printout, for Ctrl+F, and for anyone whose scripts did not load. */
-.tabs{display:none;gap:6px;}
+/* Six labels will not sit across a 390px phone at a legible size, so the bar
+   wraps to two rows there and straightens out once there is room. */
+.tabs{display:none;gap:6px;flex-wrap:wrap;}
 .js-tabs .tabs{display:flex;}
 .tabs button{
-  flex:1;padding:9px 2px;border-radius:6px;border:1.5px solid var(--ink);
+  flex:1 1 28%;padding:9px 2px;border-radius:6px;border:1.5px solid var(--ink);
   background:var(--paper2);color:var(--ink);
   font-family:Archivo,"Helvetica Neue",Arial,sans-serif;
   font-size:10px;font-weight:600;letter-spacing:.02em;
@@ -116,6 +118,7 @@ header{display:flex;flex-direction:column;gap:.5rem;}
 }
 .tabs button[aria-selected="true"]{background:var(--ink);color:var(--paper);box-shadow:none;}
 .tabs button:focus-visible{outline:2px solid var(--red);outline-offset:2px;}
+@media (min-width:600px){.tabs{flex-wrap:nowrap;}.tabs button{flex:1 1 auto;}}
 .tab{display:flex;flex-direction:column;gap:1.8rem;}
 .js-tabs .tab{display:none;}
 .js-tabs .tab.on{display:flex;}

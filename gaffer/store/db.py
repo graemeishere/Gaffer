@@ -414,6 +414,22 @@ class Store:
             "SELECT DISTINCT a.gameweek FROM actual a "
             "JOIN prediction p ON p.target_gameweek = a.gameweek ORDER BY a.gameweek")]
 
+    def predictions_for(self, gameweek: int, *, before: str | None = None) -> dict[int, float]:
+        """The last pre-deadline projection per player, without needing results.
+
+        `prediction_vs_actual` joins onto `actual`, so it is empty until FPL
+        marks a gameweek finished and the results are pulled in — which lags the
+        football by days. The weekly review runs as soon as the squads are
+        public and reads the outcomes from the live endpoint itself, so it needs
+        the prediction half alone.
+        """
+        cutoff = before or "9999"
+        return {r["player_id"]: r["xp"] for r in self.conn.execute(
+            "SELECT player_id, xp FROM prediction WHERE target_gameweek = ? "
+            "AND made_at = (SELECT MAX(made_at) FROM prediction "
+            "               WHERE target_gameweek = ? AND made_at < ?)",
+            (gameweek, gameweek, cutoff))}
+
     def prediction_vs_actual(self, gameweek: int, *, before: str | None = None) -> list[tuple]:
         """Paired (player, predicted, actual, minutes) for one gameweek.
 
@@ -422,8 +438,11 @@ class Store:
         homework after seeing the answers.
         """
         cutoff = before or "9999"
+        # player_id is appended, never inserted: gaffer/score.py reads this tuple
+        # positionally and would silently take the wrong columns.
         return list(self.conn.execute(
-            "SELECT pl.web_name, p.xp, a.points, a.minutes, p.price, pl.position "
+            "SELECT pl.web_name, p.xp, a.points, a.minutes, p.price, pl.position, "
+            "       p.player_id "
             "FROM prediction p "
             "JOIN actual a ON a.gameweek = p.target_gameweek AND a.player_id = p.player_id "
             "JOIN player pl ON pl.id = p.player_id "

@@ -62,6 +62,7 @@ def build_payload(
     due=None,
     manager=None,
     lms=None,
+    review=None,
 ) -> dict:
     """Assemble the JSON contract. Phase 0 fills `meta`, `players` and `fixtures`;
     `lineup`, `transfers` and `chips` arrive with the optimiser in Phase 2."""
@@ -112,6 +113,9 @@ def build_payload(
             "hours_remaining": round(due.hours_remaining, 1),
         } if due else None,
         "manager": manager,
+        # Last week's post-mortem. Null before any deadline has passed, which
+        # the page distinguishes from "reviewed and there was nothing to say".
+        "review": review,
     }
 
 
@@ -181,6 +185,74 @@ def _fixture_table(payload: dict, reverse: bool, limit: int = 5) -> str:
         )
         out.append(f"<tr><td>{team}</td><td class='num'>{mean:.2f}</td><td>{chips}</td></tr>")
     return "\n".join(out)
+
+
+def _review_block(payload: dict) -> str:
+    """Last week's post-mortem.
+
+    The spread carries the weight here. GW1 finished four points under the
+    league mean and read like a model failure; the league's scores that week
+    ranged 23 to 74, so it was a third of a standard deviation and meant
+    nothing. A section that reported the gap without the spread would send the
+    reader after a model that was working.
+    """
+    r = payload.get("review")
+    if not r:
+        return ("<p>No gameweek to review yet. This fills in once a deadline has "
+                "passed and the squads that were actually fielded become public.</p>")
+
+    flag = ("<div class='banner'>These are provisional numbers — the Fantasy "
+            "Premier League has not settled this gameweek's bonus points yet, so "
+            "the totals can still move.</div>") if r.get("provisional") else ""
+
+    verdict = ("<div class='mock-h' style='margin-bottom:.5rem'>"
+               f"GW{r['gameweek']} — {'an ordinary week' if r.get('within_normal_variation') else 'a real outlier'}"
+               "</div>")
+
+    stats = (
+        "<div class='stats'>"
+        f"<div class='stat'><b>{r['points']}</b><span>points scored</span></div>"
+        f"<div class='stat'><b>{r['league_position']} of {r['league_size']}</b>"
+        f"<span>in your league</span></div>"
+        f"<div class='stat'><b>{r['league_mean']}</b><span>league average</span></div>"
+        f"<div class='stat'><b>&plusmn;{r['league_spread']}</b>"
+        f"<span>spread of scores &mdash; how far apart a normal week puts you</span></div>"
+        "</div>"
+    )
+
+    rows = [f"<p>{r['verdict']}</p>"]
+
+    if r.get("xi_projected"):
+        rows.append(
+            "<div class='opt'><div class='opt-l'><b>Your eleven</b>"
+            f"<span>returned {r['xi_points']} against {r['xi_projected']} projected</span>"
+            f"</div><div class='opt-r'>{r['xi_points']}</div></div>")
+
+    if r.get("captain"):
+        agreed = ("the model's own pick" if r.get("captain_agreed")
+                  else "not what the model would have chosen")
+        cost = (f" — {r['best_starter']} on {r['best_starter_points']} was the best in "
+                f"your eleven" if r.get("captain_cost") else "")
+        rows.append(
+            f"<div class='opt'><div class='opt-l'><b>Captain: {r['captain']}</b>"
+            f"<span>{r['captain_points']} points, {agreed}{cost}</span></div>"
+            f"<div class='opt-r'>{r['captain_points'] * 2}</div></div>")
+
+    rows.append(
+        "<div class='opt'><div class='opt-l'><b>Bench</b>"
+        f"<span>{r['points_on_bench']} points left on it"
+        + (f", {r['auto_subs']} auto-sub(s) fired" if r.get("auto_subs") else "")
+        + f"</span></div><div class='opt-r'>{r['points_on_bench']}</div></div>")
+
+    diffs = r.get("differentials") or []
+    if diffs:
+        got = sum(d["points"] for d in diffs)
+        names = ", ".join(f"{d['name']} ({d['ownership']}%, {d['points']})" for d in diffs)
+        rows.append(
+            f"<div class='opt'><div class='opt-l'><b>{len(diffs)} differential(s)</b>"
+            f"<span>{names}</span></div><div class='opt-r'>{got}</div></div>")
+
+    return flag + verdict + stats + f"<div class='panel'>{''.join(rows)}</div>"
 
 
 def _pitch(payload: dict) -> str:
@@ -502,6 +574,7 @@ def write_report(payload: dict, path: Path | None = None) -> Path:
         "{{EASY_FIXTURES}}": _fixture_table(payload, reverse=False),
         "{{HARD_FIXTURES}}": _fixture_table(payload, reverse=True),
         "{{PITCH}}": _pitch(payload),
+        "{{REVIEW}}": _review_block(payload),
         "{{CHIPS}}": _chip_rows(payload),
         "{{LEAGUE}}": _league_block(payload),
         "{{PHASE}}": (payload.get("schedule") or {}).get("phase", "—"),

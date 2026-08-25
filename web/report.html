@@ -112,10 +112,12 @@ header{display:flex;flex-direction:column;gap:.5rem;}
 /* Tabs, progressively enhanced. Without JavaScript the nav is hidden and every
    panel stays open, so the page still carries all seven sections — for a
    printout, for Ctrl+F, and for anyone whose scripts did not load. */
-.tabs{display:none;gap:6px;}
+/* Six labels will not sit across a 390px phone at a legible size, so the bar
+   wraps to two rows there and straightens out once there is room. */
+.tabs{display:none;gap:6px;flex-wrap:wrap;}
 .js-tabs .tabs{display:flex;}
 .tabs button{
-  flex:1;padding:9px 2px;border-radius:6px;border:1.5px solid var(--ink);
+  flex:1 1 28%;padding:9px 2px;border-radius:6px;border:1.5px solid var(--ink);
   background:var(--paper2);color:var(--ink);
   font-family:Archivo,"Helvetica Neue",Arial,sans-serif;
   font-size:10px;font-weight:600;letter-spacing:.02em;
@@ -123,6 +125,7 @@ header{display:flex;flex-direction:column;gap:.5rem;}
 }
 .tabs button[aria-selected="true"]{background:var(--ink);color:var(--paper);box-shadow:none;}
 .tabs button:focus-visible{outline:2px solid var(--red);outline-offset:2px;}
+@media (min-width:600px){.tabs{flex-wrap:nowrap;}.tabs button{flex:1 1 auto;}}
 .tab{display:flex;flex-direction:column;gap:1.8rem;}
 .js-tabs .tab{display:none;}
 .js-tabs .tab.on{display:flex;}
@@ -295,9 +298,9 @@ footer{
   <h1>Gameweek 2 — pre-season board</h1>
   <div class="bar">
     <span>DEADLINE Fri 28 Aug, 17:30 UTC</span>
-    <span>86h REMAINING</span>
+    <span>85h REMAINING</span>
     <span>HORIZON 6 GW</span>
-    <span>GENERATED 25 Aug 2026, 03:55 UTC</span>
+    <span>GENERATED 25 Aug 2026, 04:35 UTC</span>
     <span>PHASE idle</span>
     <span><a href="lastman.html">LAST MAN STANDING &rarr;</a></span>
   </div>
@@ -310,6 +313,7 @@ footer{
   <button type="button" data-tab="transfers" aria-selected="false">TRANSFERS</button>
   <button type="button" data-tab="chips" aria-selected="false">CHIPS</button>
   <button type="button" data-tab="league" aria-selected="false">LEAGUE</button>
+  <button type="button" data-tab="review" aria-selected="false">REVIEW</button>
   <button type="button" data-tab="tables" aria-selected="false">TABLES</button>
 </nav>
 
@@ -362,6 +366,16 @@ footer{
   <div class='stats' style='margin-bottom:.5rem;'><div class='stat'><b>74%</b><span>chance of beating johnmginnyourarse</span></div><div class='stat'><b>59 v 48</b><span>projected gameweek points</span></div><div class='stat'><b>2.23</b><span>of 3 league points expected</span></div><div class='stat'><b>2</b><span>shared players — cannot change the result</span></div></div><div class='panel' style='margin-bottom:.6rem;'><div class='opt'><div class='opt-l'><b>Win</b><span>3 league points</span></div><div class='opt-r pos'>74%</div></div><div class='opt'><div class='opt-l'><b>Draw</b><span>1 league point</span></div><div class='opt-r neu'>2%</div></div><div class='opt'><div class='opt-l'><b>Loss</b><span>nothing</span></div><div class='opt-r neg'>24%</div></div></div><div class='banner'><strong>Protect.</strong> You are the favourite at 74%. Margin pays nothing here, so there is no reward for chasing a bigger score — only the risk of handing back a win you should already have. Match their picks where you reasonably can.</div>
 </section>
 
+</div>
+
+<div class="tab" id="review">
+<section>
+  <h2>Last week</h2>
+  <p>What actually happened, against what we said would happen. The spread of
+  scores is the number to read first — a few points either side of the league
+  average is what an ordinary week looks like, not a verdict on the picks.</p>
+  <div class='banner'>These are provisional numbers — the Fantasy Premier League has not settled this gameweek's bonus points yet, so the totals can still move.</div><div class='mock-h' style='margin-bottom:.5rem'>GW1 — an ordinary week</div><div class='stats'><div class='stat'><b>44</b><span>points scored</span></div><div class='stat'><b>12 of 15</b><span>in your league</span></div><div class='stat'><b>49.1</b><span>league average</span></div><div class='stat'><b>&plusmn;13.6</b><span>spread of scores &mdash; how far apart a normal week puts you</span></div></div><div class='panel'><p>44 points, 12 of 15, -5.1 against a league mean of 49.1. The league's scores ranged 23 to 74 this week — a spread of 13.6 points — so at -0.38 standard deviations this is an ordinary week, not a verdict on the picks.</p><div class='opt'><div class='opt-l'><b>Your eleven</b><span>returned 42 against 46.2 projected</span></div><div class='opt-r'>42</div></div><div class='opt'><div class='opt-l'><b>Captain: Haaland</b><span>2 points, the model's own pick — João Pedro on 11 was the best in your eleven</span></div><div class='opt-r'>4</div></div><div class='opt'><div class='opt-l'><b>Bench</b><span>5 points left on it</span></div><div class='opt-r'>5</div></div><div class='opt'><div class='opt-l'><b>4 differential(s)</b><span>Senesi (8.0%, 3), Enzo (5.1%, 1), Anderson (7.0%, 2), Schade (3.6%, 3)</span></div><div class='opt-r'>9</div></div></div>
+</section>
 </div>
 
 <div class="tab" id="tables">
@@ -513,8 +527,8 @@ footer{
 </div>
 
 <footer>
-  Generated by gaffer 25 Aug 2026, 03:55 UTC from the public Fantasy Premier League API.<br>
-  Phase 4 — 86h to the GW2 deadline — refresh prices and injuries only
+  Generated by gaffer 25 Aug 2026, 04:35 UTC from the public Fantasy Premier League API.<br>
+  Phase 4 — 85h to the GW2 deadline — refresh prices and injuries only
 </footer>
 
 <script>

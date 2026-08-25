@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated": "2026-08-25T03:55:35+00:00",
+  "generated": "2026-08-25T04:35:48+00:00",
   "gameweek": 2,
   "deadline": "2026-08-28T17:30:00Z",
   "horizon": 6,
@@ -376,7 +376,7 @@
    "team": "BRE",
    "position": "FWD",
    "price": 8.0,
-   "owned": 17.2,
+   "owned": 17.1,
    "xp": [
     4.29,
     3.81,
@@ -1432,7 +1432,7 @@
    "team": "MUN",
    "position": "MID",
    "price": 8.0,
-   "owned": 37.3,
+   "owned": 37.2,
    "xp": [
     3.32,
     3.78,
@@ -2392,7 +2392,7 @@
    "team": "CRY",
    "position": "DEF",
    "price": 5.5,
-   "owned": 9.2,
+   "owned": 9.1,
    "xp": [
     3.0,
     3.46,
@@ -2648,7 +2648,7 @@
    "team": "MCI",
    "position": "DEF",
    "price": 6.5,
-   "owned": 21.3,
+   "owned": 21.2,
    "xp": [
     3.48,
     2.94,
@@ -5752,7 +5752,7 @@
    "team": "ARS",
    "position": "DEF",
    "price": 5.5,
-   "owned": 1.7,
+   "owned": 1.6,
    "xp": [
     2.17,
     1.86,
@@ -6104,7 +6104,7 @@
    "team": "TOT",
    "position": "DEF",
    "price": 5.5,
-   "owned": 14.5,
+   "owned": 14.4,
    "xp": [
     1.71,
     2.04,
@@ -20443,8 +20443,8 @@
  },
  "schedule": {
   "phase": "idle",
-  "reason": "86h to the GW2 deadline \u2014 refresh prices and injuries only",
-  "hours_remaining": 85.6
+  "reason": "85h to the GW2 deadline \u2014 refresh prices and injuries only",
+  "hours_remaining": 84.9
  },
  "manager": {
   "entry_id": 6674798,
@@ -20475,5 +20475,186 @@
    ],
    "gameweek": 1
   }
+ },
+ "review": {
+  "gameweek": 1,
+  "provisional": true,
+  "points": 44,
+  "verdict": "44 points, 12 of 15, -5.1 against a league mean of 49.1. The league's scores ranged 23 to 74 this week \u2014 a spread of 13.6 points \u2014 so at -0.38 standard deviations this is an ordinary week, not a verdict on the picks.",
+  "league_position": 12,
+  "league_size": 15,
+  "league_mean": 49.1,
+  "league_spread": 13.6,
+  "deviations": -0.38,
+  "within_normal_variation": true,
+  "xi_points": 42,
+  "xi_projected": 46.2,
+  "points_on_bench": 5,
+  "auto_subs": 0,
+  "captain": "Haaland",
+  "captain_points": 2,
+  "captain_agreed": true,
+  "captain_cost": 9,
+  "best_starter": "Jo\u00e3o Pedro",
+  "best_starter_points": 11,
+  "differentials": [
+   {
+    "name": "Senesi",
+    "ownership": 8.0,
+    "points": 3
+   },
+   {
+    "name": "Enzo",
+    "ownership": 5.1,
+    "points": 1
+   },
+   {
+    "name": "Anderson",
+    "ownership": 7.0,
+    "points": 2
+   },
+   {
+    "name": "Schade",
+    "ownership": 3.6,
+    "points": 3
+   }
+  ],
+  "picks": [
+   {
+    "name": "Verbruggen",
+    "position": "GKP",
+    "points": 6,
+    "multiplier": 1,
+    "minutes": 90,
+    "ownership": 21.6,
+    "projected": 3.31
+   },
+   {
+    "name": "Gu\u00e9hi",
+    "position": "DEF",
+    "points": 10,
+    "multiplier": 1,
+    "minutes": 90,
+    "ownership": 18.2,
+    "projected": 4.17
+   },
+   {
+    "name": "Virgil",
+    "position": "DEF",
+    "points": 2,
+    "multiplier": 1,
+    "minutes": 90,
+    "ownership": 19.6,
+    "projected": 3.55
+   },
+   {
+    "name": "Senesi",
+    "position": "DEF",
+    "points": 3,
+    "multiplier": 1,
+    "minutes": 90,
+    "ownership": 8.0,
+    "projected": 3.22
+   },
+   {
+    "name": "Enzo",
+    "position": "MID",
+    "points": 1,
+    "multiplier": 1,
+    "minutes": 25,
+    "ownership": 5.1,
+    "projected": 4.33
+   },
+   {
+    "name": "Anderson",
+    "position": "MID",
+    "points": 2,
+    "multiplier": 1,
+    "minutes": 62,
+    "ownership": 7.0,
+    "projected": 4.33
+   },
+   {
+    "name": "Mbeumo",
+    "position": "MID",
+    "points": 2,
+    "multiplier": 1,
+    "minutes": 90,
+    "ownership": 37.2,
+    "projected": 4.25
+   },
+   {
+    "name": "Schade",
+    "position": "MID",
+    "points": 3,
+    "multiplier": 1,
+    "minutes": 90,
+    "ownership": 3.6,
+    "projected": 3.79
+   },
+   {
+    "name": "Thiago",
+    "position": "FWD",
+    "points": 0,
+    "multiplier": 1,
+    "minutes": 82,
+    "ownership": 17.1,
+    "projected": 4.32
+   },
+   {
+    "name": "Haaland",
+    "position": "FWD",
+    "points": 2,
+    "multiplier": 2,
+    "minutes": 90,
+    "ownership": 68.7,
+    "projected": 7.03
+   },
+   {
+    "name": "Jo\u00e3o Pedro",
+    "position": "FWD",
+    "points": 11,
+    "multiplier": 1,
+    "minutes": 90,
+    "ownership": 65.0,
+    "projected": 3.93
+   },
+   {
+    "name": "Dubravka",
+    "position": "GKP",
+    "points": 0,
+    "multiplier": 0,
+    "minutes": 0,
+    "ownership": 19.1,
+    "projected": 3.01
+   },
+   {
+    "name": "Yarmoliuk",
+    "position": "MID",
+    "points": 1,
+    "multiplier": 0,
+    "minutes": 23,
+    "ownership": 1.2,
+    "projected": 2.33
+   },
+   {
+    "name": "Richards",
+    "position": "DEF",
+    "points": 3,
+    "multiplier": 0,
+    "minutes": 90,
+    "ownership": 0.8,
+    "projected": 2.87
+   },
+   {
+    "name": "Mitchell",
+    "position": "DEF",
+    "points": 1,
+    "multiplier": 0,
+    "minutes": 90,
+    "ownership": 6.0,
+    "projected": 2.57
+   }
+  ]
  }
 }

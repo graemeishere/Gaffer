@@ -24,6 +24,11 @@ class Rival:
     total_points: int
     squad: list[int] = field(default_factory=list)
     captain: int = 0
+    # This gameweek's result, which arrives free with the picks call — the same
+    # response carries an `entry_history` block. Fetching it separately would be
+    # a second round trip per rival for data already in hand.
+    gameweek_points: int = 0
+    points_on_bench: int = 0
 
     @property
     def has_squad(self) -> bool:
@@ -36,6 +41,7 @@ def read_league(
     client: FplClient | None = None,
     *,
     exclude_entry: int | None = None,
+    standings: dict | None = None,
 ) -> list[Rival]:
     """Every rival in the league, with the fifteen they fielded in `gameweek`.
 
@@ -45,7 +51,10 @@ def read_league(
     the field you are being measured against.
     """
     client = client or FplClient()
-    standings = client.league_standings(league_id)
+    # A caller who already knows the league's kind can hand the standings in.
+    # The classic endpoint returns 404 for a head-to-head league, so fetching
+    # here unconditionally would drop the whole field for one.
+    standings = standings if standings is not None else client.league_standings(league_id)
     rows = standings.get("standings", {}).get("results", [])
 
     rivals = [
@@ -68,6 +77,9 @@ def read_league(
         rival.squad = [p["element"] for p in picks.get("picks", [])]
         rival.captain = next(
             (p["element"] for p in picks.get("picks", []) if p.get("is_captain")), 0)
+        history = picks.get("entry_history") or {}
+        rival.gameweek_points = history.get("points") or 0
+        rival.points_on_bench = history.get("points_on_bench") or 0
         return rival
 
     if not rivals:

@@ -87,13 +87,13 @@ class TestWhichPredictionCounts:
 
         # Scoring with a cutoff at the second run must see the first run's 2.0s.
         paired = store.prediction_vs_actual(1, before=cutoff)
-        assert {p for _, p, _, _, _, _ in paired} == {2.0}
+        assert {r["xp"] for r in paired} == {2.0}
 
     def test_without_a_cutoff_the_latest_prediction_is_used(self, store):
         store.record_predictions([row(i, [2.0]) for i in range(1, 21)], first_gameweek=1)
         store.record_actuals(1, live({i: 5 for i in range(1, 21)}))
         paired = store.prediction_vs_actual(1)
-        assert paired and {p for _, p, _, _, _, _ in paired} == {2.0}
+        assert paired and {r["xp"] for r in paired} == {2.0}
 
 
 class TestScoring:
@@ -215,3 +215,35 @@ class TestPruning:
         store.record_predictions([row(1, [4.0, 5.0, 6.0])], first_gameweek=1)
         store.prune_predictions(FAR_FUTURE)
         assert store.conn.execute("SELECT COUNT(*) FROM prediction").fetchone()[0] == 3
+
+
+class TestTheQueryContractWithReview:
+    """`prediction_vs_actual` feeds both gaffer.score and gaffer.review.
+
+    Adding player_id for the review broke two tests here that unpacked the row
+    by arity, which is how a positional read fails: silently taking the wrong
+    column, or loudly taking none. Both readers now go by name, and this holds
+    that.
+    """
+
+    def test_rows_are_addressable_by_name(self, tmp_path):
+        from gaffer.store import Store
+
+        with Store(tmp_path / "t.db") as store:
+            store.conn.execute("INSERT INTO team (id, name, short_name) "
+                               "VALUES (1, 'Team', 'TEA')")
+            store.conn.execute("INSERT INTO player (id, web_name, team_id, position) "
+                               "VALUES (1, 'Player', 1, 'MID')")
+            store.conn.execute(
+                "INSERT INTO prediction (made_at, target_gameweek, player_id, "
+                " horizon_index, xp, price) VALUES ('2026-01-01', 1, 1, 0, 4.5, 7.0)")
+            store.conn.execute(
+                "INSERT INTO actual (gameweek, player_id, points, minutes) "
+                "VALUES (1, 1, 9, 90)")
+            store.conn.commit()
+            row = store.prediction_vs_actual(1)[0]
+
+        assert row["xp"] == 4.5
+        assert row["points"] == 9
+        assert row["minutes"] == 90
+        assert row["player_id"] == 1, "the review joins on this"

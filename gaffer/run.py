@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import sys
 import time
+from datetime import datetime, timezone
 
 from gaffer import config
 from gaffer.ingest import FplClient
@@ -17,6 +18,7 @@ from gaffer.league import (advise, advise_match, compare_squads, effective_owner
 from gaffer.optimise import best_lineup, evaluate_chips, evaluate_transfers, pick_squad
 from gaffer.schedule import work_due
 from gaffer.publish import write_json, write_lastman, write_report
+from gaffer.review import review_gameweek, summarise
 import requests
 
 from gaffer.ingest.fpl import FplError, backfill_history
@@ -37,6 +39,43 @@ EVIDENCE_BROKEN_REASON = (
     "squad, captain and transfer advice are withheld until the numbers mean "
     "something rather than published as a guess."
 )
+
+
+def _review_payload(result) -> dict:
+    """Flatten the review for `latest.json`, which stays the page's contract."""
+    return {
+        "gameweek": result.gameweek,
+        "provisional": result.provisional,
+        "points": result.points,
+        "verdict": result.verdict,
+        "league_position": result.league_position,
+        "league_size": result.league_size,
+        "league_mean": round(result.league_mean, 1),
+        "league_spread": round(result.league_spread, 1),
+        "deviations": round(result.deviations_from_mean, 2),
+        "within_normal_variation": result.within_normal_variation,
+        "xi_points": result.xi_points,
+        "xi_projected": round(result.xi_projected, 1),
+        "points_on_bench": result.points_on_bench,
+        "auto_subs": result.auto_subs,
+        "captain": result.captain.name if result.captain else "",
+        "captain_points": result.captain.points if result.captain else 0,
+        "captain_agreed": result.captain_agreed,
+        "captain_cost": result.captain_cost,
+        "best_starter": result.best_starter.name if result.best_starter else "",
+        "best_starter_points": result.best_starter.points if result.best_starter else 0,
+        "differentials": [
+            {"name": p.name, "ownership": round(p.ownership, 1), "points": p.points}
+            for p in result.differentials
+        ],
+        "picks": [
+            {"name": p.name, "position": p.position, "points": p.points,
+             "multiplier": p.multiplier, "minutes": p.minutes,
+             "ownership": round(p.ownership, 1),
+             "projected": round(p.projected, 2) if p.projected is not None else None}
+            for p in result.picks
+        ],
+    }
 
 
 def run(
@@ -295,12 +334,57 @@ def run(
         except Exception as exc:
             log(f"    ! could not read league {league_id}: {exc}")
 
+    review = None
+    # Reviewable once the deadline has passed, which is when squads become
+    # public — not once FPL marks the gameweek finished, which lags by days.
+    # Events carry no `started` flag; the deadline is the signal.
+    now = datetime.now(timezone.utc)
+    last_finished = max(
+        (e["id"] for e in events
+         if e.get("deadline_time")
+         and datetime.fromisoformat(e["deadline_time"].replace("Z", "+00:00")) < now),
+        default=0)
+    if entry_id and last_finished:
+        log(f"  reviewing GW{last_finished} …")
+        try:
+            event = next(e for e in events if e["id"] == last_finished)
+            past_picks = client.entry_picks(entry_id, last_finished)
+            live_stats = {e["id"]: e["stats"]
+                          for e in client.event_live(last_finished)["elements"]}
+            field = []
+            if league_id:
+                try:
+                    past_standings, _ = read_league_any(league_id, client)
+                    field = read_league(league_id, last_finished, client,
+                                        exclude_entry=entry_id,
+                                        standings=past_standings)
+                except Exception:
+                    # A league we cannot read costs the comparison, not the review.
+                    field = []
+            with Store() as store:
+                logged = store.predictions_for(last_finished)
+            held = [pk["element"] for pk in past_picks.get("picks", [])]
+            model_captain = max(held, key=lambda i: logged.get(i, 0.0), default=None) \
+                if logged else None
+            result = review_gameweek(
+                last_finished, past_picks, live_stats, bootstrap, rivals=field,
+                projections=logged, model_captain=model_captain,
+                # Bonus is not settled until FPL checks the data, and a
+                # provisional number reported as final is a lie by omission.
+                provisional=not event.get("data_checked"))
+            review = _review_payload(result)
+            for line in summarise(result):
+                log(line)
+        except (FplError, requests.RequestException, KeyError, ValueError) as exc:
+            log(f"    could not review GW{last_finished}: {exc.__class__.__name__}")
+
     from gaffer.publish.render import build_payload
 
     payload = build_payload(scores=scores, bootstrap=bootstrap, fixture_runs=runs,
                             horizon=horizon, strength=strength, squad=squad,
                             lineup=lineup, transfers=transfers, chips=chips,
-                            league=league, due=due, manager=manager, lms=lms)
+                            league=league, due=due, manager=manager, lms=lms,
+                            review=review)
     json_path = write_json(payload)
     html_path = write_report(payload)
     lastman_path = write_lastman(payload)

@@ -188,9 +188,9 @@ class TestStructure:
         assert p.errors == []
         assert [t for t, _ in p.stack] == []
 
-    def test_all_seven_sections_are_present(self, tmp_path):
+    def test_all_eight_sections_are_present(self, tmp_path):
         doc = render(tmp_path)
-        assert len(re.findall(r"<h2>", doc)) == 7
+        assert len(re.findall(r"<h2>", doc)) == 8
 
     def test_table_headers_match_their_body_cells(self, tmp_path):
         """A column added to a header without a matching cell silently shifts
@@ -207,7 +207,7 @@ class TestStructure:
 
 
 class TestTabs:
-    """The nav hides four panels in five, so a broken link is invisible."""
+    """The nav hides five panels in six, so a broken link is invisible."""
 
     def test_every_button_points_at_a_panel_that_exists(self, tmp_path):
         doc = render(tmp_path)
@@ -225,6 +225,7 @@ class TestTabs:
         assert p.headings["transfers"] == ["Transfers"]
         assert p.headings["chips"] == ["Chips"]
         assert p.headings["league"] == ["Your mini-league"]
+        assert p.headings["review"] == ["Last week"]
         assert len(p.headings["tables"]) == 3
 
     def test_panels_are_visible_without_javascript(self, tmp_path):
