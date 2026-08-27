@@ -27,6 +27,7 @@
 <nav class="tabs" aria-label="Board sections">
   <button type="button" data-tab="squad" aria-selected="true">SQUAD</button>
   <button type="button" data-tab="squad-changes" aria-selected="false">SQUAD CHANGES</button>
+  <button type="button" data-tab="edit" aria-selected="false">EDIT TEAM</button>
   <button type="button" data-tab="chips" aria-selected="false">CHIPS</button>
   <button type="button" data-tab="league" aria-selected="false">LEAGUE</button>
   <button type="button" data-tab="review" aria-selected="false">REVIEW</button>
@@ -64,6 +65,19 @@
   {{SQUAD_CHANGES}}
 </section>
 
+</div>
+
+<div class="tab" id="edit">
+<section>
+  <h2>Edit your team</h2>
+  <p>The FPL site keeps your team private until each deadline, so the board can
+  only read your last locked side. Record the changes you have made here and it
+  will show — and advise on — the team you are actually going to field. It clears
+  itself once the deadline passes and the real team comes through.</p>
+  <div id="edit-app">
+    <p>Loading your squad…</p>
+  </div>
+</section>
 </div>
 
 <div class="tab" id="chips">
@@ -214,6 +228,143 @@
   });
   window.addEventListener('hashchange', function () { show(location.hash.slice(1)); });
   show(location.hash.slice(1));
+})();
+</script>
+
+<script>
+/* The team editor. The board is static, so this reads the same latest.json the
+   page was built from, lets you record the changes you have made, and posts the
+   result to the write endpoint. Everything it sends is re-validated server-side;
+   nothing here is trusted. It is an enhancement — with no JavaScript the tab
+   simply shows its explanation and the rest of the board is unaffected. */
+(function () {
+  var app = document.getElementById('edit-app');
+  if (!app) return;
+  var POS = ['GKP', 'DEF', 'MID', 'FWD'];
+  var KEY = 'gaffer_write_token';
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+  function fail(msg) { app.innerHTML = '<p>' + esc(msg) + '</p>'; }
+
+  fetch('latest.json', { cache: 'no-store' }).then(function (r) {
+    if (!r.ok) throw new Error('could not read the board data');
+    return r.json();
+  }).then(build).catch(function (e) { fail('Could not load your squad: ' + e.message); });
+
+  function build(data) {
+    var players = {};
+    (data.players || []).forEach(function (p) { players[p.id] = p; });
+    var byPos = {};
+    POS.forEach(function (p) { byPos[p] = []; });
+    (data.players || []).forEach(function (p) {
+      if (byPos[p.position]) byPos[p.position].push(p);
+    });
+    POS.forEach(function (p) {
+      byPos[p].sort(function (a, b) { return b.projected - a.projected; });
+    });
+
+    var mgr = data.manager || {};
+    var actual = mgr.actual || {};
+    var gameweek = (data.meta || {}).gameweek;
+    var starters = actual.starters || [];
+    var bench = actual.bench || [];
+    if (!starters.length && !bench.length) {
+      return fail('No squad to edit yet — link your team (and wait for the first '
+        + 'deadline) and this fills with your side to adjust.');
+    }
+    var current = starters.concat(bench);
+    var onBench = {}; bench.forEach(function (id) { onBench[id] = true; });
+    var captain = actual.captain, vice = actual.vice;
+
+    // One row per squad place, grouped by position so the 2/5/5/3 shape is kept:
+    // a swap can only choose another player of the same position.
+    var rowsByPos = {};
+    POS.forEach(function (p) { rowsByPos[p] = []; });
+    current.forEach(function (id) {
+      var p = players[id]; if (p && rowsByPos[p.position]) rowsByPos[p.position].push(id);
+    });
+
+    var html = '<div class="edit-token"><label>Write key '
+      + '<input type="password" id="edit-key" autocomplete="off" '
+      + 'placeholder="paste once — kept in this browser"></label></div>';
+    html += '<table class="edit-grid"><thead><tr><th>Player</th>'
+      + '<th>Swap for</th><th title="Captain">C</th><th title="Vice-captain">V</th>'
+      + '<th>Bench</th></tr></thead><tbody>';
+    POS.forEach(function (pos) {
+      rowsByPos[pos].forEach(function (id) {
+        var opts = byPos[pos].map(function (p) {
+          return '<option value="' + p.id + '"' + (p.id === id ? ' selected' : '')
+            + '>' + esc(p.name) + ' (£' + p.price.toFixed(1) + ', '
+            + p.projected.toFixed(0) + ')</option>';
+        }).join('');
+        html += '<tr data-pos="' + pos + '">'
+          + '<td>' + esc((players[id] || {}).name || id) + '<i>' + pos + '</i></td>'
+          + '<td><select class="edit-pick">' + opts + '</select></td>'
+          + '<td><input type="radio" name="edit-cap"' + (id === captain ? ' checked' : '') + '></td>'
+          + '<td><input type="radio" name="edit-vice"' + (id === vice ? ' checked' : '') + '></td>'
+          + '<td><input type="checkbox" class="edit-bench"' + (onBench[id] ? ' checked' : '') + '></td>'
+          + '</tr>';
+      });
+    });
+    html += '</tbody></table>';
+    html += '<div class="edit-actions">'
+      + '<button type="button" id="edit-save">Save my team</button>'
+      + '<button type="button" id="edit-clear">Clear override</button>'
+      + '<span id="edit-status"></span></div>';
+    app.innerHTML = html;
+
+    var keyEl = document.getElementById('edit-key');
+    try { keyEl.value = localStorage.getItem(KEY) || ''; } catch (e) {}
+
+    var rows = [].slice.call(app.querySelectorAll('tbody tr'));
+    var status = document.getElementById('edit-status');
+    function say(msg, ok) { status.textContent = msg; status.className = ok ? 'ok' : 'err'; }
+
+    function collect() {
+      var ids = [], caps = null, vices = null, benched = [];
+      rows.forEach(function (tr) {
+        var id = parseInt(tr.querySelector('.edit-pick').value, 10);
+        ids.push(id);
+        if (tr.querySelector('input[name=edit-cap]').checked) caps = id;
+        if (tr.querySelector('input[name=edit-vice]').checked) vices = id;
+        if (tr.querySelector('.edit-bench').checked) benched.push(id);
+      });
+      return { gameweek: gameweek, players: ids, captain: caps, vice: vices, bench: benched };
+    }
+
+    function post(body, done) {
+      var token = keyEl.value.trim();
+      try { localStorage.setItem(KEY, token); } catch (e) {}
+      say('Saving…', true);
+      fetch('api/team', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json',
+                   'Authorization': 'Bearer ' + token },
+        body: JSON.stringify(body)
+      }).then(function (r) { return r.json().then(function (j) { return { s: r.status, j: j }; }); })
+        .then(function (res) {
+          if (res.s === 200) { say(done + ' The board updates in a few seconds — refresh to see it.', true); }
+          else if (res.s === 401) { say('That write key was not accepted.', false); }
+          else if (res.s === 503) { say('Writing is not switched on for this server yet.', false); }
+          else { say('Not saved: ' + (res.j.reason || ('error ' + res.s)), false); }
+        }).catch(function (e) { say('Could not reach the server: ' + e.message, false); });
+    }
+
+    document.getElementById('edit-save').addEventListener('click', function () {
+      var body = collect();
+      if (body.players.length !== 15) return say('Your squad must be 15 players.', false);
+      if (body.bench.length !== 4) return say('Pick exactly 4 to bench.', false);
+      if (!body.captain) return say('Choose a captain.', false);
+      if (!body.vice) return say('Choose a vice-captain.', false);
+      if (body.captain === body.vice) return say('Captain and vice must differ.', false);
+      post(body, 'Saved.');
+    });
+    document.getElementById('edit-clear').addEventListener('click', function () {
+      post({ clear: true }, 'Override cleared — back to your last locked team.');
+    });
+  }
 })();
 </script>
 

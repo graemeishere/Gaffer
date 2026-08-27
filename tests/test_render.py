@@ -188,9 +188,11 @@ class TestStructure:
         assert p.errors == []
         assert [t for t, _ in p.stack] == []
 
-    def test_all_eight_sections_are_present(self, tmp_path):
+    def test_all_nine_sections_are_present(self, tmp_path):
+        # squad, squad-changes, edit, chips, league, review, and the two on the
+        # tables tab — nine <h2> across the panels.
         doc = render(tmp_path)
-        assert len(re.findall(r"<h2>", doc)) == 8
+        assert len(re.findall(r"<h2>", doc)) == 9
 
     def test_table_headers_match_their_body_cells(self, tmp_path):
         """A column added to a header without a matching cell silently shifts
