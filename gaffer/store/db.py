@@ -201,6 +201,19 @@ class Store:
             for s in seasons if s.get("season_name")
         ]
         if not rows:
+            # No prior Premier League season — a promotion, youth, or a signing
+            # from abroad. Record a zeroed marker so this player counts as
+            # checked and is not re-fetched on every run (there were ~100 of
+            # these hammering the API hourly). Its zero minutes route the player
+            # down the no-history path exactly as before.
+            self.conn.execute(
+                "INSERT OR REPLACE INTO player_history "
+                "(player_id, season_name, minutes, starts, total_points, goals, "
+                " assists, clean_sheets, goals_conceded, saves, bps, yellow_cards, "
+                " red_cards, defensive_contribution) "
+                "VALUES (?, '(none)', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
+                (player_id,))
+            self.conn.commit()
             return 0
         self.conn.executemany(
             "INSERT OR REPLACE INTO player_history "

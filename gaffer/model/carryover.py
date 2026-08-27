@@ -72,13 +72,26 @@ def _scaled_to_a_season(player: dict, games_played: float) -> dict:
     still have to arrive downstream on the scale `estimate` expects. Before a
     ball is kicked there is genuinely nothing, and the player passes through
     untouched to meet the base rate.
+
+    The scoring rates get the regression the missing prior season would
+    otherwise have supplied: with only a game or two behind them they are pulled
+    toward zero by how little evidence exists, the same weight the blended path
+    uses. Without this a promoted defender's single strong match projected as a
+    proven full season — Mendy at 47 points over six gameweeks, above Haaland.
     """
     games = _f(games_played)
     if games <= 0:
         return player
+    weight = carryover_weight(games)
     out = dict(player)
+    # Playing time is scaled up so the minutes model reads a starter as a
+    # starter; the minutes model applies its own shrinkage on top.
     for field in SEASON_TOTALS:
         out[field] = _f(player.get(field)) / games * SEASON_GAMES
+    # The scoring rates have nothing but a thin sample behind them, so regress
+    # them toward zero rather than trusting one game as a settled season rate.
+    for field in PER_90_FROM_TOTAL:
+        out[field] = round(_f(player.get(field)) * weight, 4)
     return out
 
 

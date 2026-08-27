@@ -174,3 +174,35 @@ class TestThePageStatesItsBasis:
             text = self.basis(played)
             assert "has not started" not in text
             assert "hasn't kicked off" not in text
+
+
+class TestANoHistoryPlayerIsNotAProvenSeason:
+    """The mirror of the promoted-club bug, and the one the first fix created.
+
+    A player with no prior Premier League season is projected from this season
+    alone. Scaling one strong game up to a full season with no regression made a
+    promoted defender's single big match read as settled form — Mendy at 47
+    points over six gameweeks, above Haaland. The scoring rates must regress
+    toward zero while the sample is thin, and recover as games accumulate.
+    """
+
+    BIG_GAME = {"minutes": 90, "starts": 1, "status": "a",
+                "expected_goals_per_90": 0.10, "expected_assists_per_90": 0.10,
+                "saves_per_90": 0.0, "defensive_contribution_per_90": 22.0,
+                "bps": 35, "yellow_cards": 0, "red_cards": 0}
+
+    def test_one_big_game_is_regressed_not_trusted(self):
+        out = effective_player(dict(self.BIG_GAME), None, games_played=1)
+        assert out["defensive_contribution_per_90"] < 5.0, "22/90 from one game must not stand"
+
+    def test_it_recovers_as_the_season_accumulates(self):
+        thin = effective_player(dict(self.BIG_GAME), None, games_played=1)
+        full = effective_player(dict(self.BIG_GAME), None, games_played=SEASON_GAMES)
+        assert thin["defensive_contribution_per_90"] < full["defensive_contribution_per_90"]
+        assert full["defensive_contribution_per_90"] == pytest.approx(22.0, abs=0.5)
+
+    def test_playing_time_still_reads_as_a_starter(self):
+        """Only the scoring rates are regressed — a nailed starter must still
+        read as one, or his appearance and clean-sheet points vanish too."""
+        out = effective_player(dict(self.BIG_GAME), None, games_played=1)
+        assert estimate(out).expected_minutes > 60
