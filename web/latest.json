@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated": "2026-08-27T14:04:40+00:00",
+  "generated": "2026-08-27T14:13:50+00:00",
   "gameweek": 2,
   "deadline": "2026-08-28T17:30:00Z",
   "horizon": 6,
@@ -1016,7 +1016,7 @@
    "team": "MUN",
    "position": "MID",
    "price": 8.0,
-   "owned": 36.3,
+   "owned": 36.2,
    "xp": [
     4.18,
     2.57,
@@ -1880,7 +1880,7 @@
    "team": "NFO",
    "position": "DEF",
    "price": 5.5,
-   "owned": 1.9,
+   "owned": 1.8,
    "xp": [
     1.88,
     4.09,
@@ -1944,7 +1944,7 @@
    "team": "CHE",
    "position": "MID",
    "price": 9.5,
-   "owned": 14.6,
+   "owned": 14.7,
    "xp": [
     3.64,
     2.22,
@@ -13496,7 +13496,7 @@
    "team": "AVL",
    "position": "DEF",
    "price": 4.0,
-   "owned": 0.0,
+   "owned": 0.1,
    "xp": [
     0.25,
     0.11,
@@ -20508,7 +20508,7 @@
  "schedule": {
   "phase": "full-solve",
   "reason": "27h to the GW2 deadline \u2014 full solve",
-  "hours_remaining": 27.4
+  "hours_remaining": 27.3
  },
  "manager": {
   "entry_id": 6674798,
@@ -20644,7 +20644,7 @@
     "points": 2,
     "multiplier": 1,
     "minutes": 90,
-    "ownership": 36.3,
+    "ownership": 36.2,
     "projected": 4.25
    },
    {
