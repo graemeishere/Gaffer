@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated": "2026-08-27T13:52:56+00:00",
+  "generated": "2026-08-27T14:04:40+00:00",
   "gameweek": 2,
   "deadline": "2026-08-28T17:30:00Z",
   "horizon": 6,
@@ -88,7 +88,7 @@
    "team": "MCI",
    "position": "MID",
    "price": 8.5,
-   "owned": 24.6,
+   "owned": 24.5,
    "xp": [
     3.35,
     5.92,
@@ -20507,8 +20507,8 @@
  },
  "schedule": {
   "phase": "full-solve",
-  "reason": "28h to the GW2 deadline \u2014 full solve",
-  "hours_remaining": 27.6
+  "reason": "27h to the GW2 deadline \u2014 full solve",
+  "hours_remaining": 27.4
  },
  "manager": {
   "entry_id": 6674798,
