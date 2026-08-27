@@ -41,6 +41,37 @@ PER_90_FROM_TOTAL = {
     "defensive_contribution_per_90": "defensive_contribution",
 }
 
+# Two of those rates — expected goals and assists — are proxied from last
+# season's *actual* goals and assists, because `history_past` carries no expected
+# figures. Actual output overstates the underlying rate for whoever out-scored
+# their chances, and the fewer the events the less a rate can be trusted from
+# them: six goals from a set-piece centre-back is far weaker evidence of a
+# repeatable rate than twenty-seven from a striker, yet a defender's goal is
+# worth six points to the striker's four. Left alone this handed the armband to
+# a defender in a good fixture over the best forward in the game. So each proxied
+# rate is regressed toward zero by how many events stand behind it — a shrinkage
+# with a small pseudo-count that barely touches a prolific scorer and pulls a
+# rare one down hardest. Saves and defensive contributions are counts of the
+# thing itself, not a stand-in for an expected version, so they are left alone.
+PROXIED_FROM_ACTUAL = ("expected_goals_per_90", "expected_assists_per_90")
+
+# Events of prior evidence a proxied rate is regressed against. At this many
+# goals a scorer keeps half his carried rate; a striker on twenty-seven keeps
+# nearly all of it.
+PROXY_PRIOR_EVENTS = 3.0
+
+
+def _proxy_reliability(count) -> float:
+    """How much of a rate proxied from `count` actual events to trust.
+
+    Zero events, nothing to trust; many events, almost all of it. The pull is
+    on the *rate*, not the total, so a defender's thin scoring record is read as
+    the weak evidence it is rather than a settled expected-goals figure.
+    """
+    n = max(_f(count), 0.0)
+    denom = n + PROXY_PRIOR_EVENTS
+    return n / denom if denom else 0.0
+
 # Season totals the points model reads directly, dividing by minutes itself.
 SEASON_TOTALS = ("bps", "yellow_cards", "red_cards", "minutes", "starts")
 
@@ -123,6 +154,11 @@ def effective_player(player: dict, history: dict | None, games_played: float) ->
 
     for field, total in PER_90_FROM_TOTAL.items():
         prev_rate = _f(history.get(total)) / prev_minutes * 90.0
+        # Goals and assists are proxied from actual output, so regress last
+        # season's rate toward zero by how many of them there were. This season's
+        # rate is left as it is — FPL reports real expected goals within a season.
+        if field in PROXIED_FROM_ACTUAL:
+            prev_rate *= _proxy_reliability(history.get(total))
         now_rate = _f(player.get(field))
         out[field] = round(now_rate * weight + prev_rate * (1 - weight), 4)
 

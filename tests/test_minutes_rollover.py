@@ -16,7 +16,8 @@ from __future__ import annotations
 import pytest
 
 from gaffer import config
-from gaffer.model.carryover import carryover_weight, effective_player
+from gaffer.model.carryover import (PROXY_PRIOR_EVENTS, carryover_weight,
+                                    effective_player)
 from gaffer.model.minutes import BASE_START_RATE, SEASON_GAMES, estimate
 
 # An ever-present defender's last season, shaped like FPL's `history_past`.
@@ -58,10 +59,33 @@ class TestTheRollover:
         assert out["expected_assists_per_90"] > 0
         assert out["bps"] > 0
 
-    def test_the_rate_matches_last_seasons_output(self):
-        """3 goals in 3420 minutes is 0.079 per 90, not 3 and not 0."""
+    def test_the_rate_tracks_last_seasons_output_regressed_for_a_thin_record(self):
+        """3 goals in 3420 minutes is 0.079 per 90 — not 3, and not 0 — but goals
+        proxy expected goals, and three of them is thin evidence of a rate, so it
+        is regressed toward zero by the proxy pseudo-count. A prolific scorer
+        keeps nearly all of his; a defender on three keeps about half."""
         out = effective_player(dict(ZEROED), EVER_PRESENT, games_played=0)
-        assert out["expected_goals_per_90"] == pytest.approx(3 / 3420 * 90, abs=0.005)
+        reliability = 3 / (3 + PROXY_PRIOR_EVENTS)
+        assert out["expected_goals_per_90"] == pytest.approx(
+            3 / 3420 * 90 * reliability, abs=0.005)
+        # Still a real, positive rate — regressed, not erased.
+        assert 0 < out["expected_goals_per_90"] < 3 / 3420 * 90
+
+    def test_a_prolific_scorer_keeps_more_of_his_rate_than_a_rare_one(self):
+        """The proxy shrinkage is the whole point: a striker's twenty-seven goals
+        are strong evidence of a rate, a defender's six are not, so the striker
+        keeps nearly all his carried figure and the defender keeps far less of
+        his — the asymmetry that stops a set-piece defender's armband over a
+        forward. Compared as the fraction of the raw per-90 each retains."""
+        striker = dict(EVER_PRESENT, minutes=2953, goals=27)
+        defender = dict(EVER_PRESENT, minutes=3420, goals=6)
+        s = effective_player(dict(ZEROED), striker, games_played=0)
+        d = effective_player(dict(ZEROED), defender, games_played=0)
+        s_kept = s["expected_goals_per_90"] / (27 / 2953 * 90)
+        d_kept = d["expected_goals_per_90"] / (6 / 3420 * 90)
+        assert s_kept > 0.89          # keeps almost all of it
+        assert d_kept < 0.72          # keeps well under three-quarters
+        assert s_kept > d_kept
 
     def test_totals_and_minutes_move_together(self):
         """bps is consumed as bps-per-minute. Scaling one without the other

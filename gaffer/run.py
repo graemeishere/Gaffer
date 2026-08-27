@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import math
 import sys
 import time
 from datetime import datetime, timezone
@@ -209,12 +210,18 @@ def run(
     positions_by_id = {
         p["id"]: positions[p["element_type"]] for p in bootstrap["elements"]
     }
+    # The captaincy needs more than this week's number: the horizon total names
+    # the squad's strongest asset, and the spread on the week says whether a
+    # rival's one-week lead is real or noise (see `best_lineup`).
+    first_gw_xp = {row.id: (row.xp[0] if row.xp else 0.0) for row in scores}
+    horizon_xp = {row.id: row.projected for row in scores}
+    weekly_sd = {row.id: math.sqrt(row.var[0]) if row.var else 0.0 for row in scores}
 
     if optimise and not evidence_broken:
         log("  optimising squad …")
         squad = pick_squad(scores)
-        first_gw_xp = {row.id: (row.xp[0] if row.xp else 0.0) for row in scores}
-        lineup = best_lineup(squad.players, first_gw_xp, positions_by_id)
+        lineup = best_lineup(squad.players, first_gw_xp, positions_by_id,
+                             horizon=horizon_xp, sd=weekly_sd)
         log(f"    £{squad.cost:.1f}m, {lineup.formation}, {squad.status}")
 
     manager: dict | None = None
@@ -247,9 +254,8 @@ def run(
                 log("    squad read, but advice withheld — projections not credible")
             else:
                 transfers = evaluate_transfers(scores, held, bank=bank)
-                lineup = best_lineup(
-                    held, {row.id: (row.xp[0] if row.xp else 0.0) for row in scores},
-                    positions_by_id)
+                lineup = best_lineup(held, first_gw_xp, positions_by_id,
+                                     horizon=horizon_xp, sd=weekly_sd)
                 log(f"    {len(transfers)} option(s) priced")
         except (FplError, requests.RequestException, KeyError, ValueError) as exc:
             # Before the first deadline of a gameweek nobody's picks are public,
@@ -496,7 +502,10 @@ def _head_to_head(client, league_id, standings, entry_id, gameweek, horizon,
 
     positions = {row.id: row.position for row in scores}
     first_gw_xp = {row.id: (row.xp[0] if row.xp else 0.0) for row in scores}
-    their_lineup = best_lineup(their_squad, first_gw_xp, positions)
+    horizon_xp = {row.id: row.projected for row in scores}
+    weekly_sd = {row.id: math.sqrt(row.var[0]) if row.var else 0.0 for row in scores}
+    their_lineup = best_lineup(their_squad, first_gw_xp, positions,
+                               horizon=horizon_xp, sd=weekly_sd)
 
     draws = {
         (row.id, gw): projections[row.id][gw].draws

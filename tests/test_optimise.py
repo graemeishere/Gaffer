@@ -162,6 +162,56 @@ class TestLineup:
             best_lineup([1], {1: 4.0}, {1: "MID"})
 
 
+class TestRobustCaptaincy:
+    """The armband doubles a single, noisy one-week number. A defender's steady
+    floor in a good fixture can nose ahead of the best forward in the game for
+    one week without being the better captain over any longer view, so the
+    horizon and the spread temper the pick — the exact case that put a centre-back
+    over Haaland for gameweek two."""
+
+    # Eleven with a legal 4-4-2 outfield plus one keeper.
+    def _squad(self, weekly, horizon, sd):
+        ids = list(weekly)
+        positions = {1: "GKP", 2: "DEF", 3: "DEF", 4: "DEF", 5: "DEF",
+                     6: "MID", 7: "MID", 8: "MID", 9: "MID", 10: "FWD", 11: "FWD"}
+        return ids, positions
+
+    def test_a_within_noise_weekly_lead_stays_on_the_horizon_best(self):
+        # Player 2 (a defender) leads the week; player 10 (the striker) is far
+        # and away the best over the horizon. The weekly gap is small against the
+        # spread, so the armband must not leave the striker.
+        weekly = {1: 3.0, 2: 6.1, 3: 4.0, 4: 4.0, 5: 4.0,
+                  6: 5.0, 7: 5.0, 8: 4.0, 9: 4.0, 10: 4.5, 11: 4.0}
+        horizon = dict.fromkeys(weekly, 24.0)
+        horizon[10] = 38.0           # the striker is the season's best asset
+        sd = {pid: 2.0 for pid in weekly}
+        sd[2], sd[10] = 3.9, 3.0     # combined ≈ 4.9, half of it ≈ 2.45 > 1.6 gap
+        ids, positions = self._squad(weekly, horizon, sd)
+        lineup = best_lineup(ids, weekly, positions, horizon=horizon, sd=sd)
+        assert lineup.captain == 10
+        # Vice is the week's best of the rest — the defender who led the week.
+        assert lineup.vice == 2
+
+    def test_a_clear_weekly_lead_still_takes_the_armband(self):
+        # Same anchor, but now the weekly leader is far enough ahead that the
+        # lead is real, not noise — the armband follows it.
+        weekly = {1: 3.0, 2: 12.0, 3: 4.0, 4: 4.0, 5: 4.0,
+                  6: 5.0, 7: 5.0, 8: 4.0, 9: 4.0, 10: 4.5, 11: 4.0}
+        horizon = dict.fromkeys(weekly, 24.0)
+        horizon[10] = 38.0
+        sd = {pid: 2.0 for pid in weekly}
+        ids, positions = self._squad(weekly, horizon, sd)
+        lineup = best_lineup(ids, weekly, positions, horizon=horizon, sd=sd)
+        assert lineup.captain == 2
+
+    def test_without_a_horizon_it_is_the_old_weekly_pick(self):
+        weekly = {1: 3.0, 2: 6.1, 3: 4.0, 4: 4.0, 5: 4.0,
+                  6: 5.0, 7: 5.0, 8: 4.0, 9: 4.0, 10: 4.5, 11: 4.0}
+        _, positions = self._squad(weekly, {}, {})
+        lineup = best_lineup(list(weekly), weekly, positions)
+        assert lineup.captain == max(lineup.starters, key=lambda p: weekly[p])
+
+
 class TestTransfers:
     def test_rejects_a_squad_of_the_wrong_size(self, pool):
         with pytest.raises(ValueError, match="squad of 15"):
