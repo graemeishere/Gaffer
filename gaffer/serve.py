@@ -111,8 +111,11 @@ def _republish() -> None:
     up anyway. A failure here must never fail the write that already succeeded.
     """
     try:
-        subprocess.run(["systemctl", "start", "--no-block", "gaffer.service"],
-                       check=False, timeout=10)
+        # -n: never prompt. The service user is granted exactly this one command
+        # (systemctl start gaffer.service) in a sudoers drop-in; anything else,
+        # or a missing rule, simply fails here and the hourly timer catches up.
+        subprocess.run(["sudo", "-n", "systemctl", "start", "--no-block",
+                        "gaffer.service"], check=False, timeout=10)
     except Exception:
         pass
 
@@ -150,9 +153,16 @@ def make_handler(token: str, bootstrap: dict):
     return GafferHandler
 
 
-def serve(port: int | None = None, host: str = "127.0.0.1") -> None:
-    """Run the endpoint until interrupted. Binds to localhost by default so the
-    reverse proxy, not the open internet, is what reaches it."""
+def serve(port: int | None = None, host: str | None = None) -> None:
+    """Run the endpoint until interrupted.
+
+    Binds to localhost by default. On the box it is set to the Docker bridge
+    address instead (GAFFER_WRITE_HOST), because the reverse-proxy container that
+    fronts the board reaches it across that bridge, not over the host's loopback.
+    The port is still not opened to the public — only the proxy forwards to it —
+    and writing needs the token regardless.
+    """
+    host = host or os.environ.get("GAFFER_WRITE_HOST") or "127.0.0.1"
     port = port or int(os.environ.get("GAFFER_WRITE_PORT") or 8081)
     token = os.environ.get("GAFFER_WRITE_TOKEN", "")
     bootstrap = FplClient().bootstrap()

@@ -225,7 +225,10 @@ reset_everything() {
   echo "Removing the timer and unit files"
   systemctl disable --now gaffer.timer >/dev/null 2>&1 || true
   systemctl stop gaffer.service >/dev/null 2>&1 || true
-  rm -f /etc/systemd/system/gaffer.service /etc/systemd/system/gaffer.timer
+  systemctl disable --now gaffer-api.service >/dev/null 2>&1 || true
+  rm -f /etc/systemd/system/gaffer.service /etc/systemd/system/gaffer.timer \
+        /etc/systemd/system/gaffer-api.service
+  rm -f /etc/sudoers.d/gaffer
   systemctl daemon-reload >/dev/null 2>&1 || true
 
   echo "Removing the published container, if any"
@@ -511,6 +514,66 @@ UNIT
 systemctl daemon-reload
 systemctl enable --now gaffer.timer >/dev/null
 
+log "Installing the write endpoint (for recording a team from the board)"
+# A long random key, generated once and kept in the state directory so it
+# survives a redeploy and a wiped database. Writing a team needs it; without it
+# the endpoint refuses every write. Printed at the end for you to paste into the
+# board's Edit team tab once.
+WRITE_ENV="$STATE_DIR/write.env"
+if [[ ! -s "$WRITE_ENV" ]]; then
+  TOKEN="$(openssl rand -hex 32 2>/dev/null || head -c32 /dev/urandom | od -An -tx1 | tr -d ' \n')"
+  printf 'GAFFER_WRITE_TOKEN=%s\n' "$TOKEN" > "$WRITE_ENV"
+fi
+chown "$USER_NAME:$USER_NAME" "$WRITE_ENV"
+chmod 600 "$WRITE_ENV"
+WRITE_TOKEN="$(sed -n 's/^GAFFER_WRITE_TOKEN=//p' "$WRITE_ENV")"
+
+# The endpoint listens on all interfaces so the proxy container that fronts the
+# board can reach it across whatever Docker network it is on. Port 8081 must stay
+# closed at the firewall (only 80/443 are public); reaching it from outside is
+# then impossible, and a write needs the key regardless. Do not `ufw allow 8081`.
+cat > /etc/systemd/system/gaffer-api.service <<UNIT
+[Unit]
+Description=Gaffer — write endpoint for recording your team
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=$USER_NAME
+WorkingDirectory=$HOME_DIR
+EnvironmentFile=-$HOME_DIR/.env
+EnvironmentFile=$WRITE_ENV
+Environment=GAFFER_STATE_DIR=$STATE_DIR
+Environment=GAFFER_WRITE_HOST=0.0.0.0
+Environment=GAFFER_WRITE_PORT=8081
+ExecStart=$HOME_DIR/.venv/bin/python -m gaffer.serve
+Restart=on-failure
+RestartSec=5
+# NoNewPrivileges is deliberately not set: a saved team asks the engine to
+# republish through the one whitelisted sudo command below, which that would
+# block. The service still runs as the unprivileged service user.
+ProtectHome=false
+
+[Install]
+WantedBy=multi-user.target
+UNIT
+
+# The endpoint's one privilege: ask the engine to run again after a save, so the
+# board refreshes without waiting for the hourly timer. Scoped to exactly that
+# command, nothing else, and systemd will not double-start the oneshot.
+SYSTEMCTL="$(command -v systemctl || echo /usr/bin/systemctl)"
+cat > /etc/sudoers.d/gaffer <<SUDO
+$USER_NAME ALL=(root) NOPASSWD: $SYSTEMCTL start --no-block gaffer.service, $SYSTEMCTL start gaffer.service
+SUDO
+chmod 440 /etc/sudoers.d/gaffer
+visudo -cf /etc/sudoers.d/gaffer >/dev/null || { echo "  ! sudoers check failed"; rm -f /etc/sudoers.d/gaffer; }
+
+systemctl daemon-reload
+systemctl enable gaffer-api.service >/dev/null
+# restart, not just start, so a redeploy picks up new endpoint code.
+systemctl restart gaffer-api.service
+
 log "First run (this may take a minute)"
 ( cd "$HOME_DIR" && sudo -u "$USER_NAME" env HOME="$HOME_DIR" \
     GAFFER_STATE_DIR="$STATE_DIR" GAFFER_PUBLISH_DIR="$PUBLISH_DIR" \
@@ -546,5 +609,13 @@ cat <<DONE
   Then check they were picked up:
 
       sudo -u $USER_NAME $HOME_DIR/.venv/bin/python -m gaffer.run --quiet && echo ok
+
+  Recording a team from the board (Edit team tab). Paste this key once — it is
+  kept in your browser, and writing a team needs it:
+
+      $WRITE_TOKEN
+
+  The endpoint is served at your domain under /api by the proxy (see
+  deploy/traefik.sh). Endpoint logs: journalctl -u gaffer-api.service -n 50
 
 DONE

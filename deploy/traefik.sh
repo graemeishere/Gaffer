@@ -80,6 +80,18 @@ server {
     # The full board first, then the live sortable table.
     index report.html index.html;
 
+    # The write endpoint runs as a host process, not a container; reach it across
+    # the Docker bridge by the host gateway, which --add-host puts in /etc/hosts
+    # as host.docker.internal. Only this one path is proxied — the rest of the
+    # site stays static files — and the endpoint itself checks the key before it
+    # writes. No trailing slash on proxy_pass, so /api/team is passed through
+    # unchanged rather than stripped.
+    location /api/ {
+        proxy_pass http://host.docker.internal:8081;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $remote_addr;
+    }
+
     # Rewritten on every engine run, so it must never be cached.
     location ~* \.(json|html)$ {
         add_header Cache-Control "no-store, must-revalidate";
@@ -98,6 +110,8 @@ docker rm -f "$NAME" >/dev/null 2>&1 || true
 ARGS=(
   -d --name "$NAME" --restart unless-stopped
   --network "$NETWORK"
+  # Lets the container reach the host's write endpoint by name, on any network.
+  --add-host "host.docker.internal:host-gateway"
   -v "$PUBLISH_DIR:/usr/share/nginx/html:ro"
   -v "$CONF:/etc/nginx/conf.d/default.conf:ro"
   --label "traefik.enable=true"

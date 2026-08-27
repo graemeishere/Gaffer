@@ -273,6 +273,39 @@ rather than cloning, because the directory usually already exists by the time it
 runs — creating the service user makes its home — and `git clone` refuses any
 target that is not empty.
 
+## Recording the team you have picked (the Edit team tab)
+
+The public FPL API will not reveal a gameweek's picks until its deadline locks
+them, so between making your transfers and the deadline the board can only read
+your last locked side. The **Edit team** tab lets you record the changes you
+have made, so the board shows — and advises on — the team you are actually going
+to field. It clears itself once the deadline passes and the real team comes
+through.
+
+`setup.sh` installs everything for this automatically:
+
+- **`gaffer-api.service`** — a tiny endpoint (`gaffer.serve`) that accepts one
+  validated team and writes it to `myteam.json` in the state directory. It runs
+  as the service user, listens only on the Docker bridge (never a public port),
+  and refuses every write without the key.
+- **A write key** — generated once into `<state dir>/write.env`, surviving
+  redeploys and database wipes. `setup.sh` prints it at the end; paste it into
+  the Edit team tab once (it is kept in your browser). Reprint it any time with
+  `sudo sed -n 's/^GAFFER_WRITE_TOKEN=//p' <state dir>/write.env`.
+- **A scoped sudoers rule** (`/etc/sudoers.d/gaffer`) letting the endpoint ask
+  the engine to republish after a save — that one command, nothing else — so the
+  board refreshes in seconds rather than at the next hourly run.
+
+`deploy/traefik.sh` routes the single path `/<your domain>/api/` to the endpoint
+through the same container that serves the board; the rest of the site stays
+static files.
+
+**Do not open port 8081 at the firewall.** Only 80/443 are public; the endpoint
+is reached from the proxy container over the Docker bridge, and a write needs the
+key regardless. If the tab reports it cannot reach the server, check the endpoint
+is up (`systemctl status gaffer-api.service`) and that `traefik.sh` has been
+re-run since this was added, so the container carries the `/api` route.
+
 ## Deploying automatically instead
 
 `.github/workflows/deploy.yml` will do the above over SSH on every push, if you
