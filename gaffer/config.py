@@ -70,6 +70,12 @@ ACTUALS_CSV = STATE_DIR / "actuals.csv"
 # pool publishes anything, so the list of clubs you have spent exists only where
 # you put it, and the planner is useless without it.
 LMS_STATE = STATE_DIR / "lms.json"
+# The team you have picked but the public API will not admit to until the
+# deadline locks it. Recorded here so the board can show — and advise against —
+# the side you are actually going to field, not the one it last saw. Same
+# persistence reasoning: it must outlive a disposable database and a redeploy,
+# so it sits in the state directory beside the other records, not in git.
+MYTEAM_OVERRIDE = STATE_DIR / "myteam.json"
 
 # Where the published copy is written. Same reasoning: on a deployed box it must
 # not be inside the checkout.

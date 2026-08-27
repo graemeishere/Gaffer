@@ -311,10 +311,18 @@ def _pitch(payload: dict) -> str:
         starters, bench = list(actual["starters"]), list(actual["bench"])
         captain, vice = actual.get("captain"), actual.get("vice")
         gw = actual.get("gameweek")
-        caption = (f"<p style='margin-bottom:.6rem'><strong>Your squad</strong>"
-                   f"{' — ' + manager['name'] if manager.get('name') else ''}, "
-                   f"as you picked it{f' in GW{gw}' if gw else ''}. "
-                   f"Where the model disagrees it is noted in the margin.</p>")
+        who = f" — {manager['name']}" if manager.get("name") else ""
+        if actual.get("source") == "manual":
+            # A team you entered by hand, for the gameweek the API has not locked
+            # yet. Say so plainly, so it is never mistaken for a confirmed side.
+            caption = (f"<p style='margin-bottom:.6rem'><strong>Your team{who}</strong>, "
+                       f"as you have set it for GW{gw} — entered by hand, because the "
+                       f"FPL site keeps your team private until the deadline. It will "
+                       f"be confirmed automatically once the deadline passes.</p>")
+        else:
+            caption = (f"<p style='margin-bottom:.6rem'><strong>Your squad{who}</strong>, "
+                       f"as you picked it{f' in GW{gw}' if gw else ''}. "
+                       f"Where the model disagrees it is noted in the margin.</p>")
     elif squad and lineup:
         starters, bench = list(lineup["starters"]), list(lineup["bench"])
         captain, vice = lineup.get("captain"), lineup.get("vice")

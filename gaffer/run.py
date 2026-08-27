@@ -22,6 +22,7 @@ from gaffer.publish import write_json, write_lastman, write_report
 from gaffer.review import review_gameweek, summarise
 import requests
 
+from gaffer import overrides
 from gaffer.ingest.fpl import FplError, backfill_history
 from gaffer.model.carryover import effective_player
 from gaffer.rank import build_board
@@ -249,6 +250,25 @@ def run(
             bank = (entry.get("last_deadline_bank") or 0) / 10.0
             manager.update({"squad_readable": True, "name": entry.get("name"),
                             "actual": actual})
+
+            # A team entered by hand for the gameweek the API will not reveal
+            # until its deadline. Applied on top of the locked side so the whole
+            # board — transfers, captaincy, the league comparison — works from
+            # what you are actually going to field. It expires by itself: once
+            # the deadline passes, the gameweek being advised moves on, this no
+            # longer matches, and the API's real team takes over.
+            team = overrides.load()
+            if team and team.gameweek == gameweek:
+                ok, reason = overrides.validate(team, bootstrap)
+                if ok:
+                    held = team.players
+                    actual = overrides.as_actual(team, gameweek)
+                    manager["actual"] = actual
+                    manager["intended"] = True
+                    log(f"    applied your entered team for GW{gameweek}")
+                else:
+                    log(f"    ignoring entered team: {reason}")
+
             if evidence_broken:
                 manager["reason"] = EVIDENCE_BROKEN_REASON
                 log("    squad read, but advice withheld — projections not credible")
