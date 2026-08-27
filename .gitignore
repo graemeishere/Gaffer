@@ -23,5 +23,8 @@ web/lastman.html
 
 # record/ is deliberately NOT ignored. It is the durable prediction log, and the
 # only copy that survives — every machine this runs on is disposable.
+# The entered-team override is the exception: it is per-machine, per-week state,
+# not part of the log, and must never be committed from a local run.
+record/myteam.json
 .env
 secrets.toml
