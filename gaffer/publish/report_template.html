@@ -26,7 +26,7 @@
 
 <nav class="tabs" aria-label="Board sections">
   <button type="button" data-tab="squad" aria-selected="true">SQUAD</button>
-  <button type="button" data-tab="transfers" aria-selected="false">TRANSFERS</button>
+  <button type="button" data-tab="squad-changes" aria-selected="false">SQUAD CHANGES</button>
   <button type="button" data-tab="chips" aria-selected="false">CHIPS</button>
   <button type="button" data-tab="league" aria-selected="false">LEAGUE</button>
   <button type="button" data-tab="review" aria-selected="false">REVIEW</button>
@@ -57,11 +57,11 @@
 
 </div>
 
-<div class="tab" id="transfers">
+<div class="tab" id="squad-changes">
 <section>
-  <h2>Transfers</h2>
-  <p>Options priced against each other over the next {{HORIZON}} gameweeks, after any points hit for an extra transfer. Each number is the gain across your whole squad — which is why upgrading someone who was correctly going to sit on the bench comes out at nothing. The <b>±</b> after a gain is how far it could swing either way.</p>
-  <div class="panel">{{TRANSFERS}}</div>
+  <h2>Squad changes</h2>
+  <p>Everything the model would do with the team you already have, in plain terms: who to start this week, who to captain, and which transfers are worth weighing. Each one says why.</p>
+  {{SQUAD_CHANGES}}
 </section>
 
 </div>

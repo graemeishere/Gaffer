@@ -222,7 +222,7 @@ class TestTabs:
     def test_sections_are_grouped_as_designed(self, tmp_path):
         p = parse(render(tmp_path))
         assert p.headings["squad"] == ["The squad"]
-        assert p.headings["transfers"] == ["Transfers"]
+        assert p.headings["squad-changes"] == ["Squad changes"]
         assert p.headings["chips"] == ["Chips"]
         assert p.headings["league"] == ["Your mini-league"]
         assert p.headings["review"] == ["Your last gameweek"]  # no review in the fixture
@@ -419,21 +419,31 @@ class TestTheSquadPanelShowsYourTeam:
         assert order == ["Player2", "Player6", "Player7", "Player12"]
 
     def test_it_says_so_when_the_model_wants_a_different_captain(self, tmp_path):
-        """The fixture's model captains 13, so captaining 1 is a disagreement."""
+        """The fixture's model captains 13, so captaining 1 is a disagreement —
+        spelled out, with its reason, in the Squad changes tab."""
         doc = render(tmp_path, self.mine(actual={"captain": 1, "vice": 3}))
-        assert "would captain Player13, not Player1" in doc
+        assert "Captain Player13, not Player1" in doc
+        # And the team sheet points the reader at it rather than repeating it.
+        assert "see the Squad changes tab" in doc
+
+    def test_it_suggests_a_vice_when_the_model_wants_a_different_one(self, tmp_path):
+        """The gap the user hit: the model captained the same player but there was
+        no suggestion for the vice. The fixture's model vice is 9, actual is 3."""
+        doc = render(tmp_path, self.mine())          # captain agrees (13), vice differs
+        assert "Make Player9 vice, not Player3" in doc
 
     def test_it_says_so_when_the_model_agrees(self, tmp_path):
         """Silence would be ambiguous — unread, or read and agreed?"""
-        doc = render(tmp_path, self.mine())          # both captain 13
-        assert "would field this eleven and this captain too" in doc
+        doc = render(tmp_path, self.mine(actual={"vice": 9}))   # captain and vice both match
+        assert "would field this eleven, captain and vice too" in doc
+        assert "Your captain and vice already match the model" in doc
 
     def test_your_team_still_renders_with_no_model_at_all(self, tmp_path):
         """A run that cannot build credible projections withholds its lineup.
         Your own team must still be on the page."""
         doc = render(tmp_path, self.mine(squad=None, lineup=None, transfers=[]))
         assert "Player13" in doc and "class='cap'>C<" in doc
-        assert "would captain" not in doc
+        assert "Captain Player" not in doc          # no captain suggestion without a model
 
 
 class TestTheReaderFacingLanguage:

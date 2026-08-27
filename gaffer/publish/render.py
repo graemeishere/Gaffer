@@ -260,6 +260,41 @@ def _review_block(payload: dict) -> str:
     return flag + verdict + stats + f"<div class='panel'>{''.join(rows)}</div>"
 
 
+def _model_changes(payload: dict) -> dict | None:
+    """What the model would change about the team you actually picked.
+
+    Three kinds of change, kept together so the team sheet can point at them and
+    the Squad changes tab can explain them from one source. Returns None when
+    there is no picked team to compare against — before the deadline, when only
+    the optimiser's suggested squad exists — so callers can stay quiet rather
+    than dressing up the model's own picks as corrections to a team you have not
+    entered.
+    """
+    manager = payload.get("manager") or {}
+    actual = manager.get("actual") or {}
+    model = payload.get("lineup") or {}
+    if not (actual.get("starters") and model.get("starters")):
+        return None
+    a_start, m_start = actual["starters"], model["starters"]
+    a_set, m_set = set(a_start), set(m_start)
+    cap = ((model.get("captain"), actual.get("captain"))
+           if model.get("captain") and actual.get("captain")
+           and model["captain"] != actual["captain"] else None)
+    vice = ((model.get("vice"), actual.get("vice"))
+            if model.get("vice") and actual.get("vice")
+            and model["vice"] != actual["vice"] else None)
+    return {
+        "subs_out": [p for p in a_start if p not in m_set],   # you start, model benches
+        "subs_in": [p for p in m_start if p not in a_set],    # model starts, you bench
+        "captain": cap,                                       # (model, yours)
+        "vice": vice,                                         # (model, yours)
+    }
+
+
+def _has_changes(changes: dict | None) -> bool:
+    return bool(changes and (changes["subs_out"] or changes["captain"] or changes["vice"]))
+
+
 def _pitch(payload: dict) -> str:
     """The team sheet: your eleven as you picked it, with the model marked on it.
 
@@ -295,10 +330,7 @@ def _pitch(payload: dict) -> str:
     # that cannot build credible projections withholds its lineup rather than
     # publishing an arbitrary tie-break.
     model = lineup or {}
-    model_starters = set(model.get("starters") or [])
-    model_captain = model.get("captain")
-    has_model = bool(model_starters)
-    disagreements: list[str] = []
+    has_model = bool(model.get("starters"))
 
     def card(pid: int, muted: bool = False) -> str:
         row = by_id.get(pid)
@@ -321,25 +353,17 @@ def _pitch(payload: dict) -> str:
         if line:
             rows.append("<div class='row'>" + "".join(card(pid) for pid in line) + "</div>")
 
-    if has_model and actual.get("starters"):
-        if model_captain and model_captain != captain:
-            name = (by_id.get(model_captain) or {}).get("name", "someone else")
-            mine = (by_id.get(captain) or {}).get("name", "your pick")
-            disagreements.append(f"would captain {name}, not {mine}")
-        drop = [pid for pid in starters if pid not in model_starters]
-        add = [pid for pid in model_starters if pid not in starters]
-        if drop and add:
-            drop_names = ", ".join((by_id.get(p) or {}).get("name", "?") for p in drop[:3])
-            add_names = ", ".join((by_id.get(p) or {}).get("name", "?") for p in add[:3])
-            disagreements.append(f"would bench {drop_names} for {add_names}")
-
+    # The team sheet stays a picture; the specifics of any change — and the
+    # plain-English reason for each — live in the Squad changes tab, so they are
+    # explained once rather than crammed into the margin here.
+    changes = _model_changes(payload) if actual.get("starters") else None
     note = ""
-    if disagreements:
-        note = ("<div class='mock-h' style='margin-top:.6rem'>The model "
-                + "; ".join(disagreements) + "</div>")
+    if _has_changes(changes):
+        note = ("<div class='mock-h' style='margin-top:.6rem'>The model would "
+                "make some changes — see the Squad changes tab.</div>")
     elif has_model and actual.get("starters"):
         note = ("<div class='mock-h' style='margin-top:.6rem'>The model would "
-                "field this eleven and this captain too</div>")
+                "field this eleven, captain and vice too.</div>")
 
     bench_html = "".join(card(pid, muted=True) for pid in bench)
     bench_label = "Bench · your order" if actual.get("bench") else "Bench · auto-sub order"
@@ -353,6 +377,7 @@ def _pitch(payload: dict) -> str:
 def _transfer_rows(payload: dict) -> str:
     by_id = {p["id"]: p for p in payload["players"]}
     options = payload.get("transfers") or []
+    horizon = payload["meta"]["horizon"]
     if not options:
         manager = payload.get("manager") or {}
         if manager.get("reason"):
@@ -364,19 +389,147 @@ def _transfer_rows(payload: dict) -> str:
                 "for your actual team.</p>")
 
     names = lambda ids: ", ".join(by_id[i]["name"] for i in ids if i in by_id)
+    proj = lambda pid: (by_id.get(pid) or {}).get("projected", 0.0)
     out = []
     for i, option in enumerate(options):
-        label = "Roll the transfer" if not option["transfers"] else (
-            f"{names(option['out'])} &rarr; {names(option['in'])}")
         cls = " best" if i == 0 and option["net_gain"] > 0 else ""
         sign = "pos" if option["net_gain"] > 0.05 else ("neg" if option["net_gain"] < -0.05 else "neu")
         band = (f" <span class='band'>± {option['uncertainty']:.1f}</span>"
                 if option["uncertainty"] else "")
+        if not option["transfers"]:
+            label = "Keep your transfer for next week"
+            why = option["note"] or ("Nothing on the market beats your squad by enough "
+                                     "to spend a transfer on this week.")
+        else:
+            label = f"{names(option['out'])} &rarr; {names(option['in'])}"
+            in_proj = sum(proj(p) for p in option["in"])
+            out_proj = sum(proj(p) for p in option["out"])
+            in_phrase = (f"{names(option['in'])} combine for {in_proj:.1f}"
+                         if len(option["in"]) > 1
+                         else f"{names(option['in'])} is projected {in_proj:.1f}")
+            out_phrase = (f"{names(option['out'])}'s combined {out_proj:.1f}"
+                          if len(option["out"]) > 1
+                          else f"{names(option['out'])}'s {out_proj:.1f}")
+            cost = (f"after a {option['hit']}-point hit" if option.get("hit")
+                    else "using a free transfer")
+            # The stored note is only worth appending when it is not the generic
+            # "costs a hit" / "uses a free transfer", which the cost clause
+            # already says in full.
+            extra = option.get("note", "")
+            if extra.lower() in ("costs a hit", "uses a free transfer"):
+                extra = ""
+            why = (f"{in_phrase} over the next {horizon} gameweeks against "
+                   f"{out_phrase}. The {option['net_gain']:+.2f} is the gain across "
+                   f"your whole squad {cost}"
+                   + (f" — {extra}" if extra else "") + ".")
         out.append(
             f"<div class='opt{cls}'><div class='opt-l'><b>{label}</b>"
-            f"<span>{option['note']}</span></div>"
+            f"<span>{why}</span></div>"
             f"<div class='opt-r {sign}'>{option['net_gain']:+.2f}{band}</div></div>")
     return "".join(out)
+
+
+def _squad_changes(payload: dict) -> str:
+    """Everything the model would do to the team you picked, in three parts, each
+    explained in plain words: who to start (substitutes), who to captain and vice,
+    and which transfers to weigh. Built off `_model_changes`, so it says the same
+    thing the team sheet points at."""
+    by_id = {p["id"]: p for p in payload["players"]}
+    horizon = payload["meta"]["horizon"]
+    nm = lambda pid: (by_id.get(pid) or {}).get("name", "?")
+    wk = lambda pid: (by_id.get(pid) or {}).get("xp", [0.0])[0] if by_id.get(pid) else 0.0
+    changes = _model_changes(payload)
+
+    def opt(label: str, why: str, right: str = "", sign: str = "neu") -> str:
+        right_html = f"<div class='opt-r {sign}'>{right}</div>" if right else ""
+        return (f"<div class='opt'><div class='opt-l'><b>{label}</b>"
+                f"<span>{why}</span></div>{right_html}</div>")
+
+    # --- Substitutes ---------------------------------------------------------
+    subs: list[str] = []
+    if changes and (changes["subs_out"] or changes["subs_in"]):
+        pos = lambda pid: (by_id.get(pid) or {}).get("position", "?")
+        outs: dict[str, list[int]] = {}
+        ins: dict[str, list[int]] = {}
+        for p in changes["subs_out"]:
+            outs.setdefault(pos(p), []).append(p)
+        for p in changes["subs_in"]:
+            ins.setdefault(pos(p), []).append(p)
+        pairs: list[tuple[int, int]] = []
+        rem_out: list[int] = []
+        rem_in: list[int] = []
+        # Like-for-like first (a DEF for a DEF), which reads most clearly.
+        for position in ("GKP", "DEF", "MID", "FWD"):
+            o = sorted(outs.get(position, []), key=wk)               # weakest you start first
+            n = sorted(ins.get(position, []), key=wk, reverse=True)  # strongest you bench first
+            k = min(len(o), len(n))
+            pairs += list(zip(o[:k], n[:k]))
+            rem_out += o[k:]
+            rem_in += n[k:]
+        # Whatever is left is a change of shape — a defender in for a midfielder,
+        # say. Pair the best coming in with the weakest going out so nothing is
+        # silently dropped from the list.
+        rem_out.sort(key=wk)
+        rem_in.sort(key=wk, reverse=True)
+        pairs += list(zip(rem_out, rem_in))
+        for out_pid, in_pid in pairs:
+            gain = wk(in_pid) - wk(out_pid)
+            subs.append(opt(
+                f"Start {nm(in_pid)}, bench {nm(out_pid)}",
+                f"{nm(in_pid)} is projected {wk(in_pid):.1f} points this gameweek "
+                f"against {nm(out_pid)}'s {wk(out_pid):.1f}.",
+                f"{gain:+.1f}", "pos" if gain > 0.05 else "neu"))
+    if not changes:
+        subs_body = ("<p>Link your team and this shows which of your fifteen to "
+                     "start each week.</p>")
+    elif subs:
+        subs_body = "".join(subs)
+    else:
+        subs_body = "<p>The model would field the same eleven you picked.</p>"
+
+    # --- Captaincy -----------------------------------------------------------
+    caps: list[str] = []
+    if changes:
+        if changes["captain"]:
+            m_cap, a_cap = changes["captain"]
+            caps.append(opt(
+                f"Captain {nm(m_cap)}, not {nm(a_cap)}",
+                f"The armband doubles one player's score, so it goes to {nm(m_cap)} — "
+                f"the best return once both this week's fixture and his scoring over "
+                f"the next {horizon} gameweeks are weighed, rather than chasing a single "
+                f"good matchup.", "2&times;", "pos"))
+        if changes["vice"]:
+            m_vice, a_vice = changes["vice"]
+            caps.append(opt(
+                f"Make {nm(m_vice)} vice, not {nm(a_vice)}",
+                f"Your vice only scores if your captain does not play, so it wants the "
+                f"strongest sure starter of the rest — {nm(m_vice)}, projected "
+                f"{wk(m_vice):.1f} this gameweek."))
+    if changes and not caps:
+        caps.append("<p>Your captain and vice already match the model's picks.</p>")
+    caps_body = "".join(caps) if caps else (
+        "<p>Link your team to see who to captain — squads are private until the "
+        "deadline passes.</p>")
+
+    # --- Transfers -----------------------------------------------------------
+    transfers_body = _transfer_rows(payload)
+
+    return (
+        "<h3>Substitutes</h3>"
+        "<p>Who to start and who to bench for this gameweek, from the fifteen you "
+        "already own. No transfer needed — this is just the eleven that scores most.</p>"
+        f"<div class='panel'>{subs_body}</div>"
+        "<h3 style='margin-top:1.2rem'>Captain &amp; vice</h3>"
+        "<p>The captain scores double; the vice takes over only if the captain does "
+        "not play.</p>"
+        f"<div class='panel'>{caps_body}</div>"
+        "<h3 style='margin-top:1.2rem'>Transfers</h3>"
+        "<p>Options priced against each other over the next "
+        f"{horizon} gameweeks, after any points hit. Each gain is across your whole "
+        "squad — which is why upgrading someone who was correctly going to sit on the "
+        "bench comes out at nothing. The <b>&plusmn;</b> after a gain is how far it "
+        "could swing either way.</p>"
+        f"<div class='panel'>{transfers_body}</div>")
 
 
 def _chip_rows(payload: dict) -> str:
@@ -591,7 +744,7 @@ def write_report(payload: dict, path: Path | None = None) -> Path:
         "{{CHIPS}}": _chip_rows(payload),
         "{{LEAGUE}}": _league_block(payload),
         "{{PHASE_REASON}}": (payload.get("schedule") or {}).get("reason", ""),
-        "{{TRANSFERS}}": _transfer_rows(payload),
+        "{{SQUAD_CHANGES}}": _squad_changes(payload),
         "{{SQUAD_COST}}": f"{payload['squad']['cost']:.1f}" if payload.get("squad") else "—",
         "{{FORMATION}}": payload["lineup"]["formation"] if payload.get("lineup") else "—",
         "{{SQUAD_XP}}": (f"{payload['lineup']['expected_points']:.1f}"
