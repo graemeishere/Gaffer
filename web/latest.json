@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated": "2026-08-31T09:38:19+00:00",
+  "generated": "2026-08-31T10:47:11+00:00",
   "gameweek": 3,
   "deadline": "2026-09-04T17:30:00Z",
   "horizon": 6,
@@ -216,7 +216,7 @@
    "team": "LIV",
    "position": "MID",
    "price": 7.0,
-   "owned": 42.4,
+   "owned": 42.3,
    "xp": [
     4.35,
     3.84,
@@ -280,7 +280,7 @@
    "team": "HUL",
    "position": "GKP",
    "price": 4.5,
-   "owned": 4.9,
+   "owned": 5.0,
    "xp": [
     4.04,
     4.56,
@@ -344,7 +344,7 @@
    "team": "MCI",
    "position": "MID",
    "price": 7.6,
-   "owned": 19.0,
+   "owned": 19.1,
    "xp": [
     3.71,
     4.26,
@@ -856,7 +856,7 @@
    "team": "CHE",
    "position": "MID",
    "price": 9.6,
-   "owned": 17.7,
+   "owned": 17.8,
    "xp": [
     3.73,
     2.96,
@@ -888,7 +888,7 @@
    "team": "EVE",
    "position": "DEF",
    "price": 6.0,
-   "owned": 9.6,
+   "owned": 9.7,
    "xp": [
     3.02,
     3.8,
@@ -1048,7 +1048,7 @@
    "team": "MUN",
    "position": "MID",
    "price": 8.0,
-   "owned": 8.8,
+   "owned": 8.7,
    "xp": [
     3.75,
     2.84,
@@ -1496,7 +1496,7 @@
    "team": "LIV",
    "position": "MID",
    "price": 7.5,
-   "owned": 10.7,
+   "owned": 10.6,
    "xp": [
     3.23,
     2.85,
@@ -1528,7 +1528,7 @@
    "team": "MCI",
    "position": "DEF",
    "price": 6.5,
-   "owned": 20.0,
+   "owned": 19.9,
    "xp": [
     2.78,
     3.69,
@@ -1848,7 +1848,7 @@
    "team": "ARS",
    "position": "DEF",
    "price": 8.0,
-   "owned": 28.0,
+   "owned": 27.9,
    "xp": [
     2.83,
     3.17,
@@ -1976,7 +1976,7 @@
    "team": "NEW",
    "position": "DEF",
    "price": 4.5,
-   "owned": 1.1,
+   "owned": 1.2,
    "xp": [
     2.65,
     3.11,
@@ -2072,7 +2072,7 @@
    "team": "BRE",
    "position": "MID",
    "price": 5.6,
-   "owned": 10.5,
+   "owned": 10.6,
    "xp": [
     2.63,
     2.92,
@@ -2264,7 +2264,7 @@
    "team": "TOT",
    "position": "DEF",
    "price": 6.0,
-   "owned": 6.8,
+   "owned": 6.7,
    "xp": [
     2.83,
     2.23,
@@ -2520,7 +2520,7 @@
    "team": "SUN",
    "position": "DEF",
    "price": 5.0,
-   "owned": 4.7,
+   "owned": 4.6,
    "xp": [
     3.15,
     2.27,
@@ -2712,7 +2712,7 @@
    "team": "IPS",
    "position": "FWD",
    "price": 5.5,
-   "owned": 2.0,
+   "owned": 1.9,
    "xp": [
     2.39,
     2.57,
@@ -2776,7 +2776,7 @@
    "team": "ARS",
    "position": "FWD",
    "price": 7.4,
-   "owned": 6.2,
+   "owned": 6.1,
    "xp": [
     2.45,
     3.12,
@@ -3384,7 +3384,7 @@
    "team": "BHA",
    "position": "DEF",
    "price": 4.6,
-   "owned": 11.8,
+   "owned": 11.9,
    "xp": [
     1.83,
     2.55,
@@ -4792,7 +4792,7 @@
    "team": "NEW",
    "position": "FWD",
    "price": 6.0,
-   "owned": 1.5,
+   "owned": 1.4,
    "xp": [
     1.98,
     2.16,
@@ -6072,7 +6072,7 @@
    "team": "CHE",
    "position": "DEF",
    "price": 5.5,
-   "owned": 9.4,
+   "owned": 9.3,
    "xp": [
     2.05,
     1.37,
@@ -6200,7 +6200,7 @@
    "team": "NEW",
    "position": "MID",
    "price": 6.1,
-   "owned": 5.3,
+   "owned": 5.4,
    "xp": [
     1.71,
     1.77,
@@ -10520,7 +10520,7 @@
    "team": "CRY",
    "position": "MID",
    "price": 4.5,
-   "owned": 10.3,
+   "owned": 10.2,
    "xp": [
     0.81,
     0.81,
@@ -20454,6 +20454,14 @@
  ],
  "chips": [
   {
+   "chip": "wildcard",
+   "action": "hold",
+   "best_gameweek": 3,
+   "best_value": 8.239999999999995,
+   "value_now": 8.239999999999995,
+   "reason": "best of the 6 weeks in view at 8.2, but 31 later weeks are unseen and that is where the doubles are"
+  },
+  {
    "chip": "triple captain",
    "action": "hold",
    "best_gameweek": 8,
@@ -20795,8 +20803,8 @@
  },
  "schedule": {
   "phase": "idle",
-  "reason": "104h to the GW3 deadline \u2014 refresh prices and injuries only",
-  "hours_remaining": 103.9
+  "reason": "103h to the GW3 deadline \u2014 refresh prices and injuries only",
+  "hours_remaining": 102.7
  },
  "manager": {
   "entry_id": 6674798,
@@ -20852,7 +20860,7 @@
   "differentials": [
    {
     "name": "Senesi",
-    "ownership": 6.8,
+    "ownership": 6.7,
     "points": 0
    },
    {
@@ -20900,7 +20908,7 @@
     "points": 0,
     "multiplier": 1,
     "minutes": 0,
-    "ownership": 6.8,
+    "ownership": 6.7,
     "projected": 3.87
    },
    {
@@ -20909,7 +20917,7 @@
     "points": 4,
     "multiplier": 1,
     "minutes": 90,
-    "ownership": 42.4,
+    "ownership": 42.3,
     "projected": 5.25
    },
    {
