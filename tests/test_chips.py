@@ -7,7 +7,7 @@ them is barely better than the average and a naive rule always plays.
 """
 import pytest
 
-from gaffer.optimise.chips import advise_chip, bench_boost, triple_captain
+from gaffer.optimise.chips import advise_chip, bench_boost, triple_captain, wildcard
 from gaffer.rank import PlayerRow
 
 
@@ -83,3 +83,62 @@ class TestChipValues:
     def test_values_track_the_horizon_length(self, squad):
         ids, positions, rows = squad
         assert len(triple_captain(ids, rows, positions, horizon=4)) == 4
+
+
+class TestWildcard:
+    """The wildcard rebuilds the whole squad, so it is priced against the best
+    squad money could buy — over a pool of players, not just your own."""
+
+    def _pool(self):
+        # A pool wide enough for pick_squad to form a legal 15 (2/5/5/3) with at
+        # most three per club: each player its own club, so the club rule never
+        # bites. Positions get spares so an upgrade has somewhere to come from.
+        spec = [("GKP", 3), ("DEF", 8), ("MID", 8), ("FWD", 5)]
+        rows, positions, pid = {}, {}, 1
+        for position, count in spec:
+            for _ in range(count):
+                rows[pid] = row(pid, position, 3.0)
+                rows[pid].team = pid           # a distinct club each
+                positions[pid] = position
+                pid += 1
+        return rows, positions
+
+    def _legal_squad(self, rows):
+        # The lowest ids of each position: a legal, deliberately mediocre XV.
+        pick = {"GKP": 2, "DEF": 5, "MID": 5, "FWD": 3}
+        got = {p: 0 for p in pick}
+        squad = []
+        for pid in sorted(rows):
+            pos = rows[pid].position
+            if got[pos] < pick[pos]:
+                squad.append(pid); got[pos] += 1
+        return squad
+
+    def test_it_returns_a_value_per_gameweek(self):
+        rows, positions = self._pool()
+        squad = self._legal_squad(rows)
+        values = wildcard(squad, list(rows.values()), rows, positions,
+                          horizon=4, budget=100.0)
+        assert len(values) == 4
+        assert all(v >= 0 for v in values)
+
+    def test_it_is_zero_when_you_already_own_the_ideal(self):
+        # Pool == your squad, so there is nothing better to rebuild into.
+        rows, positions = self._pool()
+        squad = self._legal_squad(rows)
+        owned = {pid: rows[pid] for pid in squad}
+        values = wildcard(squad, list(owned.values()), owned, positions,
+                          horizon=3, budget=100.0)
+        assert values == [pytest.approx(0.0)] * 3
+
+    def test_it_sees_a_clear_upgrade_in_the_pool(self):
+        # A spare forward far better than anything owned: rebuilding is worth it.
+        rows, positions = self._pool()
+        squad = self._legal_squad(rows)
+        spare = next(pid for pid in rows if pid not in squad
+                     and rows[pid].position == "FWD")
+        rows[spare].xp = [30.0, 30.0, 30.0]
+        rows[spare].projected = 90.0
+        values = wildcard(squad, list(rows.values()), rows, positions,
+                          horizon=3, budget=100.0)
+        assert max(values) > 5.0

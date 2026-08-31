@@ -102,6 +102,31 @@ def free_hit(squad: list[int], rows: list[PlayerRow], rows_by_id: dict[int, Play
     return values
 
 
+def wildcard(squad: list[int], rows: list[PlayerRow], rows_by_id: dict[int, PlayerRow],
+             positions: dict[int, str], horizon: int, budget: float) -> list[float]:
+    """Rebuild the whole squad for free — and, unlike the free hit, keep it.
+
+    Because it persists it is valued over the run of weeks it would serve, not a
+    single one: the best squad money can buy across the horizon is priced once,
+    and each week's value is how much more that squad's eleven is worth than
+    yours that week. The week-to-week comparison is what matters, and `advise_chip`
+    reads it relatively, so the constant gap between any real squad and the
+    theoretical ideal does not fire the chip — only a week that genuinely stands
+    out does. Holding stays the default: early on a well-drafted squad trails the
+    ideal by about the same small margin every week, and the case to rebuild only
+    appears once injuries or a fixture swing leave one stretch clearly behind.
+    """
+    best = pick_squad(rows, budget=budget, time_limit=20)
+    values = []
+    for gw in range(horizon):
+        best_xp = {pid: _xp(rows_by_id, pid, gw) for pid in best.players}
+        mine_xp = {pid: _xp(rows_by_id, pid, gw) for pid in squad}
+        ideal = best_lineup(best.players, best_xp, positions)
+        mine = best_lineup(squad, mine_xp, positions)
+        values.append(max(0.0, ideal.expected_points - mine.expected_points))
+    return values
+
+
 def advise_chip(
     name: str,
     values: list[float],
@@ -165,7 +190,7 @@ def evaluate_chips(
     horizon: int,
     budget: float = 100.0,
     gameweeks_remaining: int | None = None,
-    available: tuple[str, ...] = ("triple captain", "bench boost", "free hit"),
+    available: tuple[str, ...] = ("wildcard", "triple captain", "bench boost", "free hit"),
 ) -> list[ChipAdvice]:
     """Value each chip across the horizon and say whether to spend it now.
 
@@ -175,6 +200,10 @@ def evaluate_chips(
     rows_by_id = {row.id: row for row in rows}
     remaining = gameweeks_remaining
     advice = []
+    if "wildcard" in available:
+        advice.append(advise_chip(
+            "wildcard", wildcard(squad, rows, rows_by_id, positions, horizon, budget),
+            first_gameweek, gameweeks_remaining=remaining))
     if "triple captain" in available:
         advice.append(advise_chip(
             "triple captain", triple_captain(squad, rows_by_id, positions, horizon),
