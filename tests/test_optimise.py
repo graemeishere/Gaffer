@@ -9,6 +9,7 @@ import pytest
 from gaffer import config
 from gaffer.optimise import best_lineup, evaluate_transfers, pick_squad, prune_candidates
 from gaffer.optimise.squad import SQUAD_QUOTA
+from gaffer.optimise.transfers import TransferOption, _risk_adjusted_gain
 from gaffer.rank import PlayerRow
 
 
@@ -264,3 +265,36 @@ class TestTransfers:
         if two:
             assert two[0].hit == 4
             assert two[0].net_gain == pytest.approx(two[0].gross_gain - 4, abs=0.01)
+
+
+class TestRiskAwareRanking:
+    """The ranking is on risk-adjusted gain, so a high-mean/high-variance move
+    cannot top a safer one on its point estimate — the Haaland-for-Bruno case,
+    where a +7 gain carried a ±10 band and still sat above a free +5."""
+
+    def opt(self, net, sd, hit):
+        return TransferOption(transfers=1 + (1 if hit else 0), out=[], in_=[],
+                              hit=hit, gross_gain=net + hit, net_gain=net,
+                              uncertainty=sd, note="")
+
+    def test_a_free_move_is_penalised_half_a_sd(self):
+        assert _risk_adjusted_gain(self.opt(5.0, 6.0, hit=0)) == pytest.approx(5.0 - 0.5 * 6.0)
+
+    def test_a_hit_is_penalised_a_full_sd(self):
+        assert _risk_adjusted_gain(self.opt(7.0, 9.0, hit=4)) == pytest.approx(7.0 - 9.0)
+
+    def test_a_wide_hit_ranks_below_a_tighter_free_move(self):
+        hit = self.opt(7.09, 9.56, hit=4)          # the real Haaland move
+        free = self.opt(5.31, 6.39, hit=0)         # the free Schade move
+        assert _risk_adjusted_gain(free) > _risk_adjusted_gain(hit)
+
+    def test_a_wide_hit_ranks_below_rolling(self):
+        hit = self.opt(7.09, 9.56, hit=4)
+        roll = self.opt(0.0, 0.0, hit=0)           # rolling: no gain, no risk
+        assert _risk_adjusted_gain(roll) > _risk_adjusted_gain(hit)
+
+    def test_a_confident_hit_still_wins(self):
+        # A hit whose downside still clears the four points is worth taking.
+        confident = self.opt(12.0, 4.0, hit=4)
+        free = self.opt(5.0, 6.0, hit=0)
+        assert _risk_adjusted_gain(confident) > _risk_adjusted_gain(free)

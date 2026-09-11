@@ -35,6 +35,30 @@ from gaffer.rank import PlayerRow
 
 HIT_COST = 4
 
+# The options are ranked on a risk-adjusted gain, not the raw expected one, so a
+# move whose edge is smaller than its own uncertainty cannot top a safer one.
+# Two settings, because the two kinds of move carry different downside:
+#
+# A free transfer risks only opportunity — at worst you spent this week's free
+# move slightly wrongly, no points are docked — so it is judged mildly cautious,
+# at half a standard deviation below its mean.
+#
+# A hit spends four real points up front, so it has to be a confident play, not
+# a hopeful one. It is judged at a full standard deviation below its mean — its
+# pessimistic case — so a hit only ranks above rolling when even its downside
+# clears the four points. This is the same principle the captaincy uses: do not
+# stake something certain (points, the armband) on a lead that is inside the
+# noise.
+FREE_RISK_PENALTY = 0.5
+HIT_RISK_PENALTY = 1.0
+
+
+def _risk_adjusted_gain(option: "TransferOption") -> float:
+    """The gain to rank on: the mean, pulled down by its uncertainty — harder for
+    a move that costs a hit than for a free one (see the constants above)."""
+    penalty = HIT_RISK_PENALTY if option.hit else FREE_RISK_PENALTY
+    return option.net_gain - penalty * option.uncertainty
+
 
 @dataclass
 class TransferOption:
@@ -180,7 +204,12 @@ def evaluate_transfers(
             note="costs a hit" if hit else "uses a free transfer",
         ))
 
-    options.sort(key=lambda o: -o.net_gain)
+    # Rank on risk-adjusted gain, so a high-mean/high-variance move (especially a
+    # hit) cannot outrank a safer one on the strength of its point estimate alone.
+    # Rolling sits at exactly zero, so a move only leads it when its adjusted gain
+    # is positive — i.e. it clears its own uncertainty. The raw net_gain is still
+    # what each option displays; this only decides the order.
+    options.sort(key=lambda o: -_risk_adjusted_gain(o))
     return options
 
 

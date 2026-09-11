@@ -430,6 +430,12 @@ def _transfer_rows(payload: dict) -> str:
                    f"{out_phrase}. The {option['net_gain']:+.2f} is the gain across "
                    f"your whole squad {cost}"
                    + (f" — {extra}" if extra else "") + ".")
+            # A hit whose edge is smaller than its own uncertainty is a gamble,
+            # not a clear gain — say so, since it is why the ranking demotes it.
+            if option.get("hit") and 0 < option["net_gain"] < option["uncertainty"]:
+                why += (f" That gain is inside its &plusmn;{option['uncertainty']:.1f} "
+                        f"uncertainty, so the hit is a gamble rather than a clear "
+                        f"win — rolling is the safer call.")
         out.append(
             f"<div class='opt{cls}'><div class='opt-l'><b>{label}</b>"
             f"<span>{why}</span></div>"
