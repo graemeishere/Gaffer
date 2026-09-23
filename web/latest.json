@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated": "2026-09-23T08:31:42+00:00",
+  "generated": "2026-09-23T18:58:18+00:00",
   "gameweek": 6,
   "deadline": "2026-10-10T10:00:00Z",
   "horizon": 6,
@@ -88,7 +88,7 @@
    "team": "MUN",
    "position": "MID",
    "price": 11.9,
-   "owned": 38.7,
+   "owned": 38.6,
    "xp": [
     6.16,
     4.75,
@@ -120,7 +120,7 @@
    "team": "CHE",
    "position": "FWD",
    "price": 7.7,
-   "owned": 65.8,
+   "owned": 65.7,
    "xp": [
     4.54,
     3.69,
@@ -280,7 +280,7 @@
    "team": "EVE",
    "position": "DEF",
    "price": 6.1,
-   "owned": 15.9,
+   "owned": 16.0,
    "xp": [
     4.23,
     3.33,
@@ -376,7 +376,7 @@
    "team": "BHA",
    "position": "MID",
    "price": 5.8,
-   "owned": 27.8,
+   "owned": 27.9,
    "xp": [
     4.24,
     4.85,
@@ -600,7 +600,7 @@
    "team": "HUL",
    "position": "GKP",
    "price": 4.6,
-   "owned": 12.4,
+   "owned": 12.5,
    "xp": [
     4.09,
     3.88,
@@ -984,7 +984,7 @@
    "team": "MCI",
    "position": "MID",
    "price": 7.8,
-   "owned": 28.2,
+   "owned": 28.3,
    "xp": [
     3.05,
     3.98,
@@ -1016,7 +1016,7 @@
    "team": "NEW",
    "position": "MID",
    "price": 6.1,
-   "owned": 5.4,
+   "owned": 5.5,
    "xp": [
     3.48,
     3.67,
@@ -1240,7 +1240,7 @@
    "team": "LEE",
    "position": "DEF",
    "price": 4.6,
-   "owned": 6.8,
+   "owned": 6.9,
    "xp": [
     3.08,
     3.59,
@@ -1336,7 +1336,7 @@
    "team": "BRE",
    "position": "MID",
    "price": 6.2,
-   "owned": 10.8,
+   "owned": 10.9,
    "xp": [
     3.47,
     3.31,
@@ -1624,7 +1624,7 @@
    "team": "LEE",
    "position": "FWD",
    "price": 6.0,
-   "owned": 25.0,
+   "owned": 24.9,
    "xp": [
     2.6,
     3.51,
@@ -1752,7 +1752,7 @@
    "team": "BHA",
    "position": "DEF",
    "price": 5.0,
-   "owned": 3.5,
+   "owned": 3.6,
    "xp": [
     3.11,
     3.42,
@@ -2200,7 +2200,7 @@
    "team": "EVE",
    "position": "FWD",
    "price": 5.6,
-   "owned": 8.1,
+   "owned": 8.2,
    "xp": [
     2.67,
     3.24,
@@ -2232,7 +2232,7 @@
    "team": "SUN",
    "position": "FWD",
    "price": 5.7,
-   "owned": 6.9,
+   "owned": 7.0,
    "xp": [
     2.86,
     2.88,
@@ -2616,7 +2616,7 @@
    "team": "SUN",
    "position": "MID",
    "price": 5.5,
-   "owned": 3.7,
+   "owned": 3.6,
    "xp": [
     2.69,
     2.86,
@@ -2904,7 +2904,7 @@
    "team": "LIV",
    "position": "GKP",
    "price": 5.5,
-   "owned": 3.9,
+   "owned": 4.0,
    "xp": [
     2.87,
     2.77,
@@ -3800,7 +3800,7 @@
    "team": "CRY",
    "position": "MID",
    "price": 5.5,
-   "owned": 0.4,
+   "owned": 0.3,
    "xp": [
     2.46,
     2.11,
@@ -4056,7 +4056,7 @@
    "team": "NFO",
    "position": "FWD",
    "price": 5.8,
-   "owned": 2.7,
+   "owned": 2.6,
    "xp": [
     2.56,
     2.16,
@@ -4408,7 +4408,7 @@
    "team": "SUN",
    "position": "DEF",
    "price": 4.9,
-   "owned": 2.6,
+   "owned": 2.5,
    "xp": [
     1.78,
     2.29,
@@ -4920,7 +4920,7 @@
    "team": "BHA",
    "position": "FWD",
    "price": 5.6,
-   "owned": 3.5,
+   "owned": 3.6,
    "xp": [
     2.33,
     2.62,
@@ -5304,7 +5304,7 @@
    "team": "HUL",
    "position": "DEF",
    "price": 4.2,
-   "owned": 14.1,
+   "owned": 14.0,
    "xp": [
     2.3,
     2.17,
@@ -5944,7 +5944,7 @@
    "team": "TOT",
    "position": "GKP",
    "price": 4.5,
-   "owned": 17.5,
+   "owned": 17.4,
    "xp": [
     1.78,
     2.11,
@@ -7608,7 +7608,7 @@
    "team": "TOT",
    "position": "DEF",
    "price": 5.4,
-   "owned": 7.8,
+   "owned": 7.7,
    "xp": [
     1.31,
     1.83,
@@ -8344,7 +8344,7 @@
    "team": "ARS",
    "position": "DEF",
    "price": 5.3,
-   "owned": 1.7,
+   "owned": 1.6,
    "xp": [
     1.35,
     1.32,
@@ -21475,8 +21475,8 @@
  },
  "schedule": {
   "phase": "idle",
-  "reason": "409h to the GW6 deadline \u2014 refresh prices and injuries only",
-  "hours_remaining": 409.5
+  "reason": "399h to the GW6 deadline \u2014 refresh prices and injuries only",
+  "hours_remaining": 399.0
  },
  "manager": {
   "entry_id": 6674798,
@@ -21671,7 +21671,7 @@
     "points": 0,
     "multiplier": 0,
     "minutes": 0,
-    "ownership": 65.8,
+    "ownership": 65.7,
     "projected": 4.04
    },
    {
