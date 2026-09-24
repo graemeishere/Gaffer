@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated": "2026-09-23T18:58:18+00:00",
+  "generated": "2026-09-24T08:22:52+00:00",
   "gameweek": 6,
   "deadline": "2026-10-10T10:00:00Z",
   "horizon": 6,
@@ -120,7 +120,7 @@
    "team": "CHE",
    "position": "FWD",
    "price": 7.7,
-   "owned": 65.7,
+   "owned": 65.6,
    "xp": [
     4.54,
     3.69,
@@ -376,7 +376,7 @@
    "team": "BHA",
    "position": "MID",
    "price": 5.8,
-   "owned": 27.9,
+   "owned": 28.1,
    "xp": [
     4.24,
     4.85,
@@ -440,7 +440,7 @@
    "team": "BHA",
    "position": "DEF",
    "price": 4.9,
-   "owned": 27.3,
+   "owned": 27.4,
    "xp": [
     4.05,
     4.75,
@@ -472,7 +472,7 @@
    "team": "CHE",
    "position": "MID",
    "price": 9.7,
-   "owned": 26.1,
+   "owned": 26.0,
    "xp": [
     3.86,
     3.23,
@@ -856,7 +856,7 @@
    "team": "BHA",
    "position": "GKP",
    "price": 4.5,
-   "owned": 21.7,
+   "owned": 21.6,
    "xp": [
     3.52,
     3.65,
@@ -1144,7 +1144,7 @@
    "team": "LIV",
    "position": "MID",
    "price": 7.0,
-   "owned": 33.1,
+   "owned": 33.0,
    "xp": [
     3.36,
     3.12,
@@ -1336,7 +1336,7 @@
    "team": "BRE",
    "position": "MID",
    "price": 6.2,
-   "owned": 10.9,
+   "owned": 11.0,
    "xp": [
     3.47,
     3.31,
@@ -1368,7 +1368,7 @@
    "team": "NEW",
    "position": "DEF",
    "price": 5.3,
-   "owned": 16.9,
+   "owned": 17.0,
    "xp": [
     3.36,
     3.44,
@@ -3416,7 +3416,7 @@
    "team": "FUL",
    "position": "FWD",
    "price": 6.0,
-   "owned": 3.8,
+   "owned": 3.9,
    "xp": [
     2.64,
     2.44,
@@ -4280,7 +4280,7 @@
    "team": "ARS",
    "position": "MID",
    "price": 7.4,
-   "owned": 11.9,
+   "owned": 11.8,
    "xp": [
     2.27,
     2.31,
@@ -5400,7 +5400,7 @@
    "team": "BRE",
    "position": "MID",
    "price": 4.8,
-   "owned": 0.7,
+   "owned": 0.6,
    "xp": [
     2.06,
     2.04,
@@ -5464,7 +5464,7 @@
    "team": "BRE",
    "position": "MID",
    "price": 5.6,
-   "owned": 10.1,
+   "owned": 10.0,
    "xp": [
     2.07,
     2.02,
@@ -6360,7 +6360,7 @@
    "team": "TOT",
    "position": "DEF",
    "price": 4.4,
-   "owned": 2.6,
+   "owned": 2.5,
    "xp": [
     1.65,
     2.14,
@@ -6680,7 +6680,7 @@
    "team": "HUL",
    "position": "DEF",
    "price": 4.1,
-   "owned": 7.1,
+   "owned": 7.0,
    "xp": [
     2.05,
     1.89,
@@ -7288,7 +7288,7 @@
    "team": "TOT",
    "position": "MID",
    "price": 6.5,
-   "owned": 0.1,
+   "owned": 0.2,
    "xp": [
     1.55,
     1.68,
@@ -12632,7 +12632,7 @@
    "team": "HUL",
    "position": "DEF",
    "price": 4.0,
-   "owned": 1.7,
+   "owned": 1.6,
    "xp": [
     0.27,
     0.26,
@@ -17751,7 +17751,7 @@
    "name": "Butland",
    "team": "HUL",
    "position": "GKP",
-   "price": 4.5,
+   "price": 4.4,
    "owned": 0.1,
    "xp": [
     0.0,
@@ -21475,8 +21475,8 @@
  },
  "schedule": {
   "phase": "idle",
-  "reason": "399h to the GW6 deadline \u2014 refresh prices and injuries only",
-  "hours_remaining": 399.0
+  "reason": "386h to the GW6 deadline \u2014 refresh prices and injuries only",
+  "hours_remaining": 385.6
  },
  "manager": {
   "entry_id": 6674798,
@@ -21547,7 +21547,7 @@
    },
    {
     "name": "Yarmoliuk",
-    "ownership": 0.7,
+    "ownership": 0.6,
     "points": 3
    },
    {
@@ -21563,7 +21563,7 @@
     "points": 6,
     "multiplier": 1,
     "minutes": 90,
-    "ownership": 21.7,
+    "ownership": 21.6,
     "projected": 3.51
    },
    {
@@ -21599,7 +21599,7 @@
     "points": 2,
     "multiplier": 1,
     "minutes": 80,
-    "ownership": 33.1,
+    "ownership": 33.0,
     "projected": 3.54
    },
    {
@@ -21635,7 +21635,7 @@
     "points": 3,
     "multiplier": 1,
     "minutes": 68,
-    "ownership": 0.7,
+    "ownership": 0.6,
     "projected": 1.93
    },
    {
@@ -21671,7 +21671,7 @@
     "points": 0,
     "multiplier": 0,
     "minutes": 0,
-    "ownership": 65.7,
+    "ownership": 65.6,
     "projected": 4.04
    },
    {
