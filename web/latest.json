@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated": "2026-09-25T08:45:35+00:00",
+  "generated": "2026-09-25T19:13:34+00:00",
   "gameweek": 6,
   "deadline": "2026-10-10T10:00:00Z",
   "horizon": 6,
@@ -120,7 +120,7 @@
    "team": "CHE",
    "position": "FWD",
    "price": 7.7,
-   "owned": 65.5,
+   "owned": 65.4,
    "xp": [
     4.54,
     3.69,
@@ -280,7 +280,7 @@
    "team": "EVE",
    "position": "DEF",
    "price": 6.1,
-   "owned": 16.1,
+   "owned": 16.2,
    "xp": [
     4.23,
     3.33,
@@ -344,7 +344,7 @@
    "team": "BHA",
    "position": "MID",
    "price": 5.8,
-   "owned": 28.3,
+   "owned": 28.4,
    "xp": [
     4.25,
     4.85,
@@ -408,7 +408,7 @@
    "team": "BHA",
    "position": "DEF",
    "price": 4.9,
-   "owned": 27.5,
+   "owned": 27.6,
    "xp": [
     4.05,
     4.75,
@@ -984,7 +984,7 @@
    "team": "NEW",
    "position": "MID",
    "price": 6.1,
-   "owned": 5.5,
+   "owned": 5.6,
    "xp": [
     3.48,
     3.67,
@@ -1048,7 +1048,7 @@
    "team": "MUN",
    "position": "MID",
    "price": 7.9,
-   "owned": 5.7,
+   "owned": 5.8,
    "xp": [
     3.71,
     3.04,
@@ -1112,7 +1112,7 @@
    "team": "LIV",
    "position": "MID",
    "price": 7.0,
-   "owned": 33.0,
+   "owned": 32.9,
    "xp": [
     3.36,
     3.12,
@@ -1304,7 +1304,7 @@
    "team": "BRE",
    "position": "MID",
    "price": 6.2,
-   "owned": 11.1,
+   "owned": 11.2,
    "xp": [
     3.47,
     3.31,
@@ -2360,7 +2360,7 @@
    "team": "MUN",
    "position": "GKP",
    "price": 4.9,
-   "owned": 10.0,
+   "owned": 9.9,
    "xp": [
     3.22,
     2.93,
@@ -5528,7 +5528,7 @@
    "team": "FUL",
    "position": "DEF",
    "price": 5.0,
-   "owned": 0.1,
+   "owned": 0.2,
    "xp": [
     2.04,
     2.18,
@@ -5592,7 +5592,7 @@
    "team": "TOT",
    "position": "GKP",
    "price": 4.0,
-   "owned": 17.2,
+   "owned": 17.1,
    "xp": [
     1.86,
     2.16,
@@ -5944,7 +5944,7 @@
    "team": "TOT",
    "position": "GKP",
    "price": 4.5,
-   "owned": 17.4,
+   "owned": 17.3,
    "xp": [
     1.78,
     2.11,
@@ -6872,7 +6872,7 @@
    "team": "EVE",
    "position": "DEF",
    "price": 4.5,
-   "owned": 1.3,
+   "owned": 1.4,
    "xp": [
     1.77,
     1.4,
@@ -7832,7 +7832,7 @@
    "team": "ARS",
    "position": "FWD",
    "price": 7.6,
-   "owned": 8.5,
+   "owned": 8.4,
    "xp": [
     1.36,
     1.41,
@@ -8408,7 +8408,7 @@
    "team": "FUL",
    "position": "DEF",
    "price": 4.5,
-   "owned": 0.0,
+   "owned": 0.1,
    "xp": [
     1.28,
     1.36,
@@ -9016,7 +9016,7 @@
    "team": "ARS",
    "position": "MID",
    "price": 6.3,
-   "owned": 12.3,
+   "owned": 12.2,
    "xp": [
     1.09,
     1.1,
@@ -10328,7 +10328,7 @@
    "team": "CHE",
    "position": "MID",
    "price": 5.3,
-   "owned": 1.1,
+   "owned": 1.0,
    "xp": [
     0.73,
     0.72,
@@ -20185,7 +20185,7 @@
     "gameweek": 6,
     "opponent": "LEE",
     "home": true,
-    "difficulty": 2
+    "difficulty": 3
    },
    {
     "gameweek": 7,
@@ -20247,7 +20247,7 @@
     "gameweek": 10,
     "opponent": "TOT",
     "home": true,
-    "difficulty": 3
+    "difficulty": 2
    },
    {
     "gameweek": 11,
@@ -20291,7 +20291,7 @@
     "gameweek": 11,
     "opponent": "SUN",
     "home": true,
-    "difficulty": 2
+    "difficulty": 3
    }
   ],
   "BRE": [
@@ -20299,7 +20299,7 @@
     "gameweek": 6,
     "opponent": "AVL",
     "home": false,
-    "difficulty": 4
+    "difficulty": 3
    },
    {
     "gameweek": 7,
@@ -20323,7 +20323,7 @@
     "gameweek": 10,
     "opponent": "BHA",
     "home": false,
-    "difficulty": 3
+    "difficulty": 4
    },
    {
     "gameweek": 11,
@@ -20349,7 +20349,7 @@
     "gameweek": 8,
     "opponent": "TOT",
     "home": true,
-    "difficulty": 3
+    "difficulty": 2
    },
    {
     "gameweek": 9,
@@ -20367,7 +20367,7 @@
     "gameweek": 11,
     "opponent": "LEE",
     "home": true,
-    "difficulty": 2
+    "difficulty": 3
    }
   ],
   "BOU": [
@@ -20381,7 +20381,7 @@
     "gameweek": 7,
     "opponent": "SUN",
     "home": true,
-    "difficulty": 2
+    "difficulty": 3
    },
    {
     "gameweek": 8,
@@ -20393,7 +20393,7 @@
     "gameweek": 9,
     "opponent": "LEE",
     "home": true,
-    "difficulty": 2
+    "difficulty": 3
    },
    {
     "gameweek": 10,
@@ -20469,13 +20469,13 @@
     "gameweek": 9,
     "opponent": "AVL",
     "home": false,
-    "difficulty": 4
+    "difficulty": 3
    },
    {
     "gameweek": 10,
     "opponent": "NEW",
     "home": true,
-    "difficulty": 2
+    "difficulty": 3
    },
    {
     "gameweek": 11,
@@ -20489,7 +20489,7 @@
     "gameweek": 6,
     "opponent": "BHA",
     "home": true,
-    "difficulty": 2
+    "difficulty": 3
    },
    {
     "gameweek": 7,
@@ -20501,7 +20501,7 @@
     "gameweek": 8,
     "opponent": "LEE",
     "home": true,
-    "difficulty": 2
+    "difficulty": 3
    },
    {
     "gameweek": 9,
@@ -20519,7 +20519,7 @@
     "gameweek": 11,
     "opponent": "AVL",
     "home": false,
-    "difficulty": 4
+    "difficulty": 3
    }
   ],
   "BHA": [
@@ -20533,7 +20533,7 @@
     "gameweek": 7,
     "opponent": "CRY",
     "home": true,
-    "difficulty": 3
+    "difficulty": 2
    },
    {
     "gameweek": 8,
@@ -20565,7 +20565,7 @@
     "gameweek": 6,
     "opponent": "TOT",
     "home": true,
-    "difficulty": 3
+    "difficulty": 2
    },
    {
     "gameweek": 7,
@@ -20621,7 +20621,7 @@
     "gameweek": 9,
     "opponent": "CRY",
     "home": true,
-    "difficulty": 3
+    "difficulty": 2
    },
    {
     "gameweek": 10,
@@ -20647,13 +20647,13 @@
     "gameweek": 7,
     "opponent": "BHA",
     "home": false,
-    "difficulty": 3
+    "difficulty": 4
    },
    {
     "gameweek": 8,
     "opponent": "NEW",
     "home": true,
-    "difficulty": 2
+    "difficulty": 3
    },
    {
     "gameweek": 9,
@@ -20747,7 +20747,7 @@
     "gameweek": 11,
     "opponent": "BHA",
     "home": true,
-    "difficulty": 2
+    "difficulty": 3
    }
   ],
   "EVE": [
@@ -20805,7 +20805,7 @@
     "gameweek": 8,
     "opponent": "BHA",
     "home": true,
-    "difficulty": 2
+    "difficulty": 3
    },
    {
     "gameweek": 9,
@@ -20843,13 +20843,13 @@
     "gameweek": 8,
     "opponent": "AVL",
     "home": false,
-    "difficulty": 4
+    "difficulty": 3
    },
    {
     "gameweek": 9,
     "opponent": "BHA",
     "home": true,
-    "difficulty": 2
+    "difficulty": 3
    },
    {
     "gameweek": 10,
@@ -20869,7 +20869,7 @@
     "gameweek": 6,
     "opponent": "NEW",
     "home": true,
-    "difficulty": 2
+    "difficulty": 3
    },
    {
     "gameweek": 7,
@@ -20887,7 +20887,7 @@
     "gameweek": 9,
     "opponent": "SUN",
     "home": true,
-    "difficulty": 2
+    "difficulty": 3
    },
    {
     "gameweek": 10,
@@ -20899,7 +20899,7 @@
     "gameweek": 11,
     "opponent": "CRY",
     "home": true,
-    "difficulty": 3
+    "difficulty": 2
    }
   ],
   "NEW": [
@@ -21475,8 +21475,8 @@
  },
  "schedule": {
   "phase": "idle",
-  "reason": "361h to the GW6 deadline \u2014 refresh prices and injuries only",
-  "hours_remaining": 361.2
+  "reason": "351h to the GW6 deadline \u2014 refresh prices and injuries only",
+  "hours_remaining": 350.8
  },
  "manager": {
   "entry_id": 6674798,
@@ -21599,7 +21599,7 @@
     "points": 2,
     "multiplier": 1,
     "minutes": 80,
-    "ownership": 33.0,
+    "ownership": 32.9,
     "projected": 3.54
    },
    {
@@ -21662,7 +21662,7 @@
     "points": 0,
     "multiplier": 0,
     "minutes": 0,
-    "ownership": 17.2,
+    "ownership": 17.1,
     "projected": 2.61
    },
    {
@@ -21671,7 +21671,7 @@
     "points": 0,
     "multiplier": 0,
     "minutes": 0,
-    "ownership": 65.5,
+    "ownership": 65.4,
     "projected": 4.04
    },
    {
