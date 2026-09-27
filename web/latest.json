@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated": "2026-09-26T18:29:40+00:00",
+  "generated": "2026-09-27T09:10:38+00:00",
   "gameweek": 6,
   "deadline": "2026-10-10T10:00:00Z",
   "horizon": 6,
@@ -280,7 +280,7 @@
    "team": "EVE",
    "position": "DEF",
    "price": 6.1,
-   "owned": 16.2,
+   "owned": 16.3,
    "xp": [
     4.23,
     3.33,
@@ -344,7 +344,7 @@
    "team": "BHA",
    "position": "MID",
    "price": 5.8,
-   "owned": 28.5,
+   "owned": 28.6,
    "xp": [
     4.24,
     4.85,
@@ -504,7 +504,7 @@
    "team": "BRE",
    "position": "FWD",
    "price": 7.8,
-   "owned": 9.0,
+   "owned": 9.1,
    "xp": [
     3.94,
     3.64,
@@ -920,7 +920,7 @@
    "team": "MCI",
    "position": "MID",
    "price": 7.8,
-   "owned": 28.3,
+   "owned": 28.4,
    "xp": [
     3.11,
     4.06,
@@ -2488,7 +2488,7 @@
    "team": "HUL",
    "position": "MID",
    "price": 5.1,
-   "owned": 5.0,
+   "owned": 5.1,
    "xp": [
     3.03,
     3.03,
@@ -3960,7 +3960,7 @@
    "team": "HUL",
    "position": "MID",
    "price": 4.5,
-   "owned": 5.3,
+   "owned": 5.2,
    "xp": [
     2.46,
     2.41,
@@ -4344,7 +4344,7 @@
    "team": "NEW",
    "position": "MID",
    "price": 5.0,
-   "owned": 0.5,
+   "owned": 0.6,
    "xp": [
     2.31,
     2.38,
@@ -4568,7 +4568,7 @@
    "team": "NEW",
    "position": "FWD",
    "price": 6.2,
-   "owned": 18.7,
+   "owned": 18.6,
    "xp": [
     2.2,
     2.35,
@@ -15351,7 +15351,7 @@
    "name": "Zepa",
    "team": "FUL",
    "position": "MID",
-   "price": 4.5,
+   "price": 4.4,
    "owned": 0.3,
    "xp": [
     0.13,
@@ -15370,7 +15370,7 @@
     0.245
    ],
    "projected": 0.78,
-   "per_million": 0.173,
+   "per_million": 0.177,
    "minutes": 5.12,
    "fixture_score": 3.31,
    "availability": 1.0,
@@ -20993,7 +20993,7 @@
     165
    ],
    "2": [
-    109,
+    572,
     229,
     115,
     330,
@@ -21475,8 +21475,8 @@
  },
  "schedule": {
   "phase": "idle",
-  "reason": "328h to the GW6 deadline \u2014 refresh prices and injuries only",
-  "hours_remaining": 327.5
+  "reason": "313h to the GW6 deadline \u2014 refresh prices and injuries only",
+  "hours_remaining": 312.8
  },
  "manager": {
   "entry_id": 6674798,
@@ -21552,7 +21552,7 @@
    },
    {
     "name": "Thiago",
-    "ownership": 9.0,
+    "ownership": 9.1,
     "points": 5
    }
   ],
@@ -21653,7 +21653,7 @@
     "points": 5,
     "multiplier": 1,
     "minutes": 90,
-    "ownership": 9.0,
+    "ownership": 9.1,
     "projected": 4.66
    },
    {
