@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated": "2026-09-28T09:39:55+00:00",
+  "generated": "2026-09-28T21:11:44+00:00",
   "gameweek": 6,
   "deadline": "2026-10-10T10:00:00Z",
   "horizon": 6,
@@ -120,7 +120,7 @@
    "team": "CHE",
    "position": "FWD",
    "price": 7.7,
-   "owned": 65.3,
+   "owned": 65.2,
    "xp": [
     4.55,
     3.7,
@@ -184,7 +184,7 @@
    "team": "BOU",
    "position": "MID",
    "price": 6.1,
-   "owned": 6.7,
+   "owned": 6.8,
    "xp": [
     4.11,
     4.83,
@@ -280,7 +280,7 @@
    "team": "EVE",
    "position": "DEF",
    "price": 6.1,
-   "owned": 16.3,
+   "owned": 16.4,
    "xp": [
     4.23,
     3.33,
@@ -440,7 +440,7 @@
    "team": "CHE",
    "position": "MID",
    "price": 9.7,
-   "owned": 25.8,
+   "owned": 25.7,
    "xp": [
     3.87,
     3.24,
@@ -888,7 +888,7 @@
    "team": "ARS",
    "position": "GKP",
    "price": 6.1,
-   "owned": 42.2,
+   "owned": 42.3,
    "xp": [
     3.71,
     3.64,
@@ -984,7 +984,7 @@
    "team": "LIV",
    "position": "MID",
    "price": 7.0,
-   "owned": 32.9,
+   "owned": 32.8,
    "xp": [
     3.46,
     3.21,
@@ -1336,7 +1336,7 @@
    "team": "NEW",
    "position": "DEF",
    "price": 5.3,
-   "owned": 17.2,
+   "owned": 17.3,
    "xp": [
     3.36,
     3.44,
@@ -1656,7 +1656,7 @@
    "team": "FUL",
    "position": "GKP",
    "price": 4.5,
-   "owned": 3.3,
+   "owned": 3.4,
    "xp": [
     3.18,
     3.29,
@@ -7832,7 +7832,7 @@
    "team": "ARS",
    "position": "FWD",
    "price": 7.6,
-   "owned": 8.4,
+   "owned": 8.3,
    "xp": [
     1.36,
     1.41,
@@ -21475,8 +21475,8 @@
  },
  "schedule": {
   "phase": "idle",
-  "reason": "288h to the GW6 deadline \u2014 refresh prices and injuries only",
-  "hours_remaining": 288.3
+  "reason": "277h to the GW6 deadline \u2014 refresh prices and injuries only",
+  "hours_remaining": 276.8
  },
  "manager": {
   "entry_id": 6674798,
@@ -21542,7 +21542,7 @@
    },
    {
     "name": "Tavernier",
-    "ownership": 6.7,
+    "ownership": 6.8,
     "points": 2
    },
    {
@@ -21599,7 +21599,7 @@
     "points": 2,
     "multiplier": 1,
     "minutes": 80,
-    "ownership": 32.9,
+    "ownership": 32.8,
     "projected": 3.54
    },
    {
@@ -21626,7 +21626,7 @@
     "points": 2,
     "multiplier": 1,
     "minutes": 74,
-    "ownership": 6.7,
+    "ownership": 6.8,
     "projected": 4.13
    },
    {
@@ -21671,7 +21671,7 @@
     "points": 0,
     "multiplier": 0,
     "minutes": 0,
-    "ownership": 65.3,
+    "ownership": 65.2,
     "projected": 4.04
    },
    {
