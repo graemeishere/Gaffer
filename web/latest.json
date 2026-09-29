@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated": "2026-09-28T21:11:44+00:00",
+  "generated": "2026-09-29T09:44:13+00:00",
   "gameweek": 6,
   "deadline": "2026-10-10T10:00:00Z",
   "horizon": 6,
@@ -344,7 +344,7 @@
    "team": "BHA",
    "position": "MID",
    "price": 5.8,
-   "owned": 28.7,
+   "owned": 28.8,
    "xp": [
     4.24,
     4.85,
@@ -2072,7 +2072,7 @@
    "team": "TOT",
    "position": "DEF",
    "price": 4.9,
-   "owned": 6.5,
+   "owned": 6.6,
    "xp": [
     2.7,
     3.59,
@@ -2936,7 +2936,7 @@
    "team": "SUN",
    "position": "GKP",
    "price": 4.9,
-   "owned": 2.5,
+   "owned": 2.4,
    "xp": [
     2.48,
     2.77,
@@ -4984,7 +4984,7 @@
    "team": "BHA",
    "position": "FWD",
    "price": 5.6,
-   "owned": 4.0,
+   "owned": 4.1,
    "xp": [
     2.33,
     2.62,
@@ -6808,7 +6808,7 @@
    "team": "LIV",
    "position": "FWD",
    "price": 9.1,
-   "owned": 22.5,
+   "owned": 22.4,
    "xp": [
     1.65,
     1.55,
@@ -12023,7 +12023,7 @@
    "name": "Ellborg",
    "team": "SUN",
    "position": "GKP",
-   "price": 4.5,
+   "price": 4.4,
    "owned": 0.1,
    "xp": [
     0.28,
@@ -12042,7 +12042,7 @@
     0.7
    ],
    "projected": 1.94,
-   "per_million": 0.431,
+   "per_million": 0.441,
    "minutes": 8.85,
    "fixture_score": 3.59,
    "availability": 1.0,
@@ -17591,7 +17591,7 @@
    "name": "N\u00f8rgaard",
    "team": "EVE",
    "position": "MID",
-   "price": 4.9,
+   "price": 4.8,
    "owned": 0.0,
    "xp": [
     0.0,
@@ -17975,7 +17975,7 @@
    "name": "Morita",
    "team": "HUL",
    "position": "MID",
-   "price": 5.0,
+   "price": 4.9,
    "owned": 0.0,
    "xp": [
     0.0,
@@ -20087,7 +20087,7 @@
    "name": "Diarra",
    "team": "SUN",
    "position": "MID",
-   "price": 5.4,
+   "price": 5.3,
    "owned": 0.0,
    "xp": [
     0.0,
@@ -21475,8 +21475,8 @@
  },
  "schedule": {
   "phase": "idle",
-  "reason": "277h to the GW6 deadline \u2014 refresh prices and injuries only",
-  "hours_remaining": 276.8
+  "reason": "264h to the GW6 deadline \u2014 refresh prices and injuries only",
+  "hours_remaining": 264.3
  },
  "manager": {
   "entry_id": 6674798,
