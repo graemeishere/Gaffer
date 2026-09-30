@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated": "2026-09-29T19:56:14+00:00",
+  "generated": "2026-09-30T09:36:55+00:00",
   "gameweek": 6,
   "deadline": "2026-10-10T10:00:00Z",
   "horizon": 6,
@@ -280,7 +280,7 @@
    "team": "EVE",
    "position": "DEF",
    "price": 6.1,
-   "owned": 16.4,
+   "owned": 16.5,
    "xp": [
     4.23,
     3.33,
@@ -1304,7 +1304,7 @@
    "team": "BRE",
    "position": "MID",
    "price": 6.2,
-   "owned": 11.4,
+   "owned": 11.5,
    "xp": [
     3.47,
     3.31,
@@ -1720,7 +1720,7 @@
    "team": "BHA",
    "position": "DEF",
    "price": 5.0,
-   "owned": 3.6,
+   "owned": 3.7,
    "xp": [
     3.11,
     3.42,
@@ -1752,7 +1752,7 @@
    "team": "COV",
    "position": "DEF",
    "price": 4.0,
-   "owned": 8.6,
+   "owned": 8.5,
    "xp": [
     2.58,
     3.33,
@@ -1944,7 +1944,7 @@
    "team": "MCI",
    "position": "MID",
    "price": 8.4,
-   "owned": 15.4,
+   "owned": 15.3,
    "xp": [
     2.66,
     3.46,
@@ -3384,7 +3384,7 @@
    "team": "FUL",
    "position": "FWD",
    "price": 6.0,
-   "owned": 3.9,
+   "owned": 4.0,
    "xp": [
     2.64,
     2.44,
@@ -4280,7 +4280,7 @@
    "team": "SUN",
    "position": "FWD",
    "price": 5.7,
-   "owned": 7.0,
+   "owned": 6.9,
    "xp": [
     2.2,
     2.22,
@@ -4919,7 +4919,7 @@
    "name": "Kerkez",
    "team": "LIV",
    "position": "DEF",
-   "price": 5.4,
+   "price": 5.3,
    "owned": 2.2,
    "xp": [
     2.31,
@@ -4938,7 +4938,7 @@
     3.563
    ],
    "projected": 12.95,
-   "per_million": 2.398,
+   "per_million": 2.443,
    "minutes": 68.59,
    "fixture_score": 3.03,
    "availability": 1.0,
@@ -15831,7 +15831,7 @@
    "name": "Pau",
    "team": "AVL",
    "position": "DEF",
-   "price": 4.5,
+   "price": 4.4,
    "owned": 0.3,
    "xp": [
     0.0,
@@ -17239,7 +17239,7 @@
    "name": "Wright",
    "team": "COV",
    "position": "FWD",
-   "price": 5.4,
+   "price": 5.3,
    "owned": 0.1,
    "xp": [
     0.0,
@@ -21475,8 +21475,8 @@
  },
  "schedule": {
   "phase": "idle",
-  "reason": "254h to the GW6 deadline \u2014 refresh prices and injuries only",
-  "hours_remaining": 254.1
+  "reason": "240h to the GW6 deadline \u2014 refresh prices and injuries only",
+  "hours_remaining": 240.4
  },
  "manager": {
   "entry_id": 6674798,
