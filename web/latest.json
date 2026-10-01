@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated": "2026-09-30T19:56:51+00:00",
+  "generated": "2026-10-01T10:02:09+00:00",
   "gameweek": 6,
   "deadline": "2026-10-10T10:00:00Z",
   "horizon": 6,
@@ -279,7 +279,7 @@
    "name": "Tarkowski",
    "team": "EVE",
    "position": "DEF",
-   "price": 6.1,
+   "price": 6.2,
    "owned": 16.5,
    "xp": [
     4.23,
@@ -298,7 +298,7 @@
     3.925
    ],
    "projected": 24.19,
-   "per_million": 3.966,
+   "per_million": 3.902,
    "minutes": 90.0,
    "fixture_score": 3.44,
    "availability": 1.0,
@@ -2007,7 +2007,7 @@
    "name": "Richards",
    "team": "CRY",
    "position": "DEF",
-   "price": 5.0,
+   "price": 4.9,
    "owned": 0.6,
    "xp": [
     3.55,
@@ -2026,7 +2026,7 @@
     2.908
    ],
    "projected": 18.0,
-   "per_million": 3.6,
+   "per_million": 3.673,
    "minutes": 87.36,
    "fixture_score": 3.38,
    "availability": 1.0,
@@ -4952,7 +4952,7 @@
    "team": "BHA",
    "position": "FWD",
    "price": 5.6,
-   "owned": 4.1,
+   "owned": 4.2,
    "xp": [
     2.33,
     2.62,
@@ -8791,7 +8791,7 @@
    "name": "Merino",
    "team": "ARS",
    "position": "MID",
-   "price": 5.8,
+   "price": 5.7,
    "owned": 0.4,
    "xp": [
     1.13,
@@ -8810,7 +8810,7 @@
     2.985
    ],
    "projected": 6.9,
-   "per_million": 1.19,
+   "per_million": 1.211,
    "minutes": 24.22,
    "fixture_score": 2.64,
    "availability": 1.0,
@@ -10487,7 +10487,7 @@
    "name": "Heaven",
    "team": "MUN",
    "position": "DEF",
-   "price": 4.4,
+   "price": 4.3,
    "owned": 0.3,
    "xp": [
     0.94,
@@ -10506,7 +10506,7 @@
     2.084
    ],
    "projected": 4.28,
-   "per_million": 0.973,
+   "per_million": 0.995,
    "minutes": 23.96,
    "fixture_score": 3.16,
    "availability": 1.0,
@@ -20949,7 +20949,7 @@
    115,
    330,
    88,
-   586,
+   280,
    40,
    426,
    68,
@@ -20970,7 +20970,7 @@
     572,
     229,
     115,
-    586,
+    280,
     40,
     426,
     68,
@@ -21054,7 +21054,7 @@
    "5": 411
   },
   "cost": 100.0,
-  "expected_points": 243.12,
+  "expected_points": 242.94,
   "status": "optimal"
  },
  "lineup": {
@@ -21130,7 +21130,7 @@
    "action": "hold",
    "best_gameweek": 10,
    "best_value": 7.539999999999999,
-   "value_now": 7.43,
+   "value_now": 7.329999999999998,
    "reason": "GW10 is the best of 6 weeks in view at 7.5; 27 weeks still unseen"
   },
   {
@@ -21475,8 +21475,8 @@
  },
  "schedule": {
   "phase": "idle",
-  "reason": "230h to the GW6 deadline \u2014 refresh prices and injuries only",
-  "hours_remaining": 230.1
+  "reason": "216h to the GW6 deadline \u2014 refresh prices and injuries only",
+  "hours_remaining": 216.0
  },
  "manager": {
   "entry_id": 6674798,
