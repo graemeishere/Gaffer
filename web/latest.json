@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated": "2026-10-03T09:05:14+00:00",
+  "generated": "2026-10-03T18:39:17+00:00",
   "gameweek": 6,
   "deadline": "2026-10-10T10:00:00Z",
   "horizon": 6,
@@ -344,7 +344,7 @@
    "team": "BHA",
    "position": "MID",
    "price": 5.8,
-   "owned": 29.1,
+   "owned": 29.2,
    "xp": [
     4.24,
     4.85,
@@ -408,7 +408,7 @@
    "team": "BHA",
    "position": "DEF",
    "price": 5.0,
-   "owned": 27.8,
+   "owned": 27.9,
    "xp": [
     4.05,
     4.75,
@@ -472,7 +472,7 @@
    "team": "CHE",
    "position": "MID",
    "price": 9.7,
-   "owned": 25.6,
+   "owned": 25.5,
    "xp": [
     3.87,
     3.24,
@@ -1912,7 +1912,7 @@
    "team": "MCI",
    "position": "MID",
    "price": 8.4,
-   "owned": 15.3,
+   "owned": 15.2,
    "xp": [
     2.68,
     3.5,
@@ -2872,7 +2872,7 @@
    "team": "IPS",
    "position": "DEF",
    "price": 4.0,
-   "owned": 6.9,
+   "owned": 7.0,
    "xp": [
     3.11,
     2.17,
@@ -3096,7 +3096,7 @@
    "team": "MCI",
    "position": "DEF",
    "price": 5.7,
-   "owned": 26.8,
+   "owned": 26.9,
    "xp": [
     2.49,
     2.95,
@@ -3704,7 +3704,7 @@
    "team": "CHE",
    "position": "DEF",
    "price": 4.9,
-   "owned": 1.0,
+   "owned": 0.9,
    "xp": [
     2.35,
     2.38,
@@ -4696,7 +4696,7 @@
    "team": "FUL",
    "position": "MID",
    "price": 5.5,
-   "owned": 2.6,
+   "owned": 2.7,
    "xp": [
     2.22,
     2.08,
@@ -4792,7 +4792,7 @@
    "team": "FUL",
    "position": "DEF",
    "price": 4.5,
-   "owned": 0.9,
+   "owned": 1.0,
    "xp": [
     2.22,
     2.29,
@@ -6296,7 +6296,7 @@
    "team": "ARS",
    "position": "FWD",
    "price": 7.1,
-   "owned": 3.1,
+   "owned": 3.2,
    "xp": [
     1.73,
     1.79,
@@ -21475,8 +21475,8 @@
  },
  "schedule": {
   "phase": "idle",
-  "reason": "169h to the GW6 deadline \u2014 refresh prices and injuries only",
-  "hours_remaining": 168.9
+  "reason": "159h to the GW6 deadline \u2014 refresh prices and injuries only",
+  "hours_remaining": 159.3
  },
  "manager": {
   "entry_id": 6674798,
