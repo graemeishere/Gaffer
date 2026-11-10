@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated": "2026-11-09T23:46:22+00:00",
+  "generated": "2026-11-10T10:59:08+00:00",
   "gameweek": 11,
   "deadline": "2026-11-21T11:00:00Z",
   "horizon": 6,
@@ -312,7 +312,7 @@
    "team": "BHA",
    "position": "DEF",
    "price": 5.3,
-   "owned": 8.9,
+   "owned": 9.0,
    "xp": [
     4.22,
     4.71,
@@ -632,7 +632,7 @@
    "team": "AVL",
    "position": "FWD",
    "price": 7.1,
-   "owned": 30.6,
+   "owned": 30.7,
    "xp": [
     3.82,
     3.87,
@@ -760,7 +760,7 @@
    "team": "ARS",
    "position": "GKP",
    "price": 6.2,
-   "owned": 47.4,
+   "owned": 47.5,
    "xp": [
     3.79,
     3.5,
@@ -792,7 +792,7 @@
    "team": "BOU",
    "position": "DEF",
    "price": 5.6,
-   "owned": 2.9,
+   "owned": 3.0,
    "xp": [
     4.01,
     3.64,
@@ -855,7 +855,7 @@
    "name": "Anderson",
    "team": "MCI",
    "position": "MID",
-   "price": 6.3,
+   "price": 6.2,
    "owned": 3.6,
    "xp": [
     3.82,
@@ -874,7 +874,7 @@
     3.182
    ],
    "projected": 21.84,
-   "per_million": 3.467,
+   "per_million": 3.523,
    "minutes": 79.85,
    "fixture_score": 2.57,
    "availability": 1.0,
@@ -984,7 +984,7 @@
    "team": "LIV",
    "position": "MID",
    "price": 7.2,
-   "owned": 5.4,
+   "owned": 5.5,
    "xp": [
     4.05,
     3.22,
@@ -1080,7 +1080,7 @@
    "team": "ARS",
    "position": "DEF",
    "price": 4.8,
-   "owned": 24.3,
+   "owned": 24.4,
    "xp": [
     3.61,
     3.3,
@@ -1240,7 +1240,7 @@
    "team": "EVE",
    "position": "MID",
    "price": 6.6,
-   "owned": 7.1,
+   "owned": 7.2,
    "xp": [
     3.36,
     3.47,
@@ -1496,7 +1496,7 @@
    "team": "BRE",
    "position": "MID",
    "price": 6.1,
-   "owned": 13.0,
+   "owned": 12.9,
    "xp": [
     3.35,
     3.47,
@@ -2360,7 +2360,7 @@
    "team": "LIV",
    "position": "DEF",
    "price": 5.5,
-   "owned": 4.3,
+   "owned": 4.4,
    "xp": [
     3.06,
     2.71,
@@ -2871,7 +2871,7 @@
    "name": "Wharton",
    "team": "CRY",
    "position": "MID",
-   "price": 5.4,
+   "price": 5.3,
    "owned": 0.6,
    "xp": [
     2.75,
@@ -2890,7 +2890,7 @@
     1.665
    ],
    "projected": 16.19,
-   "per_million": 2.998,
+   "per_million": 3.055,
    "minutes": 80.93,
    "fixture_score": 4.08,
    "availability": 1.0,
@@ -3576,7 +3576,7 @@
    "team": "MCI",
    "position": "DEF",
    "price": 6.0,
-   "owned": 14.4,
+   "owned": 14.3,
    "xp": [
     2.92,
     1.75,
@@ -4184,7 +4184,7 @@
    "team": "ARS",
    "position": "DEF",
    "price": 5.4,
-   "owned": 4.3,
+   "owned": 4.2,
    "xp": [
     2.41,
     2.15,
@@ -4440,7 +4440,7 @@
    "team": "BRE",
    "position": "MID",
    "price": 5.4,
-   "owned": 5.9,
+   "owned": 5.8,
    "xp": [
     2.29,
     2.25,
@@ -5304,7 +5304,7 @@
    "team": "MCI",
    "position": "DEF",
    "price": 5.6,
-   "owned": 23.1,
+   "owned": 23.0,
    "xp": [
     2.34,
     1.47,
@@ -5367,7 +5367,7 @@
    "name": "Wilson",
    "team": "LEE",
    "position": "MID",
-   "price": 6.2,
+   "price": 6.1,
    "owned": 1.1,
    "xp": [
     1.88,
@@ -5386,7 +5386,7 @@
     2.689
    ],
    "projected": 12.06,
-   "per_million": 1.945,
+   "per_million": 1.977,
    "minutes": 49.75,
    "fixture_score": 2.83,
    "availability": 1.0,
@@ -8120,7 +8120,7 @@
    "team": "LEE",
    "position": "MID",
    "price": 6.0,
-   "owned": 1.7,
+   "owned": 1.6,
    "xp": [
     1.28,
     1.55,
@@ -12088,7 +12088,7 @@
    "team": "BOU",
    "position": "MID",
    "price": 4.8,
-   "owned": 0.1,
+   "owned": 0.0,
    "xp": [
     0.46,
     0.41,
@@ -15383,7 +15383,7 @@
    "name": "Doucour\u00e9",
    "team": "CRY",
    "position": "MID",
-   "price": 4.8,
+   "price": 4.7,
    "owned": 0.0,
    "xp": [
     0.14,
@@ -15402,7 +15402,7 @@
     0.263
    ],
    "projected": 0.82,
-   "per_million": 0.171,
+   "per_million": 0.174,
    "minutes": 5.63,
    "fixture_score": 4.08,
    "availability": 1.0,
@@ -20311,7 +20311,7 @@
    "name": "Madjo",
    "team": "AVL",
    "position": "FWD",
-   "price": 5.4,
+   "price": 5.3,
    "owned": 0.2,
    "xp": [
     -0.2,
@@ -20330,7 +20330,7 @@
     0.334
    ],
    "projected": -1.27,
-   "per_million": -0.235,
+   "per_million": -0.24,
    "minutes": 5.32,
    "fixture_score": 2.7,
    "availability": 1.0,
@@ -21635,8 +21635,8 @@
  },
  "schedule": {
   "phase": "idle",
-  "reason": "275h to the GW11 deadline \u2014 refresh prices and injuries only",
-  "hours_remaining": 275.2
+  "reason": "264h to the GW11 deadline \u2014 refresh prices and injuries only",
+  "hours_remaining": 264.0
  },
  "manager": {
   "entry_id": 6674798,
@@ -21712,7 +21712,7 @@
     "points": 0,
     "multiplier": 1,
     "minutes": 45,
-    "ownership": 14.4,
+    "ownership": 14.3,
     "projected": 3.37
    },
    {
