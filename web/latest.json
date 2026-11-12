@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated": "2026-11-11T21:52:19+00:00",
+  "generated": "2026-11-12T10:53:47+00:00",
   "gameweek": 11,
   "deadline": "2026-11-21T11:00:00Z",
   "horizon": 6,
@@ -120,7 +120,7 @@
    "team": "BHA",
    "position": "DEF",
    "price": 5.5,
-   "owned": 47.7,
+   "owned": 47.8,
    "xp": [
     4.45,
     5.68,
@@ -280,7 +280,7 @@
    "team": "BHA",
    "position": "MID",
    "price": 6.3,
-   "owned": 48.0,
+   "owned": 48.1,
    "xp": [
     3.72,
     5.1,
@@ -504,7 +504,7 @@
    "team": "BHA",
    "position": "GKP",
    "price": 4.7,
-   "owned": 23.9,
+   "owned": 24.0,
    "xp": [
     3.96,
     3.98,
@@ -920,7 +920,7 @@
    "team": "BHA",
    "position": "MID",
    "price": 5.0,
-   "owned": 4.2,
+   "owned": 4.3,
    "xp": [
     3.31,
     4.12,
@@ -1048,7 +1048,7 @@
    "team": "LIV",
    "position": "MID",
    "price": 7.2,
-   "owned": 5.5,
+   "owned": 5.6,
    "xp": [
     4.04,
     3.22,
@@ -3160,7 +3160,7 @@
    "team": "FUL",
    "position": "FWD",
    "price": 5.9,
-   "owned": 3.7,
+   "owned": 3.6,
    "xp": [
     2.61,
     2.82,
@@ -4216,7 +4216,7 @@
    "team": "NEW",
    "position": "DEF",
    "price": 5.2,
-   "owned": 18.3,
+   "owned": 18.2,
    "xp": [
     2.21,
     1.42,
@@ -6680,7 +6680,7 @@
    "team": "TOT",
    "position": "FWD",
    "price": 7.0,
-   "owned": 2.6,
+   "owned": 2.5,
    "xp": [
     1.99,
     1.71,
@@ -8504,7 +8504,7 @@
    "team": "TOT",
    "position": "GKP",
    "price": 4.0,
-   "owned": 15.3,
+   "owned": 15.2,
    "xp": [
     1.32,
     1.32,
@@ -9047,7 +9047,7 @@
    "name": "Steur",
    "team": "NEW",
    "position": "MID",
-   "price": 4.8,
+   "price": 4.7,
    "owned": 0.1,
    "xp": [
     1.17,
@@ -9066,7 +9066,7 @@
     1.102
    ],
    "projected": 7.25,
-   "per_million": 1.51,
+   "per_million": 1.543,
    "minutes": 34.53,
    "fixture_score": 3.82,
    "availability": 1.0,
@@ -16728,7 +16728,7 @@
    "team": "BRE",
    "position": "FWD",
    "price": 7.8,
-   "owned": 8.2,
+   "owned": 8.1,
    "xp": [
     0.0,
     0.0,
@@ -17400,7 +17400,7 @@
    "team": "CHE",
    "position": "FWD",
    "price": 7.6,
-   "owned": 31.9,
+   "owned": 31.8,
    "xp": [
     0.0,
     0.0,
@@ -21635,8 +21635,8 @@
  },
  "schedule": {
   "phase": "idle",
-  "reason": "229h to the GW11 deadline \u2014 refresh prices and injuries only",
-  "hours_remaining": 229.1
+  "reason": "216h to the GW11 deadline \u2014 refresh prices and injuries only",
+  "hours_remaining": 216.1
  },
  "manager": {
   "entry_id": 6674798,
@@ -21703,7 +21703,7 @@
     "points": 6,
     "multiplier": 1,
     "minutes": 90,
-    "ownership": 23.9,
+    "ownership": 24.0,
     "projected": 3.58
    },
    {
@@ -21739,7 +21739,7 @@
     "points": 6,
     "multiplier": 1,
     "minutes": 81,
-    "ownership": 47.7,
+    "ownership": 47.8,
     "projected": 4.07
    },
    {
@@ -21802,7 +21802,7 @@
     "points": 0,
     "multiplier": 0,
     "minutes": 0,
-    "ownership": 15.3,
+    "ownership": 15.2,
     "projected": 1.46
    },
    {
@@ -21820,7 +21820,7 @@
     "points": -2,
     "multiplier": 0,
     "minutes": 22,
-    "ownership": 8.2,
+    "ownership": 8.1,
     "projected": 3.12
    },
    {
