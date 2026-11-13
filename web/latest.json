@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated": "2026-11-13T10:49:32+00:00",
+  "generated": "2026-11-13T21:24:08+00:00",
   "gameweek": 11,
   "deadline": "2026-11-21T11:00:00Z",
   "horizon": 6,
@@ -24,7 +24,7 @@
    "team": "MCI",
    "position": "FWD",
    "price": 15.8,
-   "owned": 78.9,
+   "owned": 78.8,
    "xp": [
     6.52,
     4.23,
@@ -120,7 +120,7 @@
    "team": "BHA",
    "position": "DEF",
    "price": 5.5,
-   "owned": 47.8,
+   "owned": 47.9,
    "xp": [
     4.45,
     5.68,
@@ -184,7 +184,7 @@
    "team": "ARS",
    "position": "DEF",
    "price": 8.1,
-   "owned": 26.1,
+   "owned": 26.2,
    "xp": [
     4.81,
     4.39,
@@ -312,7 +312,7 @@
    "team": "BHA",
    "position": "DEF",
    "price": 5.3,
-   "owned": 9.3,
+   "owned": 9.4,
    "xp": [
     4.23,
     4.71,
@@ -408,7 +408,7 @@
    "team": "BOU",
    "position": "FWD",
    "price": 6.5,
-   "owned": 23.8,
+   "owned": 23.9,
    "xp": [
     4.16,
     3.71,
@@ -1176,7 +1176,7 @@
    "team": "EVE",
    "position": "FWD",
    "price": 5.7,
-   "owned": 10.7,
+   "owned": 10.8,
    "xp": [
     3.37,
     3.5,
@@ -1496,7 +1496,7 @@
    "team": "BRE",
    "position": "MID",
    "price": 6.1,
-   "owned": 12.9,
+   "owned": 12.8,
    "xp": [
     3.35,
     3.47,
@@ -4632,7 +4632,7 @@
    "team": "FUL",
    "position": "MID",
    "price": 4.8,
-   "owned": 0.2,
+   "owned": 0.3,
    "xp": [
     2.02,
     2.19,
@@ -5304,7 +5304,7 @@
    "team": "MCI",
    "position": "DEF",
    "price": 5.6,
-   "owned": 22.7,
+   "owned": 22.6,
    "xp": [
     2.34,
     1.47,
@@ -6520,7 +6520,7 @@
    "team": "ARS",
    "position": "MID",
    "price": 5.2,
-   "owned": 0.5,
+   "owned": 0.4,
    "xp": [
     1.8,
     1.71,
@@ -7384,7 +7384,7 @@
    "team": "IPS",
    "position": "DEF",
    "price": 3.9,
-   "owned": 9.9,
+   "owned": 9.8,
    "xp": [
     1.68,
     1.59,
@@ -17400,7 +17400,7 @@
    "team": "CHE",
    "position": "FWD",
    "price": 7.6,
-   "owned": 31.7,
+   "owned": 31.6,
    "xp": [
     0.0,
     0.0,
@@ -19128,7 +19128,7 @@
    "team": "MUN",
    "position": "DEF",
    "price": 4.2,
-   "owned": 3.3,
+   "owned": 3.2,
    "xp": [
     0.0,
     0.0,
@@ -21635,8 +21635,8 @@
  },
  "schedule": {
   "phase": "idle",
-  "reason": "192h to the GW11 deadline \u2014 refresh prices and injuries only",
-  "hours_remaining": 192.2
+  "reason": "182h to the GW11 deadline \u2014 refresh prices and injuries only",
+  "hours_remaining": 181.6
  },
  "manager": {
   "entry_id": 6674798,
@@ -21739,7 +21739,7 @@
     "points": 6,
     "multiplier": 1,
     "minutes": 81,
-    "ownership": 47.8,
+    "ownership": 47.9,
     "projected": 4.07
    },
    {
@@ -21784,7 +21784,7 @@
     "points": 2,
     "multiplier": 2,
     "minutes": 90,
-    "ownership": 78.9,
+    "ownership": 78.8,
     "projected": 5.94
    },
    {
@@ -21793,7 +21793,7 @@
     "points": 9,
     "multiplier": 1,
     "minutes": 84,
-    "ownership": 23.8,
+    "ownership": 23.9,
     "projected": 4.83
    },
    {
