@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated": "2026-11-12T21:49:31+00:00",
+  "generated": "2026-11-13T10:49:32+00:00",
   "gameweek": 11,
   "deadline": "2026-11-21T11:00:00Z",
   "horizon": 6,
@@ -152,7 +152,7 @@
    "team": "CHE",
    "position": "MID",
    "price": 9.8,
-   "owned": 28.4,
+   "owned": 28.3,
    "xp": [
     4.2,
     4.14,
@@ -472,7 +472,7 @@
    "team": "AVL",
    "position": "FWD",
    "price": 7.1,
-   "owned": 31.1,
+   "owned": 31.2,
    "xp": [
     3.87,
     3.91,
@@ -2072,7 +2072,7 @@
    "team": "LEE",
    "position": "FWD",
    "price": 6.0,
-   "owned": 17.6,
+   "owned": 17.5,
    "xp": [
     2.93,
     3.54,
@@ -4088,7 +4088,7 @@
    "team": "CRY",
    "position": "DEF",
    "price": 4.5,
-   "owned": 4.7,
+   "owned": 4.6,
    "xp": [
     2.54,
     3.13,
@@ -17400,7 +17400,7 @@
    "team": "CHE",
    "position": "FWD",
    "price": 7.6,
-   "owned": 31.8,
+   "owned": 31.7,
    "xp": [
     0.0,
     0.0,
@@ -21635,8 +21635,8 @@
  },
  "schedule": {
   "phase": "idle",
-  "reason": "205h to the GW11 deadline \u2014 refresh prices and injuries only",
-  "hours_remaining": 205.2
+  "reason": "192h to the GW11 deadline \u2014 refresh prices and injuries only",
+  "hours_remaining": 192.2
  },
  "manager": {
   "entry_id": 6674798,
