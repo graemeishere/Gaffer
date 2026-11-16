@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated": "2026-11-15T20:17:25+00:00",
+  "generated": "2026-11-16T10:57:33+00:00",
   "gameweek": 11,
   "deadline": "2026-11-21T11:00:00Z",
   "horizon": 6,
@@ -472,7 +472,7 @@
    "team": "AVL",
    "position": "FWD",
    "price": 7.1,
-   "owned": 31.4,
+   "owned": 31.5,
    "xp": [
     3.91,
     3.96,
@@ -2360,7 +2360,7 @@
    "team": "AVL",
    "position": "GKP",
    "price": 5.0,
-   "owned": 3.1,
+   "owned": 3.2,
    "xp": [
     3.17,
     2.73,
@@ -2808,7 +2808,7 @@
    "team": "LIV",
    "position": "DEF",
    "price": 6.4,
-   "owned": 14.8,
+   "owned": 14.7,
    "xp": [
     2.8,
     2.56,
@@ -3544,7 +3544,7 @@
    "team": "MCI",
    "position": "DEF",
    "price": 6.0,
-   "owned": 14.0,
+   "owned": 13.9,
    "xp": [
     2.92,
     1.75,
@@ -5304,7 +5304,7 @@
    "team": "MCI",
    "position": "DEF",
    "price": 5.6,
-   "owned": 22.5,
+   "owned": 22.4,
    "xp": [
     2.34,
     1.47,
@@ -7927,7 +7927,7 @@
    "name": "Hamer",
    "team": "COV",
    "position": "MID",
-   "price": 5.3,
+   "price": 5.2,
    "owned": 0.1,
    "xp": [
     1.65,
@@ -7946,7 +7946,7 @@
     1.969
    ],
    "projected": 8.45,
-   "per_million": 1.594,
+   "per_million": 1.625,
    "minutes": 36.19,
    "fixture_score": 3.51,
    "availability": 1.0,
@@ -11736,7 +11736,7 @@
    "team": "CRY",
    "position": "MID",
    "price": 4.3,
-   "owned": 5.6,
+   "owned": 5.5,
    "xp": [
     0.52,
     0.53,
@@ -14328,7 +14328,7 @@
    "team": "BOU",
    "position": "GKP",
    "price": 4.0,
-   "owned": 3.4,
+   "owned": 3.3,
    "xp": [
     0.19,
     0.17,
@@ -16280,7 +16280,7 @@
    "team": "AVL",
    "position": "DEF",
    "price": 4.0,
-   "owned": 1.1,
+   "owned": 1.0,
    "xp": [
     0.0,
     0.0,
@@ -17400,7 +17400,7 @@
    "team": "CHE",
    "position": "FWD",
    "price": 7.6,
-   "owned": 31.5,
+   "owned": 31.4,
    "xp": [
     0.0,
     0.0,
@@ -21635,8 +21635,8 @@
  },
  "schedule": {
   "phase": "idle",
-  "reason": "135h to the GW11 deadline \u2014 refresh prices and injuries only",
-  "hours_remaining": 134.7
+  "reason": "120h to the GW11 deadline \u2014 refresh prices and injuries only",
+  "hours_remaining": 120.0
  },
  "manager": {
   "entry_id": 6674798,
@@ -21712,7 +21712,7 @@
     "points": 0,
     "multiplier": 1,
     "minutes": 45,
-    "ownership": 14.0,
+    "ownership": 13.9,
     "projected": 3.37
    },
    {
