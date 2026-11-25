@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated": "2026-11-24T23:51:28+00:00",
+  "generated": "2026-11-25T12:33:27+00:00",
   "gameweek": 12,
   "deadline": "2026-11-27T18:30:00Z",
   "horizon": 6,
@@ -24,7 +24,7 @@
    "team": "MCI",
    "position": "FWD",
    "price": 15.8,
-   "owned": 77.6,
+   "owned": 77.5,
    "xp": [
     4.13,
     5.33,
@@ -56,7 +56,7 @@
    "team": "MUN",
    "position": "MID",
    "price": 11.6,
-   "owned": 19.9,
+   "owned": 20.0,
    "xp": [
     4.7,
     5.09,
@@ -100,7 +100,7 @@
    "var": [
     9.105,
     20.808,
-    9.619,
+    9.617,
     9.067,
     14.616,
     12.908
@@ -196,7 +196,7 @@
    "var": [
     8.929,
     20.179,
-    9.377,
+    9.373,
     8.824,
     14.193,
     12.566
@@ -211,6 +211,38 @@
    "note": ""
   },
   {
+   "id": 356,
+   "name": "Virgil",
+   "team": "LIV",
+   "position": "DEF",
+   "price": 6.4,
+   "owned": 14.6,
+   "xp": [
+    4.44,
+    5.22,
+    3.53,
+    4.61,
+    5.02,
+    4.44
+   ],
+   "var": [
+    6.545,
+    7.957,
+    6.087,
+    6.644,
+    7.167,
+    6.279
+   ],
+   "projected": 27.26,
+   "per_million": 4.259,
+   "minutes": 88.36,
+   "fixture_score": 2.34,
+   "availability": 1.0,
+   "confidence": "high",
+   "moved_club": false,
+   "note": ""
+  },
+  {
    "id": 533,
    "name": "Mukiele",
    "team": "SUN",
@@ -219,7 +251,7 @@
    "owned": 1.4,
    "xp": [
     4.96,
-    3.43,
+    3.42,
     4.06,
     4.95,
     5.28,
@@ -227,14 +259,14 @@
    ],
    "var": [
     6.151,
-    3.551,
+    3.549,
     5.309,
     6.473,
     8.414,
     5.286
    ],
-   "projected": 27.05,
-   "per_million": 5.104,
+   "projected": 27.04,
+   "per_million": 5.102,
    "minutes": 90.0,
    "fixture_score": 3.19,
    "availability": 1.0,
@@ -419,7 +451,7 @@
    ],
    "var": [
     5.877,
-    4.156,
+    4.152,
     6.982,
     7.009,
     11.691,
@@ -435,31 +467,31 @@
    "note": ""
   },
   {
-   "id": 356,
-   "name": "Virgil",
+   "id": 366,
+   "name": "Wirtz",
    "team": "LIV",
-   "position": "DEF",
-   "price": 6.4,
-   "owned": 14.6,
+   "position": "MID",
+   "price": 7.4,
+   "owned": 10.3,
    "xp": [
-    4.02,
-    4.73,
-    3.18,
-    4.17,
-    4.55,
-    4.02
+    3.92,
+    4.62,
+    4.15,
+    3.94,
+    4.13,
+    3.81
    ],
    "var": [
-    6.154,
-    7.566,
-    5.605,
-    6.276,
-    6.837,
-    5.92
+    6.108,
+    8.429,
+    7.904,
+    6.054,
+    6.801,
+    5.505
    ],
-   "projected": 24.67,
-   "per_million": 3.855,
-   "minutes": 80.8,
+   "projected": 24.57,
+   "per_million": 3.32,
+   "minutes": 82.12,
    "fixture_score": 2.34,
    "availability": 1.0,
    "confidence": "high",
@@ -472,7 +504,7 @@
    "team": "BOU",
    "position": "FWD",
    "price": 6.6,
-   "owned": 27.4,
+   "owned": 27.5,
    "xp": [
     3.86,
     3.98,
@@ -568,14 +600,14 @@
    "team": "HUL",
    "position": "GKP",
    "price": 4.7,
-   "owned": 13.6,
+   "owned": 13.7,
    "xp": [
     4.15,
     4.54,
     3.6,
     4.43,
     3.42,
-    3.88
+    3.87
    ],
    "var": [
     4.06,
@@ -583,16 +615,48 @@
     2.863,
     4.461,
     2.469,
-    3.709
+    3.704
    ],
-   "projected": 24.02,
-   "per_million": 5.111,
+   "projected": 24.01,
+   "per_million": 5.109,
    "minutes": 88.83,
    "fixture_score": 3.23,
    "availability": 1.0,
    "confidence": "medium",
    "moved_club": true,
    "note": "new club \u2014 prior stats earned elsewhere"
+  },
+  {
+   "id": 368,
+   "name": "Szoboszlai",
+   "team": "LIV",
+   "position": "MID",
+   "price": 6.7,
+   "owned": 13.9,
+   "xp": [
+    3.8,
+    4.49,
+    4.07,
+    3.81,
+    4.02,
+    3.68
+   ],
+   "var": [
+    6.17,
+    8.553,
+    8.044,
+    6.114,
+    6.904,
+    5.54
+   ],
+   "projected": 23.87,
+   "per_million": 3.563,
+   "minutes": 75.85,
+   "fixture_score": 2.34,
+   "availability": 1.0,
+   "confidence": "high",
+   "moved_club": false,
+   "note": ""
   },
   {
    "id": 156,
@@ -612,7 +676,7 @@
    "var": [
     6.19,
     13.945,
-    6.49,
+    6.488,
     6.091,
     9.815,
     8.689
@@ -696,7 +760,7 @@
    "team": "BHA",
    "position": "GKP",
    "price": 4.7,
-   "owned": 24.7,
+   "owned": 24.8,
    "xp": [
     3.97,
     3.35,
@@ -727,7 +791,7 @@
    "name": "Hill",
    "team": "BOU",
    "position": "DEF",
-   "price": 5.6,
+   "price": 5.7,
    "owned": 4.5,
    "xp": [
     3.87,
@@ -746,7 +810,7 @@
     4.382
    ],
    "projected": 23.1,
-   "per_million": 4.125,
+   "per_million": 4.053,
    "minutes": 75.93,
    "fixture_score": 2.66,
    "availability": 1.0,
@@ -781,38 +845,6 @@
    "per_million": 4.16,
    "minutes": 71.15,
    "fixture_score": 1.75,
-   "availability": 1.0,
-   "confidence": "high",
-   "moved_club": false,
-   "note": ""
-  },
-  {
-   "id": 366,
-   "name": "Wirtz",
-   "team": "LIV",
-   "position": "MID",
-   "price": 7.4,
-   "owned": 10.1,
-   "xp": [
-    3.65,
-    4.29,
-    3.86,
-    3.67,
-    3.84,
-    3.55
-   ],
-   "var": [
-    5.598,
-    7.728,
-    7.234,
-    5.551,
-    6.237,
-    5.049
-   ],
-   "projected": 22.86,
-   "per_million": 3.089,
-   "minutes": 75.1,
-   "fixture_score": 2.34,
    "availability": 1.0,
    "confidence": "high",
    "moved_club": false,
@@ -888,7 +920,7 @@
    "team": "TOT",
    "position": "DEF",
    "price": 5.2,
-   "owned": 19.5,
+   "owned": 19.6,
    "xp": [
     4.0,
     4.39,
@@ -902,7 +934,7 @@
     7.304,
     5.402,
     5.973,
-    4.558,
+    4.556,
     6.549
    ],
    "projected": 22.33,
@@ -952,7 +984,7 @@
    "team": "EVE",
    "position": "MID",
    "price": 6.7,
-   "owned": 7.1,
+   "owned": 7.0,
    "xp": [
     3.53,
     3.66,
@@ -962,7 +994,7 @@
     4.16
    ],
    "var": [
-    4.262,
+    4.258,
     4.791,
     5.149,
     3.228,
@@ -995,7 +1027,7 @@
    ],
    "var": [
     4.0,
-    2.074,
+    2.072,
     2.734,
     3.941,
     3.893,
@@ -1011,36 +1043,36 @@
    "note": ""
   },
   {
-   "id": 368,
-   "name": "Szoboszlai",
+   "id": 362,
+   "name": "Jacquet",
    "team": "LIV",
-   "position": "MID",
-   "price": 6.7,
-   "owned": 13.8,
+   "position": "DEF",
+   "price": 5.1,
+   "owned": 4.9,
    "xp": [
-    3.49,
+    3.6,
+    4.29,
+    2.59,
+    3.77,
     4.13,
-    3.74,
-    3.51,
-    3.7,
-    3.38
+    3.63
    ],
    "var": [
-    5.651,
-    7.838,
-    7.359,
-    5.603,
-    6.328,
-    5.078
+    5.201,
+    6.04,
+    4.225,
+    5.317,
+    5.625,
+    5.107
    ],
-   "projected": 21.95,
-   "per_million": 3.276,
-   "minutes": 69.36,
+   "projected": 22.01,
+   "per_million": 4.316,
+   "minutes": 88.36,
    "fixture_score": 2.34,
    "availability": 1.0,
-   "confidence": "high",
-   "moved_club": false,
-   "note": ""
+   "confidence": "medium",
+   "moved_club": true,
+   "note": "new club \u2014 prior stats earned elsewhere"
   },
   {
    "id": 105,
@@ -1090,7 +1122,7 @@
     3.92
    ],
    "var": [
-    1.629,
+    1.627,
     1.799,
     1.977,
     1.216,
@@ -1122,7 +1154,7 @@
     4.13
    ],
    "var": [
-    3.102,
+    3.101,
     2.829,
     4.005,
     1.508,
@@ -1186,7 +1218,7 @@
     4.03
    ],
    "var": [
-    5.829,
+    5.827,
     6.631,
     7.025,
     4.422,
@@ -1203,12 +1235,44 @@
    "note": ""
   },
   {
+   "id": 379,
+   "name": "Isak",
+   "team": "LIV",
+   "position": "FWD",
+   "price": 9.3,
+   "owned": 27.1,
+   "xp": [
+    3.38,
+    4.03,
+    3.84,
+    3.36,
+    3.52,
+    3.24
+   ],
+   "var": [
+    6.213,
+    8.586,
+    8.176,
+    6.147,
+    6.916,
+    5.582
+   ],
+   "projected": 21.37,
+   "per_million": 2.298,
+   "minutes": 64.13,
+   "fixture_score": 2.34,
+   "availability": 1.0,
+   "confidence": "high",
+   "moved_club": false,
+   "note": ""
+  },
+  {
    "id": 166,
    "name": "N.Jackson",
    "team": "AVL",
    "position": "FWD",
    "price": 7.3,
-   "owned": 36.5,
+   "owned": 36.6,
    "xp": [
     3.67,
     3.39,
@@ -1267,12 +1331,44 @@
    "note": "new club \u2014 prior stats earned elsewhere"
   },
   {
+   "id": 350,
+   "name": "A.Becker",
+   "team": "LIV",
+   "position": "GKP",
+   "price": 5.5,
+   "owned": 4.4,
+   "xp": [
+    3.5,
+    3.89,
+    2.9,
+    3.61,
+    3.83,
+    3.54
+   ],
+   "var": [
+    3.697,
+    4.12,
+    2.27,
+    3.852,
+    4.064,
+    3.75
+   ],
+   "projected": 21.27,
+   "per_million": 3.867,
+   "minutes": 81.55,
+   "fixture_score": 2.34,
+   "availability": 1.0,
+   "confidence": "high",
+   "moved_club": false,
+   "note": ""
+  },
+  {
    "id": 399,
    "name": "Cherki",
    "team": "MCI",
    "position": "MID",
    "price": 7.8,
-   "owned": 31.7,
+   "owned": 31.6,
    "xp": [
     2.65,
     3.36,
@@ -1341,7 +1437,7 @@
     4.32,
     2.57,
     4.32,
-    2.64,
+    2.63,
     4.01,
     3.22
    ],
@@ -1349,12 +1445,12 @@
     10.178,
     5.673,
     10.87,
-    5.276,
+    5.274,
     8.157,
     7.118
    ],
-   "projected": 21.08,
-   "per_million": 4.392,
+   "projected": 21.07,
+   "per_million": 4.39,
    "minutes": 75.6,
    "fixture_score": 2.5,
    "availability": 1.0,
@@ -1464,7 +1560,7 @@
    "team": "LEE",
    "position": "FWD",
    "price": 6.0,
-   "owned": 17.3,
+   "owned": 17.4,
    "xp": [
     4.08,
     2.9,
@@ -1477,7 +1573,7 @@
     9.411,
     4.948,
     10.667,
-    3.898,
+    3.896,
     6.282,
     5.933
    ],
@@ -1528,7 +1624,7 @@
    "team": "COV",
    "position": "MID",
    "price": 5.0,
-   "owned": 1.8,
+   "owned": 1.9,
    "xp": [
     2.87,
     4.07,
@@ -1555,44 +1651,12 @@
    "note": ""
   },
   {
-   "id": 362,
-   "name": "Jacquet",
-   "team": "LIV",
-   "position": "DEF",
-   "price": 5.1,
-   "owned": 4.9,
-   "xp": [
-    3.33,
-    3.96,
-    2.41,
-    3.49,
-    3.82,
-    3.36
-   ],
-   "var": [
-    4.926,
-    5.814,
-    3.904,
-    5.064,
-    5.427,
-    4.848
-   ],
-   "projected": 20.37,
-   "per_million": 3.994,
-   "minutes": 80.8,
-   "fixture_score": 2.34,
-   "availability": 1.0,
-   "confidence": "medium",
-   "moved_club": true,
-   "note": "new club \u2014 prior stats earned elsewhere"
-  },
-  {
    "id": 334,
    "name": "Muharemovi\u0107",
    "team": "LEE",
    "position": "DEF",
    "price": 5.1,
-   "owned": 7.4,
+   "owned": 7.5,
    "xp": [
     3.99,
     2.59,
@@ -1605,7 +1669,7 @@
     5.979,
     3.538,
     6.1,
-    3.65,
+    3.648,
     5.397,
     4.555
    ],
@@ -1715,38 +1779,6 @@
    "note": ""
   },
   {
-   "id": 350,
-   "name": "A.Becker",
-   "team": "LIV",
-   "position": "GKP",
-   "price": 5.5,
-   "owned": 4.4,
-   "xp": [
-    3.29,
-    3.64,
-    2.74,
-    3.39,
-    3.58,
-    3.33
-   ],
-   "var": [
-    3.517,
-    4.002,
-    2.108,
-    3.685,
-    3.945,
-    3.574
-   ],
-   "projected": 19.97,
-   "per_million": 3.631,
-   "minutes": 74.57,
-   "fixture_score": 2.34,
-   "availability": 1.0,
-   "confidence": "high",
-   "moved_club": false,
-   "note": ""
-  },
-  {
    "id": 28,
    "name": "Martinez",
    "team": "CHE",
@@ -1764,7 +1796,7 @@
    "var": [
     2.107,
     2.867,
-    1.828,
+    1.827,
     0.856,
     2.377,
     1.984
@@ -1811,17 +1843,49 @@
    "note": "new club \u2014 prior stats earned elsewhere"
   },
   {
+   "id": 579,
+   "name": "Araujo",
+   "team": "LIV",
+   "position": "DEF",
+   "price": 5.5,
+   "owned": 5.0,
+   "xp": [
+    3.21,
+    3.9,
+    2.47,
+    3.35,
+    3.69,
+    3.21
+   ],
+   "var": [
+    6.239,
+    7.818,
+    5.774,
+    6.374,
+    7.012,
+    5.987
+   ],
+   "projected": 19.83,
+   "per_million": 3.605,
+   "minutes": 76.85,
+   "fixture_score": 2.34,
+   "availability": 1.0,
+   "confidence": "medium",
+   "moved_club": true,
+   "note": "new club \u2014 prior stats earned elsewhere"
+  },
+  {
    "id": 332,
    "name": "Justin",
    "team": "LEE",
    "position": "DEF",
    "price": 4.5,
-   "owned": 2.6,
+   "owned": 2.7,
    "xp": [
     3.88,
     2.56,
     3.8,
-    2.69,
+    2.68,
     3.79,
     3.09
    ],
@@ -1829,46 +1893,14 @@
     6.194,
     3.494,
     6.344,
-    3.531,
+    3.529,
     5.483,
     4.523
    ],
-   "projected": 19.81,
-   "per_million": 4.402,
+   "projected": 19.8,
+   "per_million": 4.4,
    "minutes": 70.05,
    "fixture_score": 2.5,
-   "availability": 1.0,
-   "confidence": "high",
-   "moved_club": false,
-   "note": ""
-  },
-  {
-   "id": 379,
-   "name": "Isak",
-   "team": "LIV",
-   "position": "FWD",
-   "price": 9.3,
-   "owned": 27.0,
-   "xp": [
-    3.09,
-    3.69,
-    3.51,
-    3.08,
-    3.22,
-    2.97
-   ],
-   "var": [
-    5.97,
-    8.141,
-    7.764,
-    5.91,
-    6.612,
-    5.393
-   ],
-   "projected": 19.56,
-   "per_million": 2.103,
-   "minutes": 58.64,
-   "fixture_score": 2.34,
    "availability": 1.0,
    "confidence": "high",
    "moved_club": false,
@@ -2115,7 +2147,7 @@
    ],
    "var": [
     5.242,
-    2.895,
+    2.894,
     4.211,
     5.387,
     6.585,
@@ -2227,38 +2259,6 @@
    "note": ""
   },
   {
-   "id": 579,
-   "name": "Araujo",
-   "team": "LIV",
-   "position": "DEF",
-   "price": 5.5,
-   "owned": 5.0,
-   "xp": [
-    3.01,
-    3.64,
-    2.33,
-    3.13,
-    3.45,
-    3.0
-   ],
-   "var": [
-    5.821,
-    7.35,
-    5.308,
-    5.968,
-    6.608,
-    5.598
-   ],
-   "projected": 18.56,
-   "per_million": 3.375,
-   "minutes": 70.28,
-   "fixture_score": 2.34,
-   "availability": 1.0,
-   "confidence": "medium",
-   "moved_club": true,
-   "note": "new club \u2014 prior stats earned elsewhere"
-  },
-  {
    "id": 388,
    "name": "Gu\u00e9hi",
    "team": "MCI",
@@ -2296,7 +2296,7 @@
    "team": "LEE",
    "position": "GKP",
    "price": 5.1,
-   "owned": 7.9,
+   "owned": 8.0,
    "xp": [
     3.29,
     2.81,
@@ -2309,7 +2309,7 @@
     3.539,
     1.99,
     3.353,
-    2.278,
+    2.276,
     3.637,
     2.727
    ],
@@ -2407,12 +2407,44 @@
     2.676,
     3.143,
     2.673,
-    2.938
+    2.933
    ],
    "projected": 18.4,
    "per_million": 3.538,
    "minutes": 77.27,
    "fixture_score": 3.23,
+   "availability": 1.0,
+   "confidence": "high",
+   "moved_club": false,
+   "note": ""
+  },
+  {
+   "id": 358,
+   "name": "Kerkez",
+   "team": "LIV",
+   "position": "DEF",
+   "price": 5.2,
+   "owned": 1.8,
+   "xp": [
+    3.0,
+    3.57,
+    2.15,
+    3.15,
+    3.46,
+    3.03
+   ],
+   "var": [
+    4.484,
+    5.323,
+    3.402,
+    4.637,
+    5.018,
+    4.43
+   ],
+   "projected": 18.36,
+   "per_million": 3.531,
+   "minutes": 78.33,
+   "fixture_score": 2.34,
    "availability": 1.0,
    "confidence": "high",
    "moved_club": false,
@@ -2498,7 +2530,7 @@
     3.79
    ],
    "var": [
-    3.467,
+    3.465,
     3.269,
     4.501,
     1.797,
@@ -2509,6 +2541,38 @@
    "per_million": 3.863,
    "minutes": 86.69,
    "fixture_score": 3.42,
+   "availability": 1.0,
+   "confidence": "high",
+   "moved_club": false,
+   "note": ""
+  },
+  {
+   "id": 372,
+   "name": "Mac Allister",
+   "team": "LIV",
+   "position": "MID",
+   "price": 5.4,
+   "owned": 1.4,
+   "xp": [
+    2.84,
+    3.22,
+    2.89,
+    2.86,
+    3.0,
+    2.79
+   ],
+   "var": [
+    2.956,
+    4.075,
+    3.782,
+    2.935,
+    3.314,
+    2.664
+   ],
+   "projected": 17.6,
+   "per_million": 3.259,
+   "minutes": 76.81,
+   "fixture_score": 2.34,
    "availability": 1.0,
    "confidence": "high",
    "moved_club": false,
@@ -2530,7 +2594,7 @@
     3.57
    ],
    "var": [
-    3.181,
+    3.18,
     3.05,
     4.282,
     1.69,
@@ -2552,7 +2616,7 @@
    "team": "AVL",
    "position": "GKP",
    "price": 5.1,
-   "owned": 3.7,
+   "owned": 3.8,
    "xp": [
     2.75,
     3.23,
@@ -2675,38 +2739,6 @@
    "note": ""
   },
   {
-   "id": 358,
-   "name": "Kerkez",
-   "team": "LIV",
-   "position": "DEF",
-   "price": 5.2,
-   "owned": 1.8,
-   "xp": [
-    2.81,
-    3.33,
-    2.03,
-    2.94,
-    3.23,
-    2.83
-   ],
-   "var": [
-    4.223,
-    5.079,
-    3.14,
-    4.386,
-    4.795,
-    4.18
-   ],
-   "projected": 17.17,
-   "per_million": 3.302,
-   "minutes": 71.63,
-   "fixture_score": 2.34,
-   "availability": 1.0,
-   "confidence": "high",
-   "moved_club": false,
-   "note": ""
-  },
-  {
    "id": 116,
    "name": "Dunk",
    "team": "BHA",
@@ -2808,7 +2840,7 @@
    "team": "TOT",
    "position": "GKP",
    "price": 4.4,
-   "owned": 16.2,
+   "owned": 16.3,
    "xp": [
     2.98,
     3.13,
@@ -2822,7 +2854,7 @@
     3.534,
     2.695,
     3.144,
-    2.026,
+    2.025,
     2.693
    ],
    "projected": 16.99,
@@ -2851,7 +2883,7 @@
    ],
    "var": [
     4.087,
-    2.092,
+    2.091,
     2.823,
     4.02,
     4.176,
@@ -2885,7 +2917,7 @@
     1.558,
     0.861,
     1.701,
-    0.774,
+    0.773,
     1.17,
     1.065
    ],
@@ -3013,7 +3045,7 @@
     5.288,
     2.799,
     5.939,
-    2.274,
+    2.273,
     3.633,
     3.385
    ],
@@ -3075,7 +3107,7 @@
    ],
    "var": [
     5.116,
-    2.828,
+    2.826,
     4.036,
     5.211,
     6.268,
@@ -3239,7 +3271,7 @@
     2.842,
     4.531,
     2.574,
-    3.76
+    3.759
    ],
    "projected": 16.3,
    "per_million": 4.075,
@@ -3333,7 +3365,7 @@
     5.611,
     3.075,
     5.723,
-    3.096,
+    3.095,
     4.987,
     4.013
    ],
@@ -3347,36 +3379,36 @@
    "note": "new club \u2014 prior stats earned elsewhere"
   },
   {
-   "id": 372,
-   "name": "Mac Allister",
+   "id": 627,
+   "name": "Barcola",
    "team": "LIV",
    "position": "MID",
-   "price": 5.4,
-   "owned": 1.4,
+   "price": 8.1,
+   "owned": 4.5,
    "xp": [
-    2.6,
-    2.94,
-    2.65,
-    2.62,
-    2.74,
-    2.55
+    2.56,
+    3.06,
+    2.76,
+    2.58,
+    2.76,
+    2.46
    ],
    "var": [
-    2.711,
-    3.74,
-    3.462,
-    2.694,
-    3.044,
-    2.445
+    4.722,
+    6.513,
+    6.146,
+    4.682,
+    5.309,
+    4.234
    ],
-   "projected": 16.1,
-   "per_million": 2.981,
-   "minutes": 70.24,
+   "projected": 16.18,
+   "per_million": 1.998,
+   "minutes": 67.63,
    "fixture_score": 2.34,
    "availability": 1.0,
-   "confidence": "high",
-   "moved_club": false,
-   "note": ""
+   "confidence": "medium",
+   "moved_club": true,
+   "note": "new club \u2014 prior stats earned elsewhere"
   },
   {
    "id": 113,
@@ -3547,7 +3579,7 @@
    "owned": 0.2,
    "xp": [
     2.62,
-    2.32,
+    2.31,
     2.51,
     2.7,
     2.81,
@@ -3555,14 +3587,14 @@
    ],
    "var": [
     1.032,
-    0.721,
+    0.719,
     1.135,
     1.227,
     1.756,
     0.952
    ],
-   "projected": 15.48,
-   "per_million": 3.225,
+   "projected": 15.47,
+   "per_million": 3.223,
    "minutes": 90.0,
    "fixture_score": 3.19,
    "availability": 1.0,
@@ -3622,7 +3654,7 @@
     5.327,
     3.916,
     4.425,
-    3.165,
+    3.164,
     4.496
    ],
    "projected": 15.42,
@@ -3653,7 +3685,7 @@
     4.422,
     2.525,
     4.352,
-    2.727,
+    2.726,
     4.261,
     3.356
    ],
@@ -3750,7 +3782,7 @@
     1.396,
     0.969,
     1.075,
-    0.9,
+    0.899,
     1.328
    ],
    "projected": 15.13,
@@ -3827,38 +3859,6 @@
    "note": ""
   },
   {
-   "id": 627,
-   "name": "Barcola",
-   "team": "LIV",
-   "position": "MID",
-   "price": 8.1,
-   "owned": 4.5,
-   "xp": [
-    2.34,
-    2.8,
-    2.52,
-    2.36,
-    2.53,
-    2.25
-   ],
-   "var": [
-    4.608,
-    6.251,
-    5.905,
-    4.573,
-    5.149,
-    4.162
-   ],
-   "projected": 14.8,
-   "per_million": 1.827,
-   "minutes": 61.85,
-   "fixture_score": 2.34,
-   "availability": 1.0,
-   "confidence": "medium",
-   "moved_club": true,
-   "note": "new club \u2014 prior stats earned elsewhere"
-  },
-  {
    "id": 295,
    "name": "McBurnie",
    "team": "HUL",
@@ -3879,7 +3879,7 @@
     2.693,
     3.14,
     2.796,
-    2.968
+    2.965
    ],
    "projected": 14.72,
    "per_million": 2.676,
@@ -3928,7 +3928,7 @@
    "team": "MCI",
    "position": "DEF",
    "price": 5.5,
-   "owned": 19.5,
+   "owned": 19.4,
    "xp": [
     1.83,
     2.69,
@@ -4006,7 +4006,7 @@
     1.719,
     1.178,
     1.308,
-    1.106,
+    1.104,
     1.644
    ],
    "projected": 14.52,
@@ -4083,38 +4083,6 @@
    "note": ""
   },
   {
-   "id": 367,
-   "name": "Gakpo",
-   "team": "LIV",
-   "position": "MID",
-   "price": 7.1,
-   "owned": 6.6,
-   "xp": [
-    2.27,
-    2.67,
-    2.44,
-    2.28,
-    2.42,
-    2.19
-   ],
-   "var": [
-    4.253,
-    5.635,
-    5.329,
-    4.224,
-    4.703,
-    3.883
-   ],
-   "projected": 14.27,
-   "per_million": 2.01,
-   "minutes": 47.53,
-   "fixture_score": 2.34,
-   "availability": 0.75,
-   "confidence": "high",
-   "moved_club": false,
-   "note": "Calf injury - 75% chance of playing"
-  },
-  {
    "id": 257,
    "name": "Bassey",
    "team": "FUL",
@@ -4152,7 +4120,7 @@
    "team": "NFO",
    "position": "MID",
    "price": 5.5,
-   "owned": 0.5,
+   "owned": 0.4,
    "xp": [
     2.68,
     2.14,
@@ -4295,7 +4263,7 @@
     0.845,
     1.045,
     0.832,
-    0.958
+    0.956
    ],
    "projected": 14.19,
    "per_million": 3.153,
@@ -4326,7 +4294,7 @@
     4.547,
     3.367,
     3.831,
-    2.736,
+    2.735,
     3.731
    ],
    "projected": 14.13,
@@ -4376,7 +4344,7 @@
    "team": "CRY",
    "position": "DEF",
    "price": 4.4,
-   "owned": 4.5,
+   "owned": 4.4,
    "xp": [
     3.14,
     1.46,
@@ -4423,7 +4391,7 @@
     3.56,
     5.436,
     3.363,
-    4.455
+    4.453
    ],
    "projected": 14.07,
    "per_million": 3.432,
@@ -4455,7 +4423,7 @@
     2.631,
     4.454,
     2.444,
-    3.476
+    3.475
    ],
    "projected": 14.04,
    "per_million": 3.343,
@@ -4471,7 +4439,7 @@
    "name": "Schlager",
    "team": "NFO",
    "position": "MID",
-   "price": 5.0,
+   "price": 4.9,
    "owned": 0.1,
    "xp": [
     2.34,
@@ -4490,7 +4458,7 @@
     1.326
    ],
    "projected": 14.03,
-   "per_million": 2.806,
+   "per_million": 2.863,
    "minutes": 73.05,
    "fixture_score": 3.12,
    "availability": 1.0,
@@ -4516,7 +4484,7 @@
    "var": [
     1.925,
     4.143,
-    1.971,
+    1.97,
     1.817,
     2.937,
     2.616
@@ -4581,7 +4549,7 @@
     6.438,
     3.886,
     7.087,
-    3.389,
+    3.386,
     4.774,
     4.511
    ],
@@ -4903,7 +4871,7 @@
     2.283,
     4.01,
     2.075,
-    3.068
+    3.067
    ],
    "projected": 13.41,
    "per_million": 3.352,
@@ -4920,7 +4888,7 @@
    "team": "TOT",
    "position": "DEF",
    "price": 5.3,
-   "owned": 5.2,
+   "owned": 5.3,
    "xp": [
     2.41,
     2.65,
@@ -4934,7 +4902,7 @@
     5.441,
     4.017,
     4.512,
-    3.36,
+    3.359,
     4.621
    ],
    "projected": 13.38,
@@ -4966,7 +4934,7 @@
     2.726,
     1.816,
     1.976,
-    1.714,
+    1.712,
     2.658
    ],
    "projected": 13.37,
@@ -5043,6 +5011,38 @@
    "note": "new club \u2014 prior stats earned elsewhere"
   },
   {
+   "id": 377,
+   "name": "Munoz",
+   "team": "LIV",
+   "position": "MID",
+   "price": 6.5,
+   "owned": 0.6,
+   "xp": [
+    2.12,
+    2.44,
+    2.18,
+    2.14,
+    2.21,
+    2.09
+   ],
+   "var": [
+    3.23,
+    4.289,
+    3.984,
+    3.214,
+    3.548,
+    2.972
+   ],
+   "projected": 13.18,
+   "per_million": 2.028,
+   "minutes": 49.21,
+   "fixture_score": 2.34,
+   "availability": 1.0,
+   "confidence": "medium",
+   "moved_club": true,
+   "note": "new club \u2014 prior stats earned elsewhere"
+  },
+  {
    "id": 244,
    "name": "Armstrong",
    "team": "EVE",
@@ -5050,7 +5050,7 @@
    "price": 5.0,
    "owned": 0.3,
    "xp": [
-    2.14,
+    2.13,
     2.15,
     2.31,
     1.96,
@@ -5058,15 +5058,15 @@
     2.38
    ],
    "var": [
-    1.173,
+    1.172,
     1.294,
     1.44,
     0.855,
     1.177,
     1.577
    ],
-   "projected": 13.14,
-   "per_million": 2.628,
+   "projected": 13.13,
+   "per_million": 2.626,
    "minutes": 74.46,
    "fixture_score": 3.42,
    "availability": 1.0,
@@ -5155,7 +5155,7 @@
    ],
    "var": [
     2.543,
-    1.816,
+    1.814,
     3.076,
     3.052,
     5.183,
@@ -5189,7 +5189,7 @@
     4.754,
     2.819,
     5.255,
-    2.412,
+    2.411,
     3.478,
     3.275
    ],
@@ -5410,7 +5410,7 @@
     2.55
    ],
    "var": [
-    2.602,
+    2.601,
     2.492,
     3.594,
     1.357,
@@ -5446,7 +5446,7 @@
     3.745,
     2.89,
     3.291,
-    2.323,
+    2.322,
     2.966
    ],
    "projected": 12.17,
@@ -5523,38 +5523,6 @@
    "note": "new club \u2014 prior stats earned elsewhere"
   },
   {
-   "id": 377,
-   "name": "Munoz",
-   "team": "LIV",
-   "position": "MID",
-   "price": 6.5,
-   "owned": 0.6,
-   "xp": [
-    1.95,
-    2.23,
-    2.0,
-    1.96,
-    2.02,
-    1.91
-   ],
-   "var": [
-    3.206,
-    4.177,
-    3.892,
-    3.19,
-    3.497,
-    2.969
-   ],
-   "projected": 12.07,
-   "per_million": 1.857,
-   "minutes": 45.01,
-   "fixture_score": 2.34,
-   "availability": 1.0,
-   "confidence": "medium",
-   "moved_club": true,
-   "note": "new club \u2014 prior stats earned elsewhere"
-  },
-  {
    "id": 194,
    "name": "Thomas-Asante",
    "team": "COV",
@@ -5607,7 +5575,7 @@
     1.847,
     3.415,
     1.648,
-    2.522
+    2.521
    ],
    "projected": 11.95,
    "per_million": 2.987,
@@ -5701,7 +5669,7 @@
     4.409,
     2.658,
     4.856,
-    2.303,
+    2.302,
     3.265,
     3.078
    ],
@@ -5924,7 +5892,7 @@
    "var": [
     2.278,
     3.667,
-    2.096,
+    2.095,
     1.204,
     2.878,
     2.403
@@ -5944,7 +5912,7 @@
    "team": "ARS",
    "position": "GKP",
    "price": 6.3,
-   "owned": 45.6,
+   "owned": 45.4,
    "xp": [
     1.82,
     1.65,
@@ -5990,7 +5958,7 @@
     1.293,
     0.89,
     0.98,
-    0.826,
+    0.825,
     1.23
    ],
    "projected": 11.4,
@@ -6114,7 +6082,7 @@
     2.04
    ],
    "var": [
-    1.542,
+    1.54,
     1.661,
     1.799,
     1.251,
@@ -6244,7 +6212,7 @@
    "var": [
     2.922,
     5.187,
-    2.84,
+    2.839,
     2.133,
     3.945,
     3.406
@@ -6328,7 +6296,7 @@
    "team": "MUN",
    "position": "DEF",
    "price": 4.5,
-   "owned": 4.6,
+   "owned": 4.5,
    "xp": [
     1.52,
     1.58,
@@ -6502,7 +6470,7 @@
     3.283,
     2.411,
     2.536,
-    2.34,
+    2.339,
     3.27
    ],
    "projected": 10.43,
@@ -6562,7 +6530,7 @@
     1.86
    ],
    "var": [
-    1.565,
+    1.564,
     1.685,
     1.809,
     1.292,
@@ -6628,7 +6596,7 @@
    "var": [
     2.033,
     3.304,
-    1.872,
+    1.871,
     1.115,
     2.577,
     2.157
@@ -6660,7 +6628,7 @@
    "var": [
     1.673,
     2.844,
-    1.55,
+    1.549,
     0.942,
     2.178,
     1.817
@@ -6692,7 +6660,7 @@
    "var": [
     2.622,
     4.419,
-    2.636,
+    2.634,
     2.497,
     3.425,
     3.171
@@ -6737,6 +6705,38 @@
    "confidence": "high",
    "moved_club": false,
    "note": ""
+  },
+  {
+   "id": 369,
+   "name": "Ngumoha",
+   "team": "LIV",
+   "position": "MID",
+   "price": 5.7,
+   "owned": 0.6,
+   "xp": [
+    1.59,
+    1.88,
+    1.73,
+    1.6,
+    1.67,
+    1.54
+   ],
+   "var": [
+    3.585,
+    4.586,
+    4.351,
+    3.564,
+    3.889,
+    3.328
+   ],
+   "projected": 10.01,
+   "per_million": 1.756,
+   "minutes": 24.76,
+   "fixture_score": 2.34,
+   "availability": 1.0,
+   "confidence": "medium",
+   "moved_club": false,
+   "note": "rotation risk"
   },
   {
    "id": 449,
@@ -6818,7 +6818,7 @@
     1.77
    ],
    "var": [
-    1.114,
+    1.113,
     1.152,
     1.248,
     0.956,
@@ -6918,7 +6918,7 @@
     2.251,
     1.741,
     1.818,
-    1.701,
+    1.7,
     2.241
    ],
    "projected": 9.72,
@@ -7043,7 +7043,7 @@
    ],
    "var": [
     2.143,
-    1.733,
+    1.731,
     2.307,
     2.376,
     3.245,
@@ -7066,7 +7066,7 @@
    "price": 5.8,
    "owned": 0.1,
    "xp": [
-    1.56,
+    1.55,
     1.59,
     1.72,
     1.39,
@@ -7074,15 +7074,15 @@
     1.78
    ],
    "var": [
-    2.604,
+    2.603,
     2.83,
     3.01,
     2.116,
     2.517,
     3.222
    ],
-   "projected": 9.61,
-   "per_million": 1.657,
+   "projected": 9.6,
+   "per_million": 1.655,
    "minutes": 49.67,
    "fixture_score": 3.42,
    "availability": 1.0,
@@ -7159,7 +7159,7 @@
    "name": "Merino",
    "team": "ARS",
    "position": "MID",
-   "price": 5.7,
+   "price": 5.6,
    "owned": 0.4,
    "xp": [
     1.55,
@@ -7178,7 +7178,7 @@
     5.222
    ],
    "projected": 9.4,
-   "per_million": 1.649,
+   "per_million": 1.679,
    "minutes": 24.67,
    "fixture_score": 1.95,
    "availability": 1.0,
@@ -7267,7 +7267,7 @@
    ],
    "var": [
     3.801,
-    2.227,
+    2.226,
     2.878,
     3.768,
     4.211,
@@ -7287,7 +7287,7 @@
    "name": "Grimes",
    "team": "COV",
    "position": "MID",
-   "price": 4.8,
+   "price": 4.7,
    "owned": 0.1,
    "xp": [
     1.51,
@@ -7306,7 +7306,7 @@
     0.922
    ],
    "projected": 9.29,
-   "per_million": 1.935,
+   "per_million": 1.977,
    "minutes": 53.52,
    "fixture_score": 3.69,
    "availability": 1.0,
@@ -7373,38 +7373,6 @@
    "per_million": 1.873,
    "minutes": 33.01,
    "fixture_score": 2.85,
-   "availability": 1.0,
-   "confidence": "medium",
-   "moved_club": false,
-   "note": "rotation risk"
-  },
-  {
-   "id": 369,
-   "name": "Ngumoha",
-   "team": "LIV",
-   "position": "MID",
-   "price": 5.7,
-   "owned": 0.6,
-   "xp": [
-    1.46,
-    1.72,
-    1.58,
-    1.46,
-    1.53,
-    1.42
-   ],
-   "var": [
-    3.373,
-    4.291,
-    4.073,
-    3.354,
-    3.651,
-    3.139
-   ],
-   "projected": 9.17,
-   "per_million": 1.609,
-   "minutes": 22.64,
-   "fixture_score": 2.34,
    "availability": 1.0,
    "confidence": "medium",
    "moved_club": false,
@@ -7480,7 +7448,7 @@
    "team": "CHE",
    "position": "MID",
    "price": 6.3,
-   "owned": 0.8,
+   "owned": 0.7,
    "xp": [
     1.33,
     2.04,
@@ -7525,7 +7493,7 @@
     2.55,
     1.795,
     2.716,
-    1.674,
+    1.673,
     2.103,
     1.995
    ],
@@ -7714,7 +7682,7 @@
     1.83
    ],
    "var": [
-    3.052,
+    3.051,
     2.955,
     3.886,
     2.074,
@@ -7780,7 +7748,7 @@
    "var": [
     1.521,
     2.132,
-    1.499,
+    1.498,
     1.415,
     1.779,
     1.689
@@ -7814,7 +7782,7 @@
     1.616,
     1.335,
     1.404,
-    1.288,
+    1.287,
     1.56
    ],
    "projected": 8.44,
@@ -7845,7 +7813,7 @@
     4.088,
     2.583,
     4.035,
-    2.673,
+    2.672,
     3.918,
     3.156
    ],
@@ -8294,7 +8262,7 @@
     2.942,
     2.255,
     2.367,
-    2.174,
+    2.173,
     2.891
    ],
    "projected": 7.91,
@@ -8551,7 +8519,7 @@
     1.503,
     1.646,
     1.502,
-    1.574
+    1.573
    ],
    "projected": 7.51,
    "per_million": 1.365,
@@ -8593,38 +8561,6 @@
    "confidence": "medium",
    "moved_club": true,
    "note": "new club \u2014 prior stats earned elsewhere; rotation risk"
-  },
-  {
-   "id": 371,
-   "name": "Gravenberch",
-   "team": "LIV",
-   "position": "MID",
-   "price": 5.8,
-   "owned": 0.8,
-   "xp": [
-    1.2,
-    1.34,
-    1.18,
-    1.21,
-    1.25,
-    1.19
-   ],
-   "var": [
-    1.977,
-    2.339,
-    2.18,
-    1.977,
-    2.096,
-    1.896
-   ],
-   "projected": 7.37,
-   "per_million": 1.271,
-   "minutes": 37.09,
-   "fixture_score": 2.34,
-   "availability": 0.75,
-   "confidence": "medium",
-   "moved_club": false,
-   "note": "Foot injury - 75% chance of playing; rotation risk"
   },
   {
    "id": 430,
@@ -8679,7 +8615,7 @@
     2.311,
     2.576,
     2.352,
-    2.461
+    2.46
    ],
    "projected": 7.27,
    "per_million": 1.454,
@@ -8728,7 +8664,7 @@
    "team": "TOT",
    "position": "GKP",
    "price": 3.9,
-   "owned": 14.7,
+   "owned": 14.6,
    "xp": [
     1.26,
     1.36,
@@ -8773,7 +8709,7 @@
     3.141,
     2.138,
     3.411,
-    1.925,
+    1.924,
     2.456,
     2.373
    ],
@@ -9299,36 +9235,36 @@
    "note": "new club \u2014 prior stats earned elsewhere"
   },
   {
-   "id": 247,
-   "name": "Hackney",
-   "team": "EVE",
-   "position": "MID",
-   "price": 5.3,
-   "owned": 0.1,
+   "id": 357,
+   "name": "Frimpong",
+   "team": "LIV",
+   "position": "DEF",
+   "price": 5.1,
+   "owned": 1.1,
    "xp": [
-    1.03,
     1.04,
+    1.26,
+    0.78,
     1.09,
-    0.98,
-    1.09,
-    1.13
+    1.2,
+    1.04
    ],
    "var": [
-    1.299,
-    1.336,
-    1.389,
-    1.215,
-    1.354,
-    1.445
+    2.8,
+    3.358,
+    2.213,
+    2.916,
+    3.22,
+    2.79
    ],
-   "projected": 6.36,
-   "per_million": 1.2,
-   "minutes": 22.52,
-   "fixture_score": 3.42,
+   "projected": 6.41,
+   "per_million": 1.257,
+   "minutes": 25.06,
+   "fixture_score": 2.34,
    "availability": 1.0,
-   "confidence": "low",
-   "moved_club": true,
-   "note": "new club \u2014 prior stats earned elsewhere; rotation risk"
+   "confidence": "medium",
+   "moved_club": false,
+   "note": "rotation risk"
   },
   {
    "id": 256,
@@ -9393,6 +9329,38 @@
    "confidence": "medium",
    "moved_club": false,
    "note": "rotation risk"
+  },
+  {
+   "id": 247,
+   "name": "Hackney",
+   "team": "EVE",
+   "position": "MID",
+   "price": 5.3,
+   "owned": 0.1,
+   "xp": [
+    1.02,
+    1.04,
+    1.09,
+    0.98,
+    1.09,
+    1.13
+   ],
+   "var": [
+    1.298,
+    1.336,
+    1.389,
+    1.215,
+    1.354,
+    1.445
+   ],
+   "projected": 6.35,
+   "per_million": 1.198,
+   "minutes": 22.52,
+   "fixture_score": 3.42,
+   "availability": 1.0,
+   "confidence": "low",
+   "moved_club": true,
+   "note": "new club \u2014 prior stats earned elsewhere; rotation risk"
   },
   {
    "id": 308,
@@ -9508,7 +9476,7 @@
    "var": [
     1.958,
     2.377,
-    1.826,
+    1.825,
     1.355,
     2.111,
     1.895
@@ -9883,7 +9851,7 @@
    "owned": 0.0,
    "xp": [
     0.99,
-    0.86,
+    0.85,
     0.96,
     1.03,
     1.11,
@@ -9891,48 +9859,16 @@
    ],
    "var": [
     1.642,
-    1.423,
+    1.422,
     1.704,
     1.757,
     2.161,
     1.569
    ],
-   "projected": 5.89,
-   "per_million": 1.227,
+   "projected": 5.88,
+   "per_million": 1.225,
    "minutes": 33.89,
    "fixture_score": 3.19,
-   "availability": 1.0,
-   "confidence": "medium",
-   "moved_club": false,
-   "note": "rotation risk"
-  },
-  {
-   "id": 357,
-   "name": "Frimpong",
-   "team": "LIV",
-   "position": "DEF",
-   "price": 5.1,
-   "owned": 1.1,
-   "xp": [
-    0.95,
-    1.15,
-    0.72,
-    0.99,
-    1.1,
-    0.95
-   ],
-   "var": [
-    2.611,
-    3.132,
-    2.065,
-    2.72,
-    3.004,
-    2.602
-   ],
-   "projected": 5.86,
-   "per_million": 1.149,
-   "minutes": 22.92,
-   "fixture_score": 2.34,
    "availability": 1.0,
    "confidence": "medium",
    "moved_club": false,
@@ -10039,7 +9975,7 @@
    "name": "Andrey Santos",
    "team": "MUN",
    "position": "MID",
-   "price": 4.7,
+   "price": 4.6,
    "owned": 0.4,
    "xp": [
     0.88,
@@ -10058,7 +9994,7 @@
     1.757
    ],
    "projected": 5.54,
-   "per_million": 1.179,
+   "per_million": 1.204,
    "minutes": 33.69,
    "fixture_score": 3.47,
    "availability": 1.0,
@@ -10214,7 +10150,7 @@
     1.923,
     1.587,
     1.65,
-    1.544,
+    1.543,
     1.885
    ],
    "projected": 5.33,
@@ -10503,7 +10439,7 @@
     1.068,
     1.142,
     1.057,
-    1.1
+    1.099
    ],
    "projected": 4.62,
    "per_million": 0.943,
@@ -10520,13 +10456,13 @@
    "team": "TOT",
    "position": "MID",
    "price": 4.4,
-   "owned": 0.3,
+   "owned": 0.4,
    "xp": [
     0.83,
     0.89,
     0.66,
     0.75,
-    0.65,
+    0.64,
     0.84
    ],
    "var": [
@@ -10534,13 +10470,45 @@
     2.845,
     2.071,
     2.216,
-    2.005,
+    2.003,
     2.801
    ],
-   "projected": 4.62,
-   "per_million": 1.05,
+   "projected": 4.61,
+   "per_million": 1.048,
    "minutes": 12.37,
    "fixture_score": 3.26,
+   "availability": 1.0,
+   "confidence": "low",
+   "moved_club": false,
+   "note": "rotation risk"
+  },
+  {
+   "id": 375,
+   "name": "Nyoni",
+   "team": "LIV",
+   "position": "MID",
+   "price": 4.8,
+   "owned": 0.1,
+   "xp": [
+    0.72,
+    0.77,
+    0.72,
+    0.73,
+    0.74,
+    0.72
+   ],
+   "var": [
+    1.319,
+    1.438,
+    1.382,
+    1.32,
+    1.36,
+    1.293
+   ],
+   "projected": 4.4,
+   "per_million": 0.917,
+   "minutes": 16.74,
+   "fixture_score": 2.34,
    "availability": 1.0,
    "confidence": "low",
    "moved_club": false,
@@ -10564,7 +10532,7 @@
    "var": [
     2.022,
     3.848,
-    2.097,
+    2.096,
     2.006,
     2.878,
     2.612
@@ -10654,7 +10622,7 @@
     0.73,
     0.63,
     0.69,
-    0.62,
+    0.61,
     0.68
    ],
    "var": [
@@ -10662,11 +10630,11 @@
     1.428,
     1.209,
     1.28,
-    1.185,
+    1.184,
     1.384
    ],
-   "projected": 4.07,
-   "per_million": 0.656,
+   "projected": 4.06,
+   "per_million": 0.655,
    "minutes": 19.16,
    "fixture_score": 3.26,
    "availability": 1.0,
@@ -10684,7 +10652,7 @@
    "xp": [
     0.72,
     0.76,
-    0.63,
+    0.62,
     0.58,
     0.67,
     0.7
@@ -10692,13 +10660,13 @@
    "var": [
     1.087,
     1.268,
-    0.999,
+    0.996,
     0.951,
     1.102,
     1.11
    ],
-   "projected": 4.06,
-   "per_million": 0.829,
+   "projected": 4.05,
+   "per_million": 0.827,
    "minutes": 14.61,
    "fixture_score": 2.68,
    "availability": 1.0,
@@ -10771,38 +10739,6 @@
    "note": "rotation risk"
   },
   {
-   "id": 375,
-   "name": "Nyoni",
-   "team": "LIV",
-   "position": "MID",
-   "price": 4.8,
-   "owned": 0.1,
-   "xp": [
-    0.66,
-    0.7,
-    0.66,
-    0.66,
-    0.68,
-    0.66
-   ],
-   "var": [
-    1.276,
-    1.384,
-    1.333,
-    1.276,
-    1.313,
-    1.251
-   ],
-   "projected": 4.02,
-   "per_million": 0.838,
-   "minutes": 15.31,
-   "fixture_score": 2.34,
-   "availability": 1.0,
-   "confidence": "low",
-   "moved_club": false,
-   "note": "rotation risk"
-  },
-  {
    "id": 152,
    "name": "Palestra",
    "team": "CHE",
@@ -10820,7 +10756,7 @@
    "var": [
     1.678,
     2.174,
-    1.579,
+    1.578,
     1.215,
     1.872,
     1.683
@@ -10865,6 +10801,38 @@
    "confidence": "medium",
    "moved_club": false,
    "note": "rotation risk"
+  },
+  {
+   "id": 381,
+   "name": "Koumas",
+   "team": "LIV",
+   "position": "MID",
+   "price": 5.0,
+   "owned": 0.1,
+   "xp": [
+    0.62,
+    0.71,
+    0.64,
+    0.62,
+    0.65,
+    0.61
+   ],
+   "var": [
+    1.508,
+    1.831,
+    1.733,
+    1.504,
+    1.612,
+    1.427
+   ],
+   "projected": 3.85,
+   "per_million": 0.77,
+   "minutes": 14.04,
+   "fixture_score": 2.34,
+   "availability": 1.0,
+   "confidence": "low",
+   "moved_club": true,
+   "note": "new club \u2014 prior stats earned elsewhere; rotation risk"
   },
   {
    "id": 160,
@@ -10963,38 +10931,6 @@
    "note": "new club \u2014 prior stats earned elsewhere; rotation risk"
   },
   {
-   "id": 381,
-   "name": "Koumas",
-   "team": "LIV",
-   "position": "MID",
-   "price": 5.0,
-   "owned": 0.1,
-   "xp": [
-    0.57,
-    0.65,
-    0.58,
-    0.57,
-    0.59,
-    0.56
-   ],
-   "var": [
-    1.393,
-    1.689,
-    1.6,
-    1.39,
-    1.488,
-    1.32
-   ],
-   "projected": 3.52,
-   "per_million": 0.704,
-   "minutes": 12.84,
-   "fixture_score": 2.34,
-   "availability": 1.0,
-   "confidence": "low",
-   "moved_club": true,
-   "note": "new club \u2014 prior stats earned elsewhere; rotation risk"
-  },
-  {
    "id": 195,
    "name": "Simms",
    "team": "COV",
@@ -11059,6 +10995,38 @@
    "note": "new club \u2014 prior stats earned elsewhere; rotation risk"
   },
   {
+   "id": 364,
+   "name": "Tsimikas",
+   "team": "LIV",
+   "position": "DEF",
+   "price": 4.8,
+   "owned": 0.1,
+   "xp": [
+    0.56,
+    0.67,
+    0.41,
+    0.58,
+    0.65,
+    0.56
+   ],
+   "var": [
+    1.635,
+    1.982,
+    1.298,
+    1.706,
+    1.897,
+    1.629
+   ],
+   "projected": 3.43,
+   "per_million": 0.715,
+   "minutes": 13.13,
+   "fixture_score": 2.34,
+   "availability": 1.0,
+   "confidence": "low",
+   "moved_club": false,
+   "note": "rotation risk"
+  },
+  {
    "id": 489,
    "name": "Yates",
    "team": "NFO",
@@ -11106,7 +11074,7 @@
     0.62
    ],
    "var": [
-    1.191,
+    1.19,
     1.264,
     1.33,
     1.033,
@@ -11149,6 +11117,38 @@
    "per_million": 0.669,
    "minutes": 15.96,
    "fixture_score": 2.66,
+   "availability": 1.0,
+   "confidence": "low",
+   "moved_club": false,
+   "note": "rotation risk"
+  },
+  {
+   "id": 351,
+   "name": "Mamardashvili",
+   "team": "LIV",
+   "position": "GKP",
+   "price": 4.8,
+   "owned": 0.1,
+   "xp": [
+    0.54,
+    0.61,
+    0.41,
+    0.56,
+    0.6,
+    0.55
+   ],
+   "var": [
+    1.384,
+    1.628,
+    0.962,
+    1.457,
+    1.611,
+    1.404
+   ],
+   "projected": 3.27,
+   "per_million": 0.681,
+   "minutes": 13.02,
+   "fixture_score": 2.34,
    "availability": 1.0,
    "confidence": "low",
    "moved_club": false,
@@ -11237,7 +11237,7 @@
     1.593,
     1.094,
     1.718,
-    0.992,
+    0.991,
     1.273,
     1.212
    ],
@@ -11245,38 +11245,6 @@
    "per_million": 0.639,
    "minutes": 13.33,
    "fixture_score": 2.5,
-   "availability": 1.0,
-   "confidence": "low",
-   "moved_club": false,
-   "note": "rotation risk"
-  },
-  {
-   "id": 364,
-   "name": "Tsimikas",
-   "team": "LIV",
-   "position": "DEF",
-   "price": 4.8,
-   "owned": 0.1,
-   "xp": [
-    0.51,
-    0.61,
-    0.38,
-    0.53,
-    0.59,
-    0.51
-   ],
-   "var": [
-    1.507,
-    1.826,
-    1.196,
-    1.573,
-    1.749,
-    1.501
-   ],
-   "projected": 3.13,
-   "per_million": 0.652,
-   "minutes": 12.01,
-   "fixture_score": 2.34,
    "availability": 1.0,
    "confidence": "low",
    "moved_club": false,
@@ -11332,7 +11300,7 @@
    "var": [
     0.909,
     1.143,
-    0.89,
+    0.889,
     0.855,
     1.0,
     0.969
@@ -11352,7 +11320,7 @@
    "team": "CRY",
    "position": "MID",
    "price": 4.3,
-   "owned": 5.4,
+   "owned": 5.3,
    "xp": [
     0.53,
     0.48,
@@ -11373,38 +11341,6 @@
    "per_million": 0.702,
    "minutes": 20.63,
    "fixture_score": 4.14,
-   "availability": 1.0,
-   "confidence": "low",
-   "moved_club": false,
-   "note": "rotation risk"
-  },
-  {
-   "id": 351,
-   "name": "Mamardashvili",
-   "team": "LIV",
-   "position": "GKP",
-   "price": 4.8,
-   "owned": 0.1,
-   "xp": [
-    0.49,
-    0.56,
-    0.37,
-    0.51,
-    0.55,
-    0.5
-   ],
-   "var": [
-    1.277,
-    1.503,
-    0.888,
-    1.345,
-    1.488,
-    1.296
-   ],
-   "projected": 2.98,
-   "per_million": 0.621,
-   "minutes": 11.91,
-   "fixture_score": 2.34,
    "availability": 1.0,
    "confidence": "low",
    "moved_club": false,
@@ -11682,7 +11618,7 @@
     0.53
    ],
    "var": [
-    1.647,
+    1.646,
     1.803,
     1.901,
     1.349,
@@ -11749,7 +11685,7 @@
     0.821,
     0.715,
     0.83,
-    0.715,
+    0.714,
     0.786,
     0.752
    ],
@@ -11923,6 +11859,38 @@
    "note": "rotation risk"
   },
   {
+   "id": 359,
+   "name": "Gomez",
+   "team": "LIV",
+   "position": "DEF",
+   "price": 4.9,
+   "owned": 0.0,
+   "xp": [
+    0.39,
+    0.47,
+    0.26,
+    0.41,
+    0.46,
+    0.4
+   ],
+   "var": [
+    1.233,
+    1.461,
+    0.889,
+    1.295,
+    1.43,
+    1.247
+   ],
+   "projected": 2.39,
+   "per_million": 0.488,
+   "minutes": 10.85,
+   "fixture_score": 2.34,
+   "availability": 1.0,
+   "confidence": "low",
+   "moved_club": false,
+   "note": "rotation risk"
+  },
+  {
    "id": 392,
    "name": "A\u00eft-Nouri",
    "team": "MCI",
@@ -11960,13 +11928,13 @@
    "team": "TOT",
    "position": "DEF",
    "price": 3.9,
-   "owned": 1.0,
+   "owned": 0.9,
    "xp": [
     0.43,
     0.45,
     0.34,
     0.41,
-    0.31,
+    0.3,
     0.37
    ],
    "var": [
@@ -11974,11 +11942,11 @@
     1.289,
     0.978,
     1.101,
-    0.863,
+    0.862,
     1.101
    ],
-   "projected": 2.31,
-   "per_million": 0.592,
+   "projected": 2.3,
+   "per_million": 0.59,
    "minutes": 6.79,
    "fixture_score": 3.26,
    "availability": 1.0,
@@ -12045,38 +12013,6 @@
    "per_million": 0.509,
    "minutes": 9.33,
    "fixture_score": 3.23,
-   "availability": 1.0,
-   "confidence": "low",
-   "moved_club": false,
-   "note": "rotation risk"
-  },
-  {
-   "id": 359,
-   "name": "Gomez",
-   "team": "LIV",
-   "position": "DEF",
-   "price": 4.9,
-   "owned": 0.0,
-   "xp": [
-    0.36,
-    0.43,
-    0.24,
-    0.38,
-    0.41,
-    0.36
-   ],
-   "var": [
-    1.136,
-    1.346,
-    0.819,
-    1.193,
-    1.318,
-    1.149
-   ],
-   "projected": 2.18,
-   "per_million": 0.445,
-   "minutes": 9.92,
-   "fixture_score": 2.34,
    "availability": 1.0,
    "confidence": "low",
    "moved_club": false,
@@ -12325,7 +12261,7 @@
     0.726,
     0.508,
     0.767,
-    0.492,
+    0.491,
     0.609,
     0.577
    ],
@@ -12403,6 +12339,38 @@
    "note": "rotation risk"
   },
   {
+   "id": 352,
+   "name": "Woodman",
+   "team": "LIV",
+   "position": "GKP",
+   "price": 3.9,
+   "owned": 0.9,
+   "xp": [
+    0.3,
+    0.34,
+    0.23,
+    0.31,
+    0.34,
+    0.3
+   ],
+   "var": [
+    0.803,
+    0.947,
+    0.56,
+    0.845,
+    0.937,
+    0.815
+   ],
+   "projected": 1.82,
+   "per_million": 0.467,
+   "minutes": 7.21,
+   "fixture_score": 2.34,
+   "availability": 1.0,
+   "confidence": "low",
+   "moved_club": false,
+   "note": "rotation risk"
+  },
+  {
    "id": 600,
    "name": "Osman",
    "team": "BHA",
@@ -12452,7 +12420,7 @@
    "var": [
     0.471,
     0.469,
-    0.422,
+    0.421,
     0.396,
     0.435,
     0.449
@@ -12486,7 +12454,7 @@
     0.789,
     0.628,
     0.719,
-    0.544,
+    0.543,
     0.636
    ],
    "projected": 1.79,
@@ -12518,7 +12486,7 @@
     0.789,
     0.628,
     0.719,
-    0.544,
+    0.543,
     0.636
    ],
    "projected": 1.79,
@@ -12580,7 +12548,7 @@
    "var": [
     0.458,
     0.45,
-    0.411,
+    0.41,
     0.391,
     0.42,
     0.437
@@ -12621,38 +12589,6 @@
    "per_million": 0.38,
    "minutes": 5.16,
    "fixture_score": 3.91,
-   "availability": 1.0,
-   "confidence": "low",
-   "moved_club": false,
-   "note": "rotation risk"
-  },
-  {
-   "id": 352,
-   "name": "Woodman",
-   "team": "LIV",
-   "position": "GKP",
-   "price": 3.9,
-   "owned": 0.9,
-   "xp": [
-    0.27,
-    0.31,
-    0.21,
-    0.28,
-    0.31,
-    0.28
-   ],
-   "var": [
-    0.738,
-    0.87,
-    0.515,
-    0.777,
-    0.861,
-    0.749
-   ],
-   "projected": 1.66,
-   "per_million": 0.426,
-   "minutes": 6.59,
-   "fixture_score": 2.34,
    "availability": 1.0,
    "confidence": "low",
    "moved_club": false,
@@ -12787,38 +12723,6 @@
    "note": "rotation risk"
   },
   {
-   "id": 521,
-   "name": "Kulusevski",
-   "team": "TOT",
-   "position": "MID",
-   "price": 6.5,
-   "owned": 0.1,
-   "xp": [
-    0.29,
-    0.28,
-    0.25,
-    0.28,
-    0.25,
-    0.26
-   ],
-   "var": [
-    0.476,
-    0.482,
-    0.419,
-    0.453,
-    0.415,
-    0.462
-   ],
-   "projected": 1.61,
-   "per_million": 0.248,
-   "minutes": 5.42,
-   "fixture_score": 3.26,
-   "availability": 1.0,
-   "confidence": "low",
-   "moved_club": false,
-   "note": "rotation risk"
-  },
-  {
    "id": 266,
    "name": "Cairney",
    "team": "FUL",
@@ -12845,6 +12749,70 @@
    "per_million": 0.327,
    "minutes": 9.68,
    "fixture_score": 3.46,
+   "availability": 1.0,
+   "confidence": "low",
+   "moved_club": false,
+   "note": "rotation risk"
+  },
+  {
+   "id": 521,
+   "name": "Kulusevski",
+   "team": "TOT",
+   "position": "MID",
+   "price": 6.5,
+   "owned": 0.1,
+   "xp": [
+    0.29,
+    0.28,
+    0.25,
+    0.28,
+    0.24,
+    0.26
+   ],
+   "var": [
+    0.476,
+    0.482,
+    0.419,
+    0.453,
+    0.414,
+    0.462
+   ],
+   "projected": 1.6,
+   "per_million": 0.246,
+   "minutes": 5.42,
+   "fixture_score": 3.26,
+   "availability": 1.0,
+   "confidence": "low",
+   "moved_club": false,
+   "note": "rotation risk"
+  },
+  {
+   "id": 370,
+   "name": "Chiesa",
+   "team": "LIV",
+   "position": "MID",
+   "price": 5.3,
+   "owned": 0.0,
+   "xp": [
+    0.26,
+    0.3,
+    0.24,
+    0.26,
+    0.26,
+    0.26
+   ],
+   "var": [
+    0.575,
+    0.66,
+    0.602,
+    0.576,
+    0.589,
+    0.565
+   ],
+   "projected": 1.58,
+   "per_million": 0.298,
+   "minutes": 6.49,
+   "fixture_score": 2.34,
    "availability": 1.0,
    "confidence": "low",
    "moved_club": false,
@@ -12931,7 +12899,7 @@
    ],
    "var": [
     0.452,
-    0.415,
+    0.414,
     0.454,
     0.471,
     0.514,
@@ -13005,38 +12973,6 @@
    "per_million": 0.37,
    "minutes": 5.51,
    "fixture_score": 2.66,
-   "availability": 1.0,
-   "confidence": "low",
-   "moved_club": false,
-   "note": "rotation risk"
-  },
-  {
-   "id": 370,
-   "name": "Chiesa",
-   "team": "LIV",
-   "position": "MID",
-   "price": 5.3,
-   "owned": 0.0,
-   "xp": [
-    0.24,
-    0.27,
-    0.22,
-    0.24,
-    0.24,
-    0.24
-   ],
-   "var": [
-    0.528,
-    0.606,
-    0.552,
-    0.53,
-    0.542,
-    0.519
-   ],
-   "projected": 1.45,
-   "per_million": 0.274,
-   "minutes": 5.93,
-   "fixture_score": 2.34,
    "availability": 1.0,
    "confidence": "low",
    "moved_club": false,
@@ -13319,7 +13255,7 @@
     0.524,
     0.584,
     0.534,
-    0.557
+    0.556
    ],
    "projected": 1.37,
    "per_million": 0.291,
@@ -13383,7 +13319,7 @@
     0.347,
     0.345,
     0.329,
-    0.343
+    0.342
    ],
    "projected": 1.32,
    "per_million": 0.264,
@@ -13425,6 +13361,70 @@
    "confidence": "low",
    "moved_club": true,
    "note": "new club \u2014 prior stats earned elsewhere; rotation risk"
+  },
+  {
+   "id": 355,
+   "name": "Davies",
+   "team": "LIV",
+   "position": "GKP",
+   "price": 4.0,
+   "owned": 0.2,
+   "xp": [
+    0.21,
+    0.25,
+    0.14,
+    0.22,
+    0.25,
+    0.22
+   ],
+   "var": [
+    0.639,
+    0.754,
+    0.445,
+    0.674,
+    0.749,
+    0.649
+   ],
+   "projected": 1.29,
+   "per_million": 0.322,
+   "minutes": 5.76,
+   "fixture_score": 2.34,
+   "availability": 1.0,
+   "confidence": "low",
+   "moved_club": false,
+   "note": "rotation risk"
+  },
+  {
+   "id": 361,
+   "name": "Lucky",
+   "team": "LIV",
+   "position": "DEF",
+   "price": 3.9,
+   "owned": 0.1,
+   "xp": [
+    0.21,
+    0.25,
+    0.14,
+    0.22,
+    0.25,
+    0.22
+   ],
+   "var": [
+    0.639,
+    0.754,
+    0.445,
+    0.674,
+    0.749,
+    0.649
+   ],
+   "projected": 1.29,
+   "per_million": 0.331,
+   "minutes": 5.76,
+   "fixture_score": 2.34,
+   "availability": 1.0,
+   "confidence": "low",
+   "moved_club": false,
+   "note": "rotation risk"
   },
   {
    "id": 435,
@@ -13555,70 +13555,6 @@
    "note": "rotation risk"
   },
   {
-   "id": 355,
-   "name": "Davies",
-   "team": "LIV",
-   "position": "GKP",
-   "price": 4.0,
-   "owned": 0.2,
-   "xp": [
-    0.2,
-    0.23,
-    0.13,
-    0.2,
-    0.23,
-    0.2
-   ],
-   "var": [
-    0.587,
-    0.693,
-    0.409,
-    0.619,
-    0.688,
-    0.596
-   ],
-   "projected": 1.19,
-   "per_million": 0.297,
-   "minutes": 5.26,
-   "fixture_score": 2.34,
-   "availability": 1.0,
-   "confidence": "low",
-   "moved_club": false,
-   "note": "rotation risk"
-  },
-  {
-   "id": 361,
-   "name": "Lucky",
-   "team": "LIV",
-   "position": "DEF",
-   "price": 3.9,
-   "owned": 0.1,
-   "xp": [
-    0.2,
-    0.23,
-    0.13,
-    0.2,
-    0.23,
-    0.2
-   ],
-   "var": [
-    0.587,
-    0.693,
-    0.409,
-    0.619,
-    0.688,
-    0.596
-   ],
-   "projected": 1.19,
-   "per_million": 0.305,
-   "minutes": 5.26,
-   "fixture_score": 2.34,
-   "availability": 1.0,
-   "confidence": "low",
-   "moved_club": false,
-   "note": "rotation risk"
-  },
-  {
    "id": 623,
    "name": "Bentley",
    "team": "COV",
@@ -13713,6 +13649,38 @@
    "confidence": "low",
    "moved_club": true,
    "note": "new club \u2014 prior stats earned elsewhere; rotation risk"
+  },
+  {
+   "id": 374,
+   "name": "Endo",
+   "team": "LIV",
+   "position": "MID",
+   "price": 4.8,
+   "owned": 0.1,
+   "xp": [
+    0.19,
+    0.2,
+    0.17,
+    0.19,
+    0.19,
+    0.19
+   ],
+   "var": [
+    0.387,
+    0.412,
+    0.378,
+    0.389,
+    0.393,
+    0.386
+   ],
+   "projected": 1.13,
+   "per_million": 0.235,
+   "minutes": 6.49,
+   "fixture_score": 2.34,
+   "availability": 1.0,
+   "confidence": "low",
+   "moved_club": false,
+   "note": "rotation risk"
   },
   {
    "id": 117,
@@ -13816,7 +13784,7 @@
    "team": "HUL",
    "position": "GKP",
    "price": 4.0,
-   "owned": 1.3,
+   "owned": 1.2,
    "xp": [
     0.19,
     0.23,
@@ -14291,38 +14259,6 @@
    "note": "rotation risk"
   },
   {
-   "id": 374,
-   "name": "Endo",
-   "team": "LIV",
-   "position": "MID",
-   "price": 4.8,
-   "owned": 0.1,
-   "xp": [
-    0.17,
-    0.19,
-    0.16,
-    0.17,
-    0.17,
-    0.17
-   ],
-   "var": [
-    0.355,
-    0.378,
-    0.347,
-    0.358,
-    0.361,
-    0.355
-   ],
-   "projected": 1.03,
-   "per_million": 0.215,
-   "minutes": 5.93,
-   "fixture_score": 2.34,
-   "availability": 1.0,
-   "confidence": "low",
-   "moved_club": false,
-   "note": "rotation risk"
-  },
-  {
    "id": 595,
    "name": "Gozo",
    "team": "CRY",
@@ -14509,6 +14445,38 @@
    "per_million": 0.214,
    "minutes": 6.11,
    "fixture_score": 3.42,
+   "availability": 1.0,
+   "confidence": "low",
+   "moved_club": false,
+   "note": "rotation risk"
+  },
+  {
+   "id": 378,
+   "name": "McConnell",
+   "team": "LIV",
+   "position": "MID",
+   "price": 4.3,
+   "owned": 0.2,
+   "xp": [
+    0.15,
+    0.16,
+    0.14,
+    0.16,
+    0.16,
+    0.16
+   ],
+   "var": [
+    0.285,
+    0.292,
+    0.273,
+    0.287,
+    0.292,
+    0.286
+   ],
+   "projected": 0.93,
+   "per_million": 0.216,
+   "minutes": 5.76,
+   "fixture_score": 2.34,
    "availability": 1.0,
    "confidence": "low",
    "moved_club": false,
@@ -14995,38 +14963,6 @@
    "note": "rotation risk"
   },
   {
-   "id": 378,
-   "name": "McConnell",
-   "team": "LIV",
-   "position": "MID",
-   "price": 4.3,
-   "owned": 0.2,
-   "xp": [
-    0.14,
-    0.15,
-    0.13,
-    0.14,
-    0.15,
-    0.14
-   ],
-   "var": [
-    0.262,
-    0.269,
-    0.251,
-    0.264,
-    0.269,
-    0.263
-   ],
-   "projected": 0.85,
-   "per_million": 0.198,
-   "minutes": 5.26,
-   "fixture_score": 2.34,
-   "availability": 1.0,
-   "confidence": "low",
-   "moved_club": false,
-   "note": "rotation risk"
-  },
-  {
    "id": 606,
    "name": "Rowe",
    "team": "AVL",
@@ -15379,6 +15315,38 @@
    "note": "new club \u2014 prior stats earned elsewhere; rotation risk"
   },
   {
+   "id": 382,
+   "name": "Danns",
+   "team": "LIV",
+   "position": "FWD",
+   "price": 4.5,
+   "owned": 0.2,
+   "xp": [
+    0.13,
+    0.13,
+    0.13,
+    0.13,
+    0.13,
+    0.13
+   ],
+   "var": [
+    0.261,
+    0.261,
+    0.261,
+    0.261,
+    0.261,
+    0.261
+   ],
+   "projected": 0.78,
+   "per_million": 0.173,
+   "minutes": 5.76,
+   "fixture_score": 2.34,
+   "availability": 1.0,
+   "confidence": "low",
+   "moved_club": false,
+   "note": "rotation risk"
+  },
+  {
    "id": 621,
    "name": "McAidoo",
    "team": "MCI",
@@ -15437,38 +15405,6 @@
    "per_million": 0.157,
    "minutes": 5.16,
    "fixture_score": 3.91,
-   "availability": 1.0,
-   "confidence": "low",
-   "moved_club": false,
-   "note": "rotation risk"
-  },
-  {
-   "id": 382,
-   "name": "Danns",
-   "team": "LIV",
-   "position": "FWD",
-   "price": 4.5,
-   "owned": 0.2,
-   "xp": [
-    0.12,
-    0.12,
-    0.12,
-    0.12,
-    0.12,
-    0.12
-   ],
-   "var": [
-    0.241,
-    0.241,
-    0.241,
-    0.241,
-    0.241,
-    0.241
-   ],
-   "projected": 0.72,
-   "per_million": 0.16,
-   "minutes": 5.26,
-   "fixture_score": 2.34,
    "availability": 1.0,
    "confidence": "low",
    "moved_club": false,
@@ -16439,7 +16375,7 @@
    "name": "Henry",
    "team": "BRE",
    "position": "DEF",
-   "price": 4.4,
+   "price": 4.3,
    "owned": 0.1,
    "xp": [
     0.0,
@@ -17240,7 +17176,7 @@
    "team": "CHE",
    "position": "FWD",
    "price": 7.6,
-   "owned": 27.6,
+   "owned": 27.5,
    "xp": [
     0.0,
     0.0,
@@ -17784,7 +17720,7 @@
    "team": "EVE",
    "position": "DEF",
    "price": 6.2,
-   "owned": 17.7,
+   "owned": 17.6,
    "xp": [
     0.0,
     0.0,
@@ -18737,6 +18673,70 @@
    "confidence": "low",
    "moved_club": false,
    "note": "Knee injury - Expected back 12 Dec"
+  },
+  {
+   "id": 367,
+   "name": "Gakpo",
+   "team": "LIV",
+   "position": "MID",
+   "price": 7.1,
+   "owned": 6.5,
+   "xp": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "var": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "projected": 0.0,
+   "per_million": 0.0,
+   "minutes": 0.0,
+   "fixture_score": 2.34,
+   "availability": 0.0,
+   "confidence": "high",
+   "moved_club": false,
+   "note": "Calf injury - Expected back 2 Dec"
+  },
+  {
+   "id": 371,
+   "name": "Gravenberch",
+   "team": "LIV",
+   "position": "MID",
+   "price": 5.8,
+   "owned": 0.8,
+   "xp": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "var": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "projected": 0.0,
+   "per_million": 0.0,
+   "minutes": 0.0,
+   "fixture_score": 2.34,
+   "availability": 0.0,
+   "confidence": "medium",
+   "moved_club": false,
+   "note": "Foot injury - Unknown return date"
   },
   {
    "id": 373,
@@ -20280,7 +20280,7 @@
    "team": "SUN",
    "position": "FWD",
    "price": 5.7,
-   "owned": 4.0,
+   "owned": 3.9,
    "xp": [
     0.0,
     0.0,
@@ -20354,7 +20354,7 @@
     -0.04
    ],
    "var": [
-    0.355,
+    0.354,
     0.355,
     0.371,
     0.341,
@@ -21171,8 +21171,8 @@
    57,
    115,
    4,
-   533,
    356,
+   533,
    112,
    40,
    68,
@@ -21194,8 +21194,8 @@
     572,
     115,
     4,
-    533,
     356,
+    533,
     112,
     40,
     68,
@@ -21233,8 +21233,8 @@
     572,
     115,
     4,
-    533,
     356,
+    533,
     112,
     40,
     124,
@@ -21259,8 +21259,8 @@
     572,
     115,
     4,
-    533,
     356,
+    533,
     40,
     68,
     124,
@@ -21278,7 +21278,7 @@
    "5": 411
   },
   "cost": 100.0,
-  "expected_points": 249.44,
+  "expected_points": 250.82,
   "status": "optimal"
  },
  "lineup": {
@@ -21313,28 +21313,28 @@
     229
    ],
    "hit": 0,
-   "gross_gain": 8.6,
-   "net_gain": 8.6,
-   "uncertainty": 4.98,
+   "gross_gain": 8.9,
+   "net_gain": 8.9,
+   "uncertainty": 5.0,
    "note": "uses a free transfer",
    "in": [
-    533
+    356
    ]
   },
   {
    "transfers": 2,
    "out": [
     229,
-    102
+    202
    ],
    "hit": 4,
-   "gross_gain": 12.89,
-   "net_gain": 8.89,
-   "uncertainty": 7.67,
+   "gross_gain": 13.93,
+   "net_gain": 9.93,
+   "uncertainty": 8.04,
    "note": "costs a hit",
    "in": [
-    533,
-    15
+    356,
+    533
    ]
   },
   {
@@ -21354,7 +21354,7 @@
    "action": "hold",
    "best_gameweek": 16,
    "best_value": 8.620000000000005,
-   "value_now": 4.229999999999997,
+   "value_now": 4.649999999999999,
    "reason": "GW16 is the best of 6 weeks in view at 8.6; 21 weeks still unseen"
   },
   {
@@ -21378,7 +21378,7 @@
    "action": "hold",
    "best_gameweek": 16,
    "best_value": 9.280000000000001,
-   "value_now": 5.490000000000002,
+   "value_now": 5.6299999999999955,
    "reason": "GW16 is the best of 6 weeks in view at 9.3; 21 weeks still unseen"
   }
  ],
@@ -21390,17 +21390,17 @@
    "gameweek": 12,
    "opponent": 7938140,
    "opponent_name": "Robbo's Rovers",
-   "p_win": 0.312,
-   "p_draw": 0.0235,
-   "p_loss": 0.6645,
-   "my_mean": 52.6,
-   "their_mean": 61.0,
-   "expected_league_points": 0.96,
+   "p_win": 0.287,
+   "p_draw": 0.023,
+   "p_loss": 0.69,
+   "my_mean": 52.5,
+   "their_mean": 61.5,
+   "expected_league_points": 0.88,
    "shared_players": 5,
    "my_differentials": 10,
    "their_differentials": 10,
    "stance": "gamble",
-   "reason": "You are the underdog at 31%. A predictable gameweek loses this match; you need outcomes they do not share. Captain differently and take the players they do not own."
+   "reason": "You are the underdog at 29%. A predictable gameweek loses this match; you need outcomes they do not share. Captain differently and take the players they do not own."
   }
  },
  "lms": {
@@ -21699,8 +21699,8 @@
  },
  "schedule": {
   "phase": "idle",
-  "reason": "67h to the GW12 deadline \u2014 refresh prices and injuries only",
-  "hours_remaining": 66.6
+  "reason": "54h to the GW12 deadline \u2014 refresh prices and injuries only",
+  "hours_remaining": 53.9
  },
  "manager": {
   "entry_id": 6674798,
@@ -21782,7 +21782,7 @@
     "points": 2,
     "multiplier": 1,
     "minutes": 90,
-    "ownership": 24.7,
+    "ownership": 24.8,
     "projected": 3.84
    },
    {
@@ -21800,7 +21800,7 @@
     "points": -4,
     "multiplier": 1,
     "minutes": 39,
-    "ownership": 17.7,
+    "ownership": 17.6,
     "projected": 3.19
    },
    {
@@ -21809,7 +21809,7 @@
     "points": 6,
     "multiplier": 1,
     "minutes": 90,
-    "ownership": 19.5,
+    "ownership": 19.6,
     "projected": 4.33
    },
    {
@@ -21863,7 +21863,7 @@
     "points": 2,
     "multiplier": 2,
     "minutes": 90,
-    "ownership": 77.6,
+    "ownership": 77.5,
     "projected": 6.75
    },
    {
@@ -21872,7 +21872,7 @@
     "points": 6,
     "multiplier": 1,
     "minutes": 90,
-    "ownership": 27.4,
+    "ownership": 27.5,
     "projected": 4.17
    },
    {
@@ -21881,7 +21881,7 @@
     "points": 0,
     "multiplier": 1,
     "minutes": 0,
-    "ownership": 14.7,
+    "ownership": 14.6,
     "projected": 1.32
    },
    {
